@@ -459,7 +459,7 @@ mosquitto_pub -h localhost -t test/topic -m "Hello MQTT"
 
 ---
 
-## เกี่ยวกับ RACKSYNC CO., LTD.
+## RACKSYNC CO., LTD.
 
 [RACKSYNC](https://github.com/racksync) เป็นบริษัทที่มีความเชี่ยวชาญในการพัฒนาโซลูชั่นด้าน IoT และระบบอัตโนมัติ เรามุ่งมั่นในการสร้างเทคโนโลยีที่เชื่อมต่อโลกเข้าด้วยกันผ่านระบบ IoT ที่มีประสิทธิภาพและเสถียร
 
