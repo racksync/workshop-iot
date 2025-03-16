@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Mosquitto MQTT Broker
+  mosquitto:
+    build:
+      context: ./mosquitto
+      dockerfile: Dockerfile
+    ports:
+      - "${MQTT_PORT:-1883}:1883"          # MQTT พอร์ตมาตรฐาน
+      - "${MQTT_WEBSOCKET_PORT:-9001}:9001" # MQTT over WebSocket
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    environment:
+      - TZ=${TIMEZONE:-Asia/Bangkok}
+    restart: unless-stopped
+
+  # MQTT Explorer Web - เครื่องมือทดสอบ MQTT
+  mqtt-explorer:
+    image: smeagolworms4/mqtt-explorer
+    ports:
+      - "${MQTT_EXPLORER_PORT:-4000}:4000"
+    environment:
+      - TZ=${TIMEZONE:-Asia/Bangkok}
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
