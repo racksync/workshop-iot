@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT over WebSocket ตัวอย่าง</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .panel {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, button, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #messageLog {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        #status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .connected {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .disconnected {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .sent {
+            color: #31708f;
+        }
+        .received {
+            color: #3c763d;
+        }
+    </style>
+</head>
+<body>
+    <h1>MQTT over WebSocket ตัวอย่าง</h1>
+    
+    <div id="status" class="disconnected">ยังไม่เชื่อมต่อ</div>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>การเชื่อมต่อ</h2>
+            <label for="broker">ที่อยู่ MQTT Broker:</label>
+            <input type="text" id="broker" value="localhost" />
+            
+            <label for="port">พอร์ต WebSocket:</label>
+            <input type="number" id="port" value="9001" />
+            
+            <label for="clientId">Client ID:</label>
+            <input type="text" id="clientId" value="browser-client-" />
+            
+            <button id="connectBtn">เชื่อมต่อ</button>
+            <button id="disconnectBtn" disabled>ยกเลิกการเชื่อมต่อ</button>
+        </div>
+        
+        <div class="panel">
+            <h2>การสมัครรับข้อมูล</h2>
+            <label for="subscribeTopic">หัวข้อที่จะสมัครรับข้อมูล:</label>
+            <input type="text" id="subscribeTopic" value="sensor/#" />
+            
+            <label for="qosSubscribe">QoS:</label>
+            <select id="qosSubscribe">
+                <option value="0">0 - ส่งครั้งเดียว</option>
+                <option value="1" selected>1 - ส่งอย่างน้อยหนึ่งครั้ง</option>
+                <option value="2">2 - ส่งพอดีหนึ่งครั้ง</option>
+            </select>
+            
+            <button id="subscribeBtn" disabled>สมัครรับข้อมูล</button>
+            <button id="unsubscribeBtn" disabled>ยกเลิกการสมัคร</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>การส่งข้อมูล</h2>
+            <label for="publishTopic">หัวข้อที่จะส่งข้อมูล:</label>
+            <input type="text" id="publishTopic" value="sensor/browser" />
+            
+            <label for="qosPublish">QoS:</label>
+            <select id="qosPublish">
+                <option value="0">0 - ส่งครั้งเดียว</option>
+                <option value="1" selected>1 - ส่งอย่างน้อยหนึ่งครั้ง</option>
+                <option value="2">2 - ส่งพอดีหนึ่งครั้ง</option>
+            </select>
+            
+            <label for="retained">เก็บข้อความไว้:</label>
+            <input type="checkbox" id="retained" />
+            
+            <label for="message">ข้อความ (JSON):</label>
+            <textarea id="message" rows="5">{"temperature": 25.5, "humidity": 60, "device": "browser"}</textarea>
+            
+            <button id="publishBtn" disabled>ส่งข้อมูล</button>
+            <button id="generateDataBtn" disabled>สร้างข้อมูลจำลอง</button>
+        </div>
+        
+        <div class="panel">
+            <h2>ประวัติข้อความ</h2>
+            <div id="messageLog"></div>
+            <button id="clearLogBtn">ล้างประวัติ</button>
+        </div>
+    </div>
+    
+    <script>
+        // ตัวแปรสำหรับเก็บ MQTT Client
+        let client;
+        let isConnected = false;
+        let subscribedTopics = new Set();
+        
+        // อ้างอิงองค์ประกอบ DOM
+        const statusEl = document.getElementById('status');
+        const connectBtn = document.getElementById('connectBtn');
+        const disconnectBtn = document.getElementById('disconnectBtn');
+        const subscribeBtn = document.getElementById('subscribeBtn');
+        const unsubscribeBtn = document.getElementById('unsubscribeBtn');
+        const publishBtn = document.getElementById('publishBtn');
+        const messageLogEl = document.getElementById('messageLog');
+        const clearLogBtn = document.getElementById('clearLogBtn');
+        const generateDataBtn = document.getElementById('generateDataBtn');
+        
+        // สร้าง Client ID แบบสุ่มถ้าไม่ได้กำหนด
+        document.getElementById('clientId').value += Math.floor(Math.random() * 1000);
+        
+        // สร้าง MQTT Client และจัดการเหตุการณ์ต่างๆ
+        function connectToBroker() {
+            const broker = document.getElementById('broker').value;
+            const port = parseInt(document.getElementById('port').value);
+            const clientId = document.getElementById('clientId').value;
+            
+            // ล้างรายการ subscriptions เมื่อเชื่อมต่อใหม่
+            subscribedTopics.clear();
+            
+            try {
+                // สร้าง MQTT Client
+                client = new Paho.MQTT.Client(broker, port, clientId);
+                
+                // จัดการเหตุการณ์เมื่อเชื่อมต่อสำเร็จ
+                client.onConnectionLost = (responseObject) => {
+                    logMessage(`การเชื่อมต่อถูกยกเลิก: ${responseObject.errorMessage}`, 'system');
+                    setConnectionStatus(false);
+                };
+                
+                // จัดการเหตุการณ์เมื่อได้รับข้อความ
+                client.onMessageArrived = (message) => {
+                    let payload = message.payloadString;
+                    let topic = message.destinationName;
+                    
+                    try {
+                        // พยายามแปลงเป็น JSON เพื่อแสดงแบบสวยงาม
+                        const jsonData = JSON.parse(payload);
+                        payload = JSON.stringify(jsonData, null, 2);
+                    } catch (e) {
+                        // ถ้าแปลงไม่ได้ให้ใช้ข้อความเดิม
+                    }
+                    
+                    logMessage(`ได้รับข้อความจาก ${topic}: ${payload}`, 'received');
+                };
+                
+                // กำหนดค่าการเชื่อมต่อ
+                const options = {
+                    timeout: 3,
+                    onSuccess: () => {
+                        logMessage(`เชื่อมต่อสำเร็จกับ ${broker}:${port}`, 'system');
+                        setConnectionStatus(true);
+                    },
+                    onFailure: (err) => {
+                        logMessage(`เชื่อมต่อล้มเหลว: ${err.errorMessage}`, 'error');
+                        setConnectionStatus(false);
+                    }
+                };
+                
+                // เชื่อมต่อกับ broker
+                client.connect(options);
+            } catch (error) {
+                logMessage(`เกิดข้อผิดพลาด: ${error.message}`, 'error');
+            }
+        }
+        
+        // ตั้งค่าสถานะการเชื่อมต่อและปรับปรุง UI
+        function setConnectionStatus(connected) {
+            isConnected = connected;
+            
+            // อัปเดตสถานะ
+            statusEl.textContent = connected ? 'เชื่อมต่อแล้ว' : 'ไม่ได้เชื่อมต่อ';
+            statusEl.className = connected ? 'connected' : 'disconnected';
+            
+            // อัปเดตปุ่มต่างๆ
+            connectBtn.disabled = connected;
+            disconnectBtn.disabled = !connected;
+            subscribeBtn.disabled = !connected;
+            unsubscribeBtn.disabled = !connected || subscribedTopics.size === 0;
+            publishBtn.disabled = !connected;
+            generateDataBtn.disabled = !connected;
+        }
+        
+        // เพิ่มข้อความลงในบันทึก
+        function logMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            messageLogEl.appendChild(messageEl);
+            messageLogEl.scrollTop = messageLogEl.scrollHeight;
+        }
+        
+        // การเชื่อมต่อเมื่อคลิกที่ปุ่มเชื่อมต่อ
+        connectBtn.addEventListener('click', () => {
+            connectToBroker();
+        });
+        
+        // ยกเลิกการเชื่อมต่อ
+        disconnectBtn.addEventListener('click', () => {
+            if (client && isConnected) {
+                client.disconnect();
+                logMessage('ยกเลิกการเชื่อมต่อแล้ว', 'system');
+                setConnectionStatus(false);
+            }
+        });
+        
+        // สมัครรับข้อมูล
+        subscribeBtn.addEventListener('click', () => {
+            if (!client || !isConnected) return;
+            
+            const topic = document.getElementById('subscribeTopic').value;
+            const qos = parseInt(document.getElementById('qosSubscribe').value);
+            
+            if (!topic) {
+                logMessage('โปรดระบุหัวข้อที่ต้องการสมัครรับข้อมูล', 'error');
+                return;
+            }
+            
+            try {
+                client.subscribe(topic, {qos: qos});
+                subscribedTopics.add(topic);
+                logMessage(`สมัครรับข้อมูลจากหัวข้อ: ${topic} ด้วย QoS ${qos}`, 'system');
+                unsubscribeBtn.disabled = false;
+            } catch (error) {
+                logMessage(`เกิดข้อผิดพลาดในการสมัครรับข้อมูล: ${error.message}`, 'error');
+            }
+        });
+        
+        // ยกเลิกการสมัครรับข้อมูล
+        unsubscribeBtn.addEventListener('click', () => {
+            if (!client || !isConnected || subscribedTopics.size === 0) return;
+            
+            const topic = document.getElementById('subscribeTopic').value;
+            
+            if (!topic) {
+                logMessage('โปรดระบุหัวข้อที่ต้องการยกเลิกการสมัคร', 'error');
+                return;
+            }
+            
+            try {
+                client.unsubscribe(topic);
+                subscribedTopics.delete(topic);
+                logMessage(`ยกเลิกการสมัครรับข้อมูลจากหัวข้อ: ${topic}`, 'system');
+                
+                if (subscribedTopics.size === 0) {
+                    unsubscribeBtn.disabled = true;
+                }
+            } catch (error) {
+                logMessage(`เกิดข้อผิดพลาดในการยกเลิกการสมัคร: ${error.message}`, 'error');
+            }
+        });
+        
+        // ส่งข้อความ
+        publishBtn.addEventListener('click', () => {
+            if (!client || !isConnected) return;
+            
+            const topic = document.getElementById('publishTopic').value;
+            const messageText = document.getElementById('message').value;
+            const qos = parseInt(document.getElementById('qosPublish').value);
+            const retained = document.getElementById('retained').checked;
+            
+            if (!topic || !messageText) {
+                logMessage('โปรดระบุหัวข้อและข้อความ', 'error');
+                return;
+            }
+            
+            try {
+                const message = new Paho.MQTT.Message(messageText);
+                message.destinationName = topic;
+                message.qos = qos;
+                message.retained = retained;
+                
+                client.send(message);
+                logMessage(`ส่งข้อความไปที่ ${topic}: ${messageText}`, 'sent');
+            } catch (error) {
+                logMessage(`เกิดข้อผิดพลาดในการส่งข้อความ: ${error.message}`, 'error');
+            }
+        });
+        
+        // สร้างข้อมูลจำลอง
+        generateDataBtn.addEventListener('click', () => {
+            const temperature = (20 + Math.random() * 10).toFixed(1);
+            const humidity = (30 + Math.random() * 40).toFixed(1);
+            
+            const data = {
+                temperature: parseFloat(temperature),
+                humidity: parseFloat(humidity),
+                device: "browser",
+                timestamp: new Date().toISOString()
+            };
+            
+            document.getElementById('message').value = JSON.stringify(data, null, 2);
+        });
+        
+        // ล้างประวัติข้อความ
+        clearLogBtn.addEventListener('click', () => {
+            messageLogEl.innerHTML = '';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  # EMQX - Enterprise MQTT Broker
+  emqx:
+    image: emqx/emqx:latest
+    ports:
+      - "${EMQX_MQTT_PORT:-11883}:1883"        # MQTT
+      - "${EMQX_DASHBOARD_PORT:-18083}:18083"  # Dashboard
+      - "${EMQX_WEBSOCKET_PORT:-8083}:8083"    # WebSocket
+    volumes:
+      - ./emqx/data:/opt/emqx/data
+      - ./emqx/log:/opt/emqx/log
+    environment:
+      - EMQX_NAME=emqx-server
+      - EMQX_DASHBOARD__DEFAULT_USERNAME=${EMQX_ADMIN_USER:-admin}
+      - EMQX_DASHBOARD__DEFAULT_PASSWORD=${EMQX_ADMIN_PASSWORD:-public}
+    restart: unless-stopped
