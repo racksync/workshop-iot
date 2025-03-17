@@ -1,6 +1,6 @@
 # บทที่ 2: การเชื่อมต่ออุปกรณ์
 
-บทนี้ครอบคลุมวิธีการเชื่อมต่ออุปกรณ์ IoT กับ MQTT broker และการจัดการการส่งข้อมูล
+บทนี้ครอบคลุมทฤษฎีและแนวคิดเกี่ยวกับการเชื่อมต่ออุปกรณ์ IoT กับ MQTT broker และการจัดการการส่งข้อมูล
 
 ## วัตถุประสงค์การเรียนรู้
 
@@ -28,7 +28,49 @@
 9. เวิร์คช็อป: การเชื่อมต่อเซ็นเซอร์ IoT จริงกับ MQTT/WebSocket
 10. Tasmota: เฟิร์มแวร์สำเร็จรูปสำหรับอุปกรณ์ IoT
 
-## Tasmota: เฟิร์มแวร์อเนกประสงค์สำหรับอุปกรณ์ IoT
+## ทฤษฎีการเชื่อมต่อ MQTT และ WebSocket
+
+```mermaid
+graph TD
+    A[MQTT Protocol] --> B[Connection Management]
+    A --> C[Message Flow]
+    A --> D[Quality of Service]
+    
+    B --> B1[TCP/IP Connection]
+    B --> B2[Authentication]
+    B --> B3[Keep Alive]
+    
+    C --> C1[Publish]
+    C --> C2[Subscribe]
+    C --> C3[Message Patterns]
+    
+    D --> D1[QoS 0]
+    D --> D2[QoS 1]
+    D --> D3[QoS 2]
+    
+    classDef core fill:#f96,stroke:#333,stroke-width:2px
+    class A core
+```
+
+[เพิ่มคำอธิบายละเอียดเกี่ยวกับแต่ละองค์ประกอบของ MQTT...]
+
+## การจัดการ Topic Hierarchy
+
+```mermaid
+graph LR
+    A[Root Topic] --> B[Building 1]
+    A --> C[Building 2]
+    B --> D[Floor 1]
+    B --> E[Floor 2]
+    D --> F[Room 101]
+    D --> G[Room 102]
+    F --> H[Temperature]
+    F --> I[Humidity]
+```
+
+[เพิ่มคำอธิบายละเอียดเกี่ยวกับการจัดการ Topic...]
+
+## Tasmota: กรณีศึกษาเฟิร์มแวร์ที่เหมาะสำหรับการเรียนรู้
 
 ### ที่มาและความเป็นมา
 
@@ -226,160 +268,6 @@ Tasmota เป็นตัวอย่างที่ดีของการพ
 3. **Community-Driven Development**: เป็นตัวอย่างที่ดีของการพัฒนาโดยชุมชน การจัดการคำขอฟีเจอร์ และการแก้ไขบั๊ก
 4. **การสร้างระบบที่ยืดหยุ่น**: การออกแบบที่รองรับอุปกรณ์หลากหลายโดยไม่ต้องเขียนโค้ดใหม่ทั้งหมด
 5. **การปรับสมดุลระหว่างความยืดหยุ่นและความง่าย**: การสร้างระบบที่ผู้ใช้ทั่วไปสามารถปรับแต่งได้ แต่ยังคงใช้งานง่าย
-
-### การตั้งค่า Tasmota เพื่อเชื่อมต่อกับ MQTT
-
-1. **เชื่อมต่อ WiFi**: เมื่อติดตั้งแล้ว Tasmota จะสร้าง AP ชื่อ `tasmota_XXXXXX`
-   - เชื่อมต่อกับ AP นั้น และเข้าสู่ IP 192.168.4.1
-   - ตั้งค่า WiFi ของคุณ
-
-2. **ตั้งค่า MQTT**:
-   - เข้าสู่ Web UI ของ Tasmota (IP ที่ได้จาก router)
-   - ไปที่ "Configuration" > "MQTT"
-   - กรอกข้อมูล:
-     - Host: IP หรือ hostname ของ MQTT broker
-     - Port: 1883 (หรือพอร์ตที่ตั้งค่าไว้)
-     - User: username สำหรับ MQTT (ถ้ามี)
-     - Password: password สำหรับ MQTT (ถ้ามี)
-     - Topic: ชื่อที่ต้องการใช้สำหรับอุปกรณ์
-
-3. **ตั้งค่า Template**: หากใช้กับอุปกรณ์ที่ไม่ใช่ Sonoff มาตรฐาน
-   - ไปที่ "Configuration" > "Template"
-   - เลือก template ที่ตรงกับอุปกรณ์ของคุณ หรือสร้างใหม่
-
-### ตัวอย่างการควบคุม Tasmota ผ่าน MQTT
-
-#### การเปิด/ปิดรีเลย์:
-
-```
-# ส่งคำสั่งเปิด
-mosquitto_pub -h 192.168.1.100 -t "cmnd/tasmota_device/POWER" -m "ON"
-
-# ส่งคำสั่งปิด
-mosquitto_pub -h 192.168.1.100 -t "cmnd/tasmota_device/POWER" -m "OFF"
-
-# ตรวจสอบสถานะ
-mosquitto_pub -h 192.168.1.100 -t "cmnd/tasmota_device/STATUS" -m ""
-```
-
-#### การรับข้อมูลเซ็นเซอร์:
-
-```
-# รับข้อมูลทั้งหมด
-mosquitto_sub -h 192.168.1.100 -t "tele/tasmota_device/#" -v
-
-# รับเฉพาะข้อมูลเซ็นเซอร์
-mosquitto_sub -h 192.168.1.100 -t "tele/tasmota_device/SENSOR" -v
-```
-
-### แนวปฏิบัติที่ดีในการใช้งาน Tasmota
-
-1. **ตั้งชื่อ Device Topic ให้มีความหมาย**: เช่น `bedroom_light`, `living_room_sensor`
-2. **ใช้ Full Topic ที่ไม่ซ้ำกัน**: กรณีมีอุปกรณ์หลายตัว
-3. **ตั้งค่า Telemetry Period**: ปรับค่าตามความเหมาะสมเพื่อลดปริมาณข้อมูล
-4. **สำรองการตั้งค่า**: หลังจากตั้งค่าเสร็จสมบูรณ์
-5. **อัปเดตเฟิร์มแวร์สม่ำเสมอ**: เพื่อรับฟีเจอร์ใหม่และแก้ไขข้อบกพร่อง
-6. **ใช้ Rules Engine**: สำหรับตั้งค่าการทำงานอัตโนมัติโดยไม่ต้องพึ่งระบบภายนอก
-
-## เครื่องมือสำหรับการแก้ไขปัญหา
-
-1. **MQTT Explorer**: เครื่องมือกราฟิกที่ช่วยในการตรวจสอบ topics และข้อความที่ส่งผ่าน MQTT
-2. **mosquitto_sub/mosquitto_pub**: เครื่องมือคำสั่งสำหรับการทดสอบการรับ/ส่งข้อความ MQTT
-3. **Wireshark**: เครื่องมือวิเคราะห์เครือข่ายที่สามารถจับและวิเคราะห์แพ็กเก็ต MQTT
-4. **Serial Monitor**: ใช้ Serial Monitor ของ Arduino IDE เพื่อดู log จากอุปกรณ์
-
-### รายการตรวจสอบการแก้ไขปัญหา (Troubleshooting Checklist)
-
-- **การเชื่อมต่อเครือข่าย**:
-  - อุปกรณ์เชื่อมต่อกับ WiFi หรือไม่?
-  - IP ของ MQTT broker ถูกต้องหรือไม่?
-  - ไฟร์วอลล์บล็อกพอร์ต MQTT (1883/8883) หรือไม่?
-
-- **การเชื่อมต่อ MQTT**:
-  - Client ID ถูกต้องและไม่ซ้ำกันหรือไม่?
-  - username/password ถูกต้องหรือไม่?
-  - ค่า keepalive timeout เหมาะสมหรือไม่?
-
-- **การส่งและรับข้อความ**:
-  - ชื่อ topics ถูกต้องหรือไม่? (คำนึงถึงตัวพิมพ์ใหญ่/เล็ก)
-  - ค่า QoS ถูกต้องหรือไม่?
-  - ขนาดข้อความไม่เกินขีดจำกัดหรือไม่?
-
-- **ปัญหาเฉพาะของอุปกรณ์**:
-  - ระดับแบตเตอรี่เพียงพอหรือไม่?
-  - หน่วยความจำเพียงพอหรือไม่?
-  - อุปกรณ์รีสตาร์ทบ่อยเกินไปหรือไม่?
-
-
-
-## แนวปฏิบัติที่ดีสำหรับการเชื่อมต่ออุปกรณ์ IoT
-
-เมื่อพัฒนาอุปกรณ์ IoT ที่เชื่อมต่อกับ MQTT broker แนวปฏิบัติที่ดีเหล่านี้จะช่วยให้ระบบของคุณมีประสิทธิภาพและเสถียรมากขึ้น
-
-### 1. ความเสถียรและความทนทาน
-
-- **ใช้ Watchdog Timer**: ป้องกันการค้างของอุปกรณ์ด้วยการรีสตาร์ทอัตโนมัติเมื่อโปรแกรมไม่ตอบสนอง
-- **เพิ่มกลไกป้องกันการรีบูตวนซ้ำ**: นับจำนวนการรีบูตและเข้าสู่โหมด "safe mode" หากรีบูตบ่อยเกินไป
-- **บัฟเฟอร์ข้อมูล**: เก็บข้อมูลไว้ก่อนหากไม่สามารถส่งได้ทันที
-- **ตั้งค่า keepalive ที่เหมาะสม**: ช่วยตรวจจับการขาดการเชื่อมต่อได้รวดเร็ว
-
-### 2. ความเป็นส่วนตัวและความปลอดภัย
-
-- **เข้ารหัสข้อมูลที่สำคัญ**: โดยเฉพาะข้อมูลส่วนบุคคลหรือข้อมูลที่ใช้เพื่อการยืนยันตัวตน
-- **การพิสูจน์ตัวตน**: ใช้ username/password หรือ client certificates
-- **อัปเดตเฟิร์มแวร์**: มีกลไกสำหรับอัปเดตเฟิร์มแวร์เพื่อแก้ไขช่องโหว่ด้านความปลอดภัย
-- **ป้องกันแผงควบคุม**: ระมัดระวังการเปิด debug port หรือ serial interface ที่ไม่มีการป้องกัน
-
-### 3. ประสิทธิภาพการใช้พลังงาน
-
-- **ลดความถี่ในการส่งข้อมูล**: ส่งเฉพาะเมื่อมีการเปลี่ยนแปลงที่มีนัยสำคัญ
-- **ใช้ Sleep Modes อย่างมีประสิทธิภาพ**: เลือกโหมด sleep ที่เหมาะสมกับความต้องการ
-- **ปิดฟีเจอร์ที่ไม่ได้ใช้**: ปิดส่วนประกอบฮาร์ดแวร์ที่ไม่จำเป็น เช่น LED หรือ WiFi เมื่อไม่ใช้
-- **เลือก QoS ระดับต่ำ**: สำหรับข้อมูลที่ไม่สำคัญมาก ใช้ QoS 0 เพื่อประหยัดพลังงาน
-
-### 4. การจัดการข้อมูล
-
-- **ใช้รูปแบบข้อมูลที่มีประสิทธิภาพ**: JSON เป็นที่นิยม แต่ Protocol Buffers หรือ CBOR ประหยัดมากกว่า
-- **ตรวจสอบความถูกต้อง**: ตรวจสอบข้อมูลก่อนส่งเพื่อป้องกันข้อมูลผิดพลาด
-- **กำหนดโครงสร้างข้อมูลที่ชัดเจน**: สร้างรูปแบบข้อมูลที่คงเส้นคงวาและเข้าใจได้
-- **คำนึงถึงเขตเวลา**: ใช้ UTC หรือระบุเขตเวลาเสมอเมื่อบันทึกเวลา
-
-### 5. การออกแบบระบบ
-
-- **เตรียมพร้อมสำหรับการขยาย**: ออกแบบให้รองรับอุปกรณ์เพิ่มเติมในอนาคต
-- **ตั้งชื่อ topics ให้เป็นระบบ**: ใช้โครงสร้างที่เข้าใจง่ายและสอดคล้องกันทั่วทั้งระบบ
-- **มีแผนรับมือข้อผิดพลาด**: วางแผนรับมือกรณีที่ broker ล่มหรือการเชื่อมต่อล้มเหลว
-- **ทดสอบในสภาพแวดล้อมจริง**: ทดสอบในสภาวะที่คล้ายกับการใช้งานจริงให้มากที่สุด
-
-
-
-### ไลบรารีและเครื่องมือ
-
-- [PubSubClient](https://github.com/knolleary/pubsubclient) - ไลบรารี MQTT สำหรับ Arduino/ESP8266
-- [AsyncMqttClient](https://github.com/marvinroger/async-mqtt-client) - MQTT client แบบ asynchronous สำหรับ ESP8266/ESP32
-- [ArduinoJson](https://arduinojson.org/) - ไลบรารีสำหรับทำงานกับ JSON บนไมโครคอนโทรลเลอร์
-- [MQTT Explorer](http://mqtt-explorer.com/) - GUI tool สำหรับตรวจสอบ MQTT topics และข้อความ
-- [Tasmota](https://tasmota.github.io/) - เฟิร์มแวร์สำเร็จรูปสำหรับอุปกรณ์ ESP8266/ESP8285
-- [ESPHome](https://esphome.io/) - ทางเลือกอีกทางสำหรับเฟิร์มแวร์อุปกรณ์ IoT
-- [ESP8266 Arduino Core](https://github.com/esp8266/Arduino) - ESP8266 core สำหรับ Arduino IDE
-- [ESP32 Arduino Core](https://github.com/espressif/arduino-esp32) - ESP32 core สำหรับ Arduino IDE
-
-### เอกสารอ้างอิง
-
-- [MQTT Specification](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html)
-- [Tasmota Documentation](https://tasmota.github.io/docs/)
-- [ESP8266 SDK API Reference](https://www.espressif.com/sites/default/files/documentation/2c-esp8266_non_os_sdk_api_reference_en.pdf)
-- [ESP32 Technical Reference Manual](https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf)
-
-### คอร์สและบทความแนะนำ
-
-- Tasmota Official Website: https://tasmota.github.io/
-- Espressif Systems Website: https://www.espressif.com/
-- Arduino Project Hub: https://create.arduino.cc/projecthub
-- Hackaday: https://hackaday.io/
-- Instructables: https://www.instructables.com/
-
----
 
 ## RACKSYNC CO., LTD.
 
