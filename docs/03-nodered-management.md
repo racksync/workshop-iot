@@ -1,6 +1,13 @@
 # บทที่ 3: การจัดการและวิเคราะห์ด้วย Node-RED
 
-บทนี้สำรวจวิธีการใช้ Node-RED ในการรวบรวม ประมวลผล แสดงผล และทำงานกับข้อมูล IoT
+| รายละเอียด | คำอธิบาย |
+|----------|---------|
+| **ชื่อเนื้อหา** | การจัดการและวิเคราะห์ด้วย Node-RED |
+| **วัตถุประสงค์** | เรียนรู้การใช้ Node-RED ในการจัดการข้อมูล IoT |
+| **ระดับความยาก** | ปานกลาง [⭑⭑] |
+| **เวลา** | 60 นาที - 90 นาที |
+| **สิ่งที่ต้องเตรียม** | Node-RED, MQTT Broker, เซ็นเซอร์พื้นฐาน |
+| **ความรู้พื้นฐาน** | พื้นฐาน MQTT, JavaScript เบื้องต้น |
 
 ## วัตถุประสงค์การเรียนรู้
 
@@ -240,6 +247,313 @@ graph TB
     style F fill:#ff9,stroke:#333,stroke-width:2px
     style G fill:#ff9,stroke:#333,stroke-width:2px
 ```
+
+## ตัวอย่าง Node-RED Flows และการประยุกต์ใช้งาน
+
+### 1. การอ่านข้อมูลเซนเซอร์ผ่าน MQTT
+```json
+[
+    {
+        "id": "sensor_flow1",
+        "type": "mqtt in",
+        "topic": "sensor/temperature",
+        "broker": "localhost",
+        "x": 150,
+        "y": 100
+    },
+    {
+        "id": "process1",
+        "type": "function",
+        "func": "msg.payload = JSON.parse(msg.payload);\nreturn msg;",
+        "x": 300,
+        "y": 100
+    },
+    {
+        "id": "display1",
+        "type": "debug",
+        "x": 450,
+        "y": 100
+    }
+]
+```
+**หลักการ**: รับข้อมูลอุณหภูมิจาก MQTT broker และแปลงเป็น JSON
+**การใช้งาน**: เหมาะสำหรับการเริ่มต้นทำความเข้าใจการรับข้อมูล MQTT
+**ผลลัพธ์**: แสดงค่าอุณหภูมิใน debug panel
+
+### 2. การสร้างแดชบอร์ดแสดงอุณหภูมิและความชื้น
+```json
+[
+    {
+        "id": "dashboard_temp",
+        "type": "ui_gauge",
+        "group": "Home",
+        "name": "Temperature",
+        "format": "{{value}}°C",
+        "min": 0,
+        "max": 50
+    },
+    {
+        "id": "dashboard_humid",
+        "type": "ui_chart",
+        "group": "Home",
+        "name": "Humidity",
+        "tab": "home",
+        "charts": ["line"]
+    }
+]
+```
+**หลักการ**: แสดงข้อมูลแบบ real-time ด้วย gauge และกราฟ
+**การใช้งาน**: สร้างหน้าควบคุมสำหรับมอนิเตอร์สภาพแวดล้อม
+**ผลลัพธ์**: แดชบอร์ดที่แสดงอุณหภูมิและความชื้นแบบ real-time
+
+### 3. ระบบแจ้งเตือนผ่าน LINE Notify
+```json
+[
+    {
+        "id": "temp_monitor",
+        "type": "mqtt in",
+        "topic": "sensor/temperature",
+        "broker": "localhost"
+    },
+    {
+        "id": "threshold_check",
+        "type": "switch",
+        "rules": [{"t": "gt", "v": "30"}],
+        "property": "payload"
+    },
+    {
+        "id": "line_notify",
+        "type": "line-notify",
+        "token": "YOUR_LINE_TOKEN",
+        "message": "อุณหภูมิเกินกำหนด: {{payload}}°C"
+    }
+]
+```
+**หลักการ**: ตรวจสอบอุณหภูมิและส่งแจ้งเตือนผ่าน LINE เมื่อเกิน 30°C
+**การใช้งาน**: ระบบเตือนภัยสำหรับห้องเซิร์ฟเวอร์
+**ผลลัพธ์**: ข้อความแจ้งเตือนใน LINE เมื่ออุณหภูมิสูงเกิน
+
+### 4. การบันทึกข้อมูลลง InfluxDB
+```json
+[
+    {
+        "id": "sensor_data",
+        "type": "mqtt in",
+        "topic": "sensors/#"
+    },
+    {
+        "id": "format_data",
+        "type": "function",
+        "func": "return {\n    payload: [{\n        measurement: 'sensors',\n        fields: { value: msg.payload },\n        tags: { sensor: msg.topic.split('/')[1] }\n    }]\n}"
+    },
+    {
+        "id": "influxdb_out",
+        "type": "influxdb out",
+        "database": "sensors_db",
+        "name": "InfluxDB Storage"
+    }
+]
+```
+**หลักการ**: เก็บข้อมูลเซนเซอร์ในฐานข้อมูล time-series
+**การใช้งาน**: ระบบจัดเก็บข้อมูลระยะยาวสำหรับวิเคราะห์
+**ผลลัพธ์**: ข้อมูลถูกบันทึกใน InfluxDB พร้อมสำหรับการวิเคราะห์
+
+### 5. การควบคุมอุปกรณ์ผ่าน WebSocket
+```json
+[
+    {
+        "id": "ws_in",
+        "type": "websocket in",
+        "path": "/control"
+    },
+    {
+        "id": "command_parser",
+        "type": "function",
+        "func": "return { topic: 'device/control', payload: msg.payload }"
+    },
+    {
+        "id": "mqtt_out",
+        "type": "mqtt out",
+        "topic": "device/control"
+    }
+]
+```
+**หลักการ**: รับคำสั่งผ่าน WebSocket และส่งต่อไปยัง MQTT
+**การใช้งาน**: ระบบควบคุมอุปกรณ์ผ่านเว็บแอพ
+**ผลลัพธ์**: สามารถควบคุมอุปกรณ์ผ่านเว็บบราวเซอร์
+
+### 6. การประมวลผลข้อมูลแบบ Batch
+```json
+[
+    {
+        "id": "collect_data",
+        "type": "batch",
+        "mode": "count",
+        "count": "10",
+        "overlap": "0"
+    },
+    {
+        "id": "calculate_avg",
+        "type": "function",
+        "func": "var sum = msg.payload.reduce((a,b) => a + b.value, 0);\nreturn {payload: sum/msg.payload.length}"
+    },
+    {
+        "id": "store_result",
+        "type": "file",
+        "filename": "averages.csv"
+    }
+]
+```
+**หลักการ**: รวบรวมข้อมูล 10 ค่าแล้วหาค่าเฉลี่ย
+**การใช้งาน**: การวิเคราะห์แนวโน้มข้อมูล
+**ผลลัพธ์**: บันทึกค่าเฉลี่ยลงไฟล์ CSV
+
+### 7. ระบบตรวจจับความผิดปกติ
+```json
+[
+    {
+        "id": "anomaly_check",
+        "type": "function",
+        "func": "var stdDev = 2.5;\nvar mean = 25;\nvar value = msg.payload;\nif (Math.abs(value - mean) > stdDev) {\n    return {payload: true};\n}\nreturn null;"
+    },
+    {
+        "id": "alert_trigger",
+        "type": "trigger",
+        "duration": "5",
+        "units": "minute"
+    },
+    {
+        "id": "notify_admin",
+        "type": "email"
+    }
+]
+```
+**หลักการ**: ใช้ statistical analysis ตรวจจับค่าผิดปกติ
+**การใช้งาน**: ระบบเฝ้าระวังความผิดปกติของเครื่องจักร
+**ผลลัพธ์**: ส่งอีเมลแจ้งเตือนเมื่อพบความผิดปกติ
+
+### 8. การสร้างรายงานอัตโนมัติ
+```json
+[
+    {
+        "id": "daily_trigger",
+        "type": "cron",
+        "cron": "0 0 * * *"
+    },
+    {
+        "id": "generate_report",
+        "type": "template",
+        "template": "Daily Report\n{{payload}}"
+    },
+    {
+        "id": "pdf_creator",
+        "type": "pdf",
+        "filename": "report.pdf"
+    }
+]
+```
+**หลักการ**: สร้างรายงาน PDF อัตโนมัติทุกวัน
+**การใช้งาน**: รายงานประจำวันสำหรับผู้บริหาร
+**ผลลัพธ์**: ไฟล์ PDF รายงานประจำวัน
+
+### 9. การควบคุมไฟอัตโนมัติตามแสง
+```json
+[
+    {
+        "id": "light_sensor",
+        "type": "mqtt in",
+        "topic": "sensor/light"
+    },
+    {
+        "id": "light_control",
+        "type": "switch",
+        "rules": [
+            {"t": "lt", "v": "100"},
+            {"t": "gte", "v": "100"}
+        ]
+    },
+    {
+        "id": "light_command",
+        "type": "mqtt out",
+        "topic": "light/control"
+    }
+]
+```
+**หลักการ**: ควบคุมไฟอัตโนมัติตามความสว่าง
+**การใช้งาน**: ระบบไฟอัตโนมัติในอาคาร
+**ผลลัพธ์**: ไฟเปิด-ปิดอัตโนมัติตามแสงธรรมชาติ
+
+### 10. การจัดการพลังงานอัจฉริยะ
+```json
+[
+    {
+        "id": "power_monitor",
+        "type": "mqtt in",
+        "topic": "power/#"
+    },
+    {
+        "id": "power_optimize",
+        "type": "function",
+        "func": "var threshold = 5000;\nif (msg.payload > threshold) {\n    return {payload: 'reduce_power'};\n}"
+    },
+    {
+        "id": "device_control",
+        "type": "mqtt out",
+        "topic": "device/power"
+    }
+]
+```
+**หลักการ**: ควบคุมการใช้พลังงานให้ไม่เกินขีดจำกัด
+**การใช้งาน**: ระบบจัดการพลังงานในอาคาร
+**ผลลัพธ์**: ลดการใช้พลังงานอัตโนมัติ
+
+### 11. ระบบนับจำนวนคนผ่าน IoT
+```json
+[
+    {
+        "id": "ir_sensor",
+        "type": "mqtt in",
+        "topic": "sensor/ir"
+    },
+    {
+        "id": "counter",
+        "type": "function",
+        "func": "global.count = (global.count || 0) + 1;\nreturn {payload: global.count}"
+    },
+    {
+        "id": "display",
+        "type": "ui_text",
+        "group": "Statistics"
+    }
+]
+```
+**หลักการ**: นับจำนวนคนผ่านเซนเซอร์ IR
+**การใช้งาน**: ระบบนับจำนวนผู้เข้าชมนิทรรศการ
+**ผลลัพธ์**: แสดงจำนวนคนบนแดชบอร์ด
+
+### 12. การเชื่อมต่อกับ Google Sheets
+```json
+[
+    {
+        "id": "collect_data",
+        "type": "mqtt in",
+        "topic": "sensors/all"
+    },
+    {
+        "id": "format_sheet",
+        "type": "function",
+        "func": "return { payload: { spreadsheetId: 'YOUR_SHEET_ID', range: 'A:C', values: [[new Date(), msg.topic, msg.payload]] }}"
+    },
+    {
+        "id": "google_sheets",
+        "type": "google-sheets",
+        "operation": "append"
+    }
+]
+```
+**หลักการ**: บันทึกข้อมูลเซนเซอร์ลง Google Sheets
+**การใช้งาน**: การเก็บข้อมูลสำหรับวิเคราะห์ภายหลัง
+**ผลลัพธ์**: ข้อมูลถูกเพิ่มใน Google Sheets อัตโนมัติ
 
 ## RACKSYNC CO., LTD.
 
