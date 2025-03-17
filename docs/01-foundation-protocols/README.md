@@ -216,77 +216,112 @@ sequenceDiagram
 2. ผลกระทบหากข้อมูลสูญหายหรือซ้ำซ้อน
 3. ข้อจำกัดด้านทรัพยากรของอุปกรณ์และเครือข่าย
 
-### 3. องค์ประกอบของ MQTT Broker
 
-MQTT Broker เป็นตัวกลางสำคัญในระบบ MQTT ทำหน้าที่รับและส่งข้อความระหว่าง publishers และ subscribers มีองค์ประกอบสำคัญดังนี้:
 
-#### 1. การจัดการการเชื่อมต่อ (Connection Management)
-- รองรับการเชื่อมต่อจากอุปกรณ์จำนวนมาก
-- ตรวจสอบการยืนยันตัวตนของ client
-- ติดตามสถานะการเชื่อมต่อและจัดการ session
+### 3. การติดตั้ง MQTT Broker (ทั้งแบบในเครื่องและบนคลาวด์)
 
-#### 2. การจัดการ Topic (Topic Management)
-- จัดโครงสร้าง topics ตามลำดับชั้น
-- ประมวลผล wildcard subscriptions
-- จัดการสิทธิ์การเข้าถึง topics
+#### การติดตั้ง Mosquitto Broker (On-Premise)
 
-#### 3. ระบบพอร์ตและโปรโตคอล
-- พอร์ตมาตรฐาน MQTT (1883)
-- พอร์ต MQTT over TLS/SSL (8883)
-- พอร์ต MQTT over WebSocket (ปกติคือ 8083 หรือ 9001)
-- พอร์ต MQTT over WebSocket Secure (8084)
-
-```mermaid
-graph TD
-    A[MQTT Broker] --- B["MQTT (TCP/IP)<br>พอร์ต 1883"]
-    A --- C["MQTT over SSL/TLS<br>พอร์ต 8883"]
-    A --- D["MQTT over WebSocket<br>พอร์ต 8083 หรือ 9001"]
-    A --- E["MQTT over WebSocket Secure<br>พอร์ต 8084"]
-    
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#cfc,stroke:#333,stroke-width:1px
-    style C fill:#cfc,stroke:#333,stroke-width:1px
-    style D fill:#cfc,stroke:#333,stroke-width:1px
-    style E fill:#cfc,stroke:#333,stroke-width:1px
+**บน Linux (Ubuntu/Debian)**:
+```bash
+sudo apt update
+sudo apt install mosquitto mosquitto-clients
+sudo systemctl enable mosquitto
+sudo systemctl start mosquitto
 ```
 
-#### 4. การติดต่อกับภายนอก
-- การเชื่อมต่อกับระบบฐานข้อมูล
-- การเชื่อมต่อกับระบบอื่นๆ (เช่น HTTP, REST API)
-- การเชื่อมต่อกับ Broker อื่นๆ (Bridge Connection)
-
-**อุปมาอุปมัย**: MQTT Broker เปรียบเสมือนศูนย์กลางไปรษณีย์อัจฉริยะที่รู้ว่าใครต้องการรับข้อมูลอะไร และสามารถจัดการกับจดหมายจำนวนมากในเวลาเดียวกัน โดยมีช่องทางรับส่งหลายรูปแบบ (พอร์ตต่างๆ) เพื่อรองรับความต้องการที่หลากหลาย
-
-### 4. การทำงานของ Topics และ Port ใน MQTT
-
-Topics ใน MQTT มีลักษณะเป็นโครงสร้างแบบลำดับชั้น (hierarchical) ใช้เครื่องหมาย `/` คั่นระหว่างแต่ละระดับ ทำให้สามารถจัดระเบียบข้อมูลและกำหนดการรับส่งข้อมูลได้อย่างยืดหยุ่น
-
-```mermaid
-graph TD
-    Root(["/"]) --> A["บ้าน (home)"]
-    Root --> B["รถยนต์ (car)"]
-    Root --> C["สำนักงาน (office)"]
-    
-    A --> A1["ห้องนั่งเล่น (livingroom)"]
-    A --> A2["ห้องนอน (bedroom)"]
-    A --> A3["ห้องครัว (kitchen)"]
-    
-    A1 --> A1a["อุณหภูมิ (temperature)"]
-    A1 --> A1b["ความชื้น (humidity)"]
-    A1 --> A1c["แสงสว่าง (light)"]
-    
-    A2 --> A2a["อุณหภูมิ (temperature)"]
-    A2 --> A2b["ความชื้น (humidity)"]
-    
-    B --> B1["สถานะ (status)"]
-    B --> B2["ตำแหน่ง (location)"]
-    B --> B3["ความเร็ว (speed)"]
-    
-    C --> C1["ห้องประชุม (meetingroom)"]
-    C --> C2["ห้องทำงาน (workspace)"]
+**บน macOS**:
+```bash
+brew install mosquitto
 ```
 
-### 5. เครื่องมือทดสอบหรือการทดลอง
+**บน Windows**:
+สามารถดาวน์โหลดได้จาก https://mosquitto.org/download/
+
+#### การใช้งาน EMQX
+
+EMQX เป็น MQTT Broker ที่มีประสิทธิภาพสูงและมีคุณสมบัติที่ครบถ้วนสำหรับการใช้งานระดับองค์กร สามารถใช้ได้ทั้งแบบ Open Source (ฟรี) และแบบ Enterprise/Cloud
+
+##### การติดตั้ง EMQX ด้วย Docker
+
+```bash
+docker run -d --name emqx -p 1883:1883 -p 8083:8083 -p 8084:8084 -p 8883:8883 -p 18083:18083 emqx/emqx:latest
+```
+
+##### ทางเลือกในการใช้งาน EMQX
+
+1. **EMQX Open Source**:
+   - เวอร์ชันฟรีสำหรับการใช้งานทั่วไป
+   - รองรับการเชื่อมต่อพร้อมกันได้มากถึง 100,000 อุปกรณ์
+   - มีฟีเจอร์พื้นฐานครบถ้วน เช่น MQTT 3.1.1/5.0, WebSocket, TLS/SSL
+
+2. **EMQX Enterprise**:
+   - เวอร์ชันสำหรับองค์กรที่ต้องการคุณสมบัติเพิ่มเติม
+   - รองรับการเชื่อมต่อได้มากกว่า 1 ล้านอุปกรณ์
+   - มีฟีเจอร์เพิ่มเติม เช่น Data Persistence, Rule Engine, Multi-protocol Gateway
+
+3. **EMQX Cloud**:
+   - บริการแบบ Fully-managed MQTT บนคลาวด์
+   - สามารถใช้งานได้บน AWS, Azure, GCP
+   - มีแผนการใช้งานทั้งแบบฟรี (เพื่อทดลอง) และแบบจ่ายตามการใช้งาน
+
+##### การใช้งาน Docker Compose สำหรับ EMQX และบริการที่เกี่ยวข้อง
+
+ในโฟลเดอร์ `01-foundation-protocols` มีไฟล์ `docker-compose.yml` ที่ช่วยให้คุณสามารถรัน EMQX และบริการอื่นๆ ที่จำเป็นได้อย่างง่ายดาย:
+
+```bash
+docker-compose up -d
+```
+
+### 4. การกำหนดค่า Topics, Port และ WebSocket บน MQTT Broker
+
+#### การกำหนดค่า Mosquitto (แบบพื้นฐาน)
+ไฟล์การตั้งค่า: `/etc/mosquitto/mosquitto.conf`
+
+```
+# พอร์ตพื้นฐาน MQTT
+listener 1883
+protocol mqtt
+
+# พอร์ต WebSocket
+listener 9001
+protocol websockets
+
+# การตั้งค่าความปลอดภัย (ตัวอย่างพื้นฐาน)
+allow_anonymous true
+password_file /etc/mosquitto/passwd
+```
+
+#### การกำหนดค่า EMQX
+EMQX มีอินเทอร์เฟซการจัดการแบบกราฟิกที่ใช้งานง่าย ซึ่งช่วยให้การกำหนดค่าต่างๆ ทำได้สะดวกกว่า:
+
+1. **การเข้าถึง Dashboard**:
+   - เปิดเบราว์เซอร์และไปที่ `http://localhost:18083` (ค่าเริ่มต้น)
+   - เข้าสู่ระบบด้วย username: `admin` และ password: `public`
+
+2. **การกำหนดค่า Listeners**:
+   - ไปที่ "Management" > "Listeners"
+   - EMQX มี listener พื้นฐานตั้งแต่เริ่มต้น:
+     - MQTT (TCP) - พอร์ต 1883
+     - MQTT over SSL/TLS - พอร์ต 8883
+     - MQTT over WebSocket - พอร์ต 8083
+     - MQTT over WebSocket/SSL - พอร์ต 8084
+
+3. **การกำหนดค่า Authentication**:
+   - ไปที่ "Access Control" > "Authentication"
+   - สามารถตั้งค่าหลายรูปแบบ เช่น Username/Password, JWT, LDAP, หรือ MySQL
+
+4. **การกำหนดค่า Topics ACL (Access Control List)**:
+   - ไปที่ "Access Control" > "Authorization"
+   - สามารถกำหนดได้ว่าใครมีสิทธิ์ในการ publish/subscribe topic ใดบ้าง
+
+5. **การตั้งค่า WebSocket สำหรับการใช้งานกับเว็บแอปพลิเคชัน**:
+   - WebSocket listener ถูกเปิดใช้งานโดยค่าเริ่มต้นที่พอร์ต 8083 (ws) และ 8084 (wss)
+   - สามารถปรับแต่งค่าได้ที่ "Management" > "Listeners" > เลือก WebSocket listener
+
+
+
+### 5. การใช้ MQTTX สำหรับทดสอบ Publish/Subscribe
 
 MQTTX เป็นเครื่องมือที่ง่ายต่อการใช้งานสำหรับการทดสอบระบบ MQTT:
 
@@ -379,7 +414,7 @@ sequenceDiagram
 - ช่วยลดความซับซ้อนในการพัฒนา dashboard สำหรับควบคุมและตรวจสอบอุปกรณ์ IoT
 - สามารถรวมกับโปรโตคอล MQTT ผ่าน MQTT over WebSocket เพื่อให้แอปพลิเคชันเว็บสามารถเชื่อมต่อกับระบบ MQTT ได้โดยตรง
 
-### 7. เวิร์คช็อปหรือขั้นตอนสรุป (ถ้ามี)
+### 8. เวิร์คช็อป: การติดตั้ง MQTT Broker และการเชื่อมต่อเบื้องต้น
 
 #### ขั้นตอนการติดตั้ง MQTT Broker:
 1. เลือก broker ที่เหมาะสม (Mosquitto, EMQX, HiveMQ)
@@ -388,12 +423,12 @@ sequenceDiagram
 
 #### การทดสอบการเชื่อมต่อพื้นฐานด้วยเครื่องมือ command line:
 **Subscribe**:
-```sh
+```bash
 mosquitto_sub -h localhost -t test/topic
 ```
 
 **Publish**:
-```sh
+```bash
 mosquitto_pub -h localhost -t test/topic -m "Hello MQTT"
 ```
 
@@ -402,6 +437,165 @@ mosquitto_pub -h localhost -t test/topic -m "Hello MQTT"
 2. สร้าง topic ใหม่ และทดลอง publish/subscribe
 3. ทดสอบการใช้ wildcard ในการ subscribe
 4. ทดลองใช้ QoS ระดับต่างๆ
+
+## เครื่องมือและเอกสารอ้างอิง
+
+- ซอฟต์แวร์ MQTT Broker:
+  - [Mosquitto](https://mosquitto.org/)
+  - [EMQX](https://www.emqx.io/) (เน้นใช้ในเวิร์คชอปนี้)
+  - [HiveMQ](https://www.hivemq.com/)
+- เครื่องมือสำหรับทดสอบ:
+  - [MQTTX](https://mqttx.app/)
+  - [MQTT Explorer](http://mqtt-explorer.com/)
+- ไลบรารีสำหรับนักพัฒนา:
+  - [Eclipse Paho](https://www.eclipse.org/paho/) (หลายภาษา)
+  - [MQTT.js](https://github.com/mqttjs/MQTT.js) (JavaScript)
+  - [Paho MQTT Python](https://pypi.org/project/paho-mqtt/) (Python)
+- เอกสารอ้างอิงและสเปค MQTT: [MQTT.org](https://mqtt.org/)
+
+## บริการคลาวด์ที่ได้รับความนิยม
+- EMQX Cloud: https://www.emqx.com/en/cloud
+  - มีแผนการใช้งานฟรีสำหรับการทดลอง
+  - มีฟีเจอร์ครบถ้วนสำหรับการใช้งานจริง
+  - รองรับทั้ง AWS, GCP และ Azure
+- HiveMQ Cloud: https://www.hivemq.com/cloud
+- AWS IoT Core: https://aws.amazon.com/iot-core
+- Google Cloud IoT Core: https://cloud.google.com/iot-core
+- Microsoft Azure IoT Hub: https://azure.microsoft.com/en-us/services/iot-hub
+- IBM Watson IoT Platform: https://www.ibm.com/cloud/watson-iot-platform
+
+
+---
+
+## เริ่มต้นใช้งาน MQTT: สร้างห้องทดลองของคุณเอง
+
+การเริ่มต้นใช้งาน MQTT ไม่ยาก ในบทนี้เราจะใช้ **EMQX** ซึ่งเป็น MQTT Broker ประสิทธิภาพสูงและเป็นที่นิยมในโลก IoT
+
+### การติดตั้งและเตรียมความพร้อม
+
+เราจะใช้ Docker Compose เพื่อติดตั้งทุกอย่างที่จำเป็นในครั้งเดียว:
+
+1. **ตรวจสอบว่าคุณมี Docker และ Docker Compose**
+   ```bash
+   docker --version
+   docker-compose --version
+   ```
+
+2. **ใช้ไฟล์ docker-compose.yml ที่มีอยู่ในโฟลเดอร์นี้**
+   
+   ไฟล์ docker-compose.yml จะประกอบด้วยบริการหลัก 2 ส่วน:
+   - **EMQX** - MQTT Broker ทำหน้าที่เป็นตัวกลางในการรับส่งข้อความระหว่างอุปกรณ์ต่างๆ
+   - **MQTT Client** - เครื่องมือสำหรับทดสอบการเชื่อมต่อและส่งข้อความผ่าน MQTT
+
+   ไฟล์นี้จะกำหนดพอร์ตที่จำเป็นสำหรับการเชื่อมต่อ MQTT แบบมาตรฐาน (1883), WebSocket (8083), 
+   และหน้า Dashboard ของ EMQX (18083)
+
+3. **เริ่มต้นระบบด้วยคำสั่ง:**
+   ```bash
+   docker-compose up -d
+   ```
+
+4. **เข้าสู่ระบบ EMQX Dashboard**
+   - เปิดเบราว์เซอร์ไปที่: http://localhost:18083
+   - ล็อกอินด้วย Username: admin, Password: public
+
+> **ข้อดีของ EMQX:** รองรับการเชื่อมต่อมากกว่า 100,000 อุปกรณ์พร้อมกัน มีความสามารถในการขยายตัว และมีเครื่องมือติดตามประสิทธิภาพแบบเรียลไทม์
+
+### ทดสอบการเชื่อมต่อ MQTT กับ MQTTX
+
+MQTTX เป็นเครื่องมือทดสอบที่ช่วยให้คุณเห็นภาพรวมของระบบ MQTT ทั้งหมด:
+
+1. **เปิด MQTTX** ที่ดาวน์โหลดจาก https://mqttx.app และติดตั้งในเครื่องของคุณ
+
+2. **เชื่อมต่อกับ MQTT Broker:**
+   - Host: localhost
+   - Port: 1883 (สำหรับการเชื่อมต่อแบบ MQTT ปกติ)
+   - ไม่ต้องใส่ Username/Password (หากไม่ได้ตั้งค่าการรักษาความปลอดภัย)
+
+3. **ทดลองสร้าง Topic และส่งข้อความ:**
+   - คลิกที่ปุ่ม "New Connection" เพื่อสร้างการเชื่อมต่อใหม่
+   - ตั้งชื่อการเชื่อมต่อและกด "Connect"
+   - ใส่ Topic เช่น `test/message`
+   - เขียนข้อความ JSON เช่น `{"temperature": 25.5, "humidity": 60}`
+   - กดปุ่ม "Send" เพื่อ Publish ข้อความ
+
+4. **ดูผลลัพธ์:**
+   - คลิก "New Subscription" เพื่อ subscribe ไปยัง topic ที่ต้องการ เช่น `test/#`
+   - ข้อความที่ส่งไปยัง topic จะปรากฏในรายการด้านขวา
+
+## โครงสร้างไฟล์และการใช้งานตัวอย่าง
+
+ไฟล์และตัวอย่างสำหรับการเรียนรู้ MQTT:
+
+```
+/
+├── README.md             # เอกสารที่คุณกำลังอ่านอยู่
+├── docker-compose.yml    # สำหรับรัน MQTT Broker และเครื่องมือที่เกี่ยวข้อง
+└── examples/
+    ├── mqtt-web-client/  # ตัวอย่างเว็บแอปที่ใช้ WebSocket กับ MQTT
+    │   ├── index.html    # หน้าเว็บตัวอย่าง
+    │   └── app.js        # โค้ด JavaScript สำหรับเชื่อมต่อ MQTT
+    └── python-mqtt-client/ # ตัวอย่างโค้ด Python สำหรับ MQTT
+        ├── subscriber.py  # โค้ดสำหรับ Subscribe ข้อมูล
+        └── publisher.py   # โค้ดสำหรับ Publish ข้อมูล
+```
+
+### การใช้งานตัวอย่าง Python MQTT Client
+
+ในโฟลเดอร์ `examples/python-mqtt-client` มีตัวอย่างโค้ด Python สำหรับการเชื่อมต่อกับ MQTT Broker:
+
+1. **การติดตั้งไลบรารี:**
+   ```bash
+   pip install paho-mqtt
+   ```
+
+2. **การรันโค้ดตัวอย่าง:**
+   - เปิด Terminal และนำทางไปยังโฟลเดอร์ตัวอย่าง
+   - เริ่มต้นตัวรับข้อมูล (subscriber)
+   - รันตัวส่งข้อมูล (publisher)
+
+3. **สังเกตผลลัพธ์:**
+   - Terminal ที่รัน subscriber จะแสดงข้อมูลที่ได้รับจาก publisher
+   - คุณสามารถดูข้อมูลเดียวกันนี้ใน MQTT Explorer ได้ด้วย
+
+### การใช้งานตัวอย่างเว็บ MQTT Client
+
+1. **การเปิดใช้งาน:**
+   - เปิดไฟล์ `index.html` ในเบราว์เซอร์ของคุณ
+   - หรือใช้ Web Server ง่ายๆ
+
+2. **ทดลองการทำงาน:**
+   - เว็บแอปจะเชื่อมต่อกับ MQTT Broker ผ่าน WebSocket
+   - คุณจะเห็นข้อความที่ถูกส่งมายัง topics ที่ subscribe ไว้
+   - คุณสามารถส่งข้อความไปยัง topics ต่างๆ ได้จากหน้าเว็บ
+
+## วิธีการทดสอบและแก้ไขปัญหาเบื้องต้น
+
+### 1. ตรวจสอบสถานะของ EMQX
+
+```bash
+docker ps | grep emqx
+```
+
+คำสั่งนี้จะแสดงให้เห็นว่า container EMQX กำลังทำงานอยู่หรือไม่
+
+### 2. ดูบันทึกการทำงาน (logs) ของ EMQX
+
+```bash
+docker logs emqx
+```
+
+### 3. ปัญหาที่พบบ่อยและวิธีแก้ไข
+
+- **ไม่สามารถเชื่อมต่อกับ MQTT Broker ได้**:
+  - ตรวจสอบว่า container กำลังทำงาน
+  - ตรวจสอบว่าไม่มีการบล็อกพอร์ตโดย firewall
+  - ลองใช้ `localhost` แทนชื่อเครื่องหรือ IP address
+
+- **WebSocket ไม่ทำงาน**:
+  - ตรวจสอบว่าใช้พอร์ตถูกต้อง (8083 สำหรับ EMQX)
+  - ตรวจสอบว่า URL มีรูปแบบถูกต้อง: `ws://localhost:8083/mqtt`
+  - ตรวจสอบ Console ในเบราว์เซอร์เพื่อดูข้อความข้อผิดพลาด
 
 ## สรุป
 
