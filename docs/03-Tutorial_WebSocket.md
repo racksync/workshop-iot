@@ -1,15 +1,13 @@
 # บทที่ 3: WebSocket สำหรับ IoT - การสื่อสารแบบเรียลไทม์กับ Node-RED
 
-
 | รายละเอียด         | คำอธิบาย                                                     |
 |---------------------|----------------------------------------------------------------|
-| **ชื่อเนื้อหา**     | การผสานรวม REST API กับระบบ IoT                               |
-| **วัตถุประสงค์**    | เรียนรู้การใช้งาน REST API ร่วมกับ MQTT                        |
+| **ชื่อเนื้อหา**     | WebSocket สำหรับ IoT - การสื่อสารแบบเรียลไทม์                  |
+| **วัตถุประสงค์**    | เรียนรู้การใช้งาน WebSocket สำหรับการสื่อสารแบบเรียลไทม์ใน Node-RED |
 | **ระดับความยาก**    | ปานกลาง [⭑⭑⭑]                                               |
-| **เวลา**           | 90 นาที - 120 นาที                                            |
-| **สิ่งที่ต้องเตรียม** | Node-RED, Postman, MQTT Broker                                 |
-| **ความรู้พื้นฐาน**  | RESTful API, MQTT, HTTP                                         |
-
+| **เวลา**           | 60 นาที                                        |
+| **สิ่งที่ต้องเตรียม** | Node-RED, Web browser, Node.js                               |
+| **ความรู้พื้นฐาน**  | JavaScript, WebSocket API, Node.js พื้นฐาน                    |
 
 ## บทนำ
 WebSocket เป็นโปรโตคอลสำหรับการสื่อสารแบบ full-duplex บน TCP ซึ่งช่วยให้สามารถส่งและรับข้อมูลในเวลาเดียวกันได้อย่างต่อเนื่อง  
@@ -151,3 +149,34 @@ pie
 WebSocket เป็นเครื่องมือสำคัญที่ทำให้การพัฒนาระบบ IoT ด้วย Node-RED เป็นไปอย่างราบรื่น โดยการสื่อสารแบบเรียลไทม์และประหยัดทรัพยากร  
 เนื้อหานี้ได้แสดงตัวอย่างการใช้งาน WebSocket เบื้องต้นและขั้นสูง พร้อมทั้งแผนภาพทางการพัฒนาและสัดส่วนของตัวอย่างเพื่อให้เข้าใจภาพรวมได้ดียิ่งขึ้น
 
+## แหล่งอ้างอิง WebSocket
+
+- [MDN Web Docs: WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) - เอกสารอ้างอิงพื้นฐานเกี่ยวกับ WebSocket API
+- [RFC 6455: The WebSocket Protocol](https://datatracker.ietf.org/doc/html/rfc6455) - มาตรฐาน WebSocket Protocol จาก IETF
+- [Node.js ws: WebSocket library](https://github.com/websockets/ws) - ไลบรารี WebSocket ที่นิยมใช้ใน Node.js
+- [Socket.IO Documentation](https://socket.io/docs/v4/) - ไลบรารีที่สร้างบน WebSocket เพิ่มความสามารถและความเสถียร
+- [Node-RED Socket.io Server](https://flows.nodered.org/node/node-red-contrib-socketio) - โหนด Node-RED สำหรับการใช้งาน Socket.IO
+- [WebSocket Security Best Practices](https://devcenter.heroku.com/articles/websocket-security) - แนวทางการรักษาความปลอดภัยสำหรับ WebSocket
+- [WebSocket Performance Considerations](https://buildkite.com/blog/websocket-performance) - การพิจารณาประสิทธิภาพของ WebSocket
+
+
+## แหล่งข้อมูลที่น่าสนใจ
+
+
+- [IoT for Beginners Curriculum](https://github.com/microsoft/IoT-For-Beginners) - หลักสูตร IoT สำหรับผู้เริ่มต้นจาก Microsoft
+- [Real-Time Web Applications with WebSockets](https://www.oreilly.com/library/view/real-time-web-applications/9781788629690/) - หนังสือเกี่ยวกับการพัฒนาเว็บแอปพลิเคชันแบบเรียลไทม์ด้วย WebSocket
+
+---
+## RACKSYNC CO., LTD.
+
+[RACKSYNC](https://github.com/racksync) เป็นบริษัทที่มีความเชี่ยวชาญในการพัฒนาโซลูชั่นด้าน IoT และระบบอัตโนมัติ เรามุ่งมั่นในการสร้างเทคโนโลยีที่เชื่อมต่อโลกเข้าด้วยกันผ่านระบบ IoT ที่มีประสิทธิภาพและเสถียร
+
+### บริการของเรา
+- การออกแบบและพัฒนาระบบ IoT แบบครบวงจร
+- โซลูชั่นเชื่อมต่อสำหรับอุตสาหกรรม 4.0
+- ระบบอัตโนมัติสำหรับบ้านและอาคารอัจฉริยะ
+- การฝึกอบรมและเวิร์คช็อปด้าน IoT
+
+ติดตามโปรเจกต์และอัปเดตได้ที่ [GitHub](https://github.com/racksync)
+
+© 2007-2025 RACKSYNC CO., LTD. All rights reserved.
