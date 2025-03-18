@@ -1,8 +1,42 @@
-# บทที่ 1: IoT Foundation - โปรโตคอลพื้นฐาน
+# บทที่ 1: IoT Foundation - โปรโตคอล
+
+| รายละเอียด         | คำอธิบาย                                                     |
+|---------------------|----------------------------------------------------------------|
+| **ชื่อเนื้อหา**     | IoT Foundation - โปรโตคอล                            |
+| **วัตถุประสงค์**    | เรียนรู้พื้นฐานและเปรียบเทียบโปรโตคอลการสื่อสารใน IoT          |
+| **ระดับความยาก**    | พื้นฐาน [⭑⭑]                                                  |
+| **เวลา**           | 30 นาที                                              |
+| **สิ่งที่ต้องเตรียม** | เว็บบราวเซอร์, MQTT Client (optional)                         |
+| **ความรู้พื้นฐาน**  | เครือข่ายคอมพิวเตอร์เบื้องต้น, TCP/IP                           |
 
 ## ภาพรวมหมวดหมู่การสื่อสารใน IoT
 
-ในปัจจุบัน การสื่อสารในระบบ IoT มีความซับซ้อนและหลากหลายมากขึ้น แต่สามารถจำแนกออกเป็น 2 หมวดหลัก ดังนี้:
+ในปัจจุบัน การสื่อสารในระบบ IoT มีความซับซ้อนและหลากหลายมากขึ้น สามารถแบ่งตาม Layer ได้ดังนี้:
+
+- **Link Layer**
+    - 802.3 – Ethernet
+    - 802.11 – WiFi
+    - 802.16 – WiMax
+    - 802.15.4 – LR-WPAN
+    - LoRaWan
+    - 2G/3G/4G
+- **Network/Internet Layer**
+    - IPv4
+    - IPv6
+    - 6LoWPAN
+- **Transport Layer**
+    - TCP
+    - UDP
+- **Application Layer**
+    - HTTP
+    - CoAP
+    - WebSocket
+    - MQTT
+    - XMPP
+    - DDS
+    - AMQP
+
+นอกจากนี้ยังสามารถจำแนกตามลักษณะการสื่อสารได้ 2 หมวดหลัก ดังนี้:
 
 ### การสื่อสารไร้สาย (Wireless)
 
@@ -13,6 +47,10 @@
 | Zigbee | 2.4 GHz | 250Kbps | 10-100m | สูงมาก (ปี) | - Mesh Network<br>- รองรับอุปกรณ์มาก<br>- ประหยัดพลังงาน | - ความเร็วต่ำ<br>- ต้องมี Gateway | - ระบบแสงสว่าง<br>- เซ็นเซอร์อุตสาหกรรม<br>- Home Automation |
 | LoRa | Sub-GHz | 0.3-50Kbps | 2-15km | สูงมาก (หลายปี) | - ระยะไกลมาก<br>- ทนต่อการรบกวน<br>- ประหยัดพลังงาน | - ความเร็วต่ำมาก<br>- ต้องมีโครงสร้างพื้นฐาน | - Smart City<br>- เกษตรอัจฉริยะ<br>- Asset Tracking |
 | NB-IoT | Licensed Band | 20-200Kbps | 1-10km | สูง (ปี) | - ใช้เครือข่ายมือถือ<br>- Coverage ดี<br>- QoS รับประกัน | - ค่าบริการสูง<br>- Latency สูง | - มิเตอร์อัจฉริยะ<br>- Smart Parking<br>- Asset Tracking |
+| NFC | 13.56 MHz | 424 Kbps | < 0.1m | Passive | - ใช้งานง่าย<br>- ปลอดภัย<br>- ราคาถูก | - ระยะทางสั้นมาก<br>- ความเร็วต่ำ | - Mobile Payment<br>- Smart Card<br>- Tagging |
+| Sigfox | Sub-GHz | 10-100 bps | 1-50km | สูงมาก (หลายปี) | - ราคาถูก<br>- ใช้พลังงานต่ำ<br>- ครอบคลุมพื้นที่กว้าง | - ความเร็วต่ำ<br>- ปริมาณข้อมูลจำกัด | - การติดตามทรัพย์สิน<br>- เซ็นเซอร์สิ่งแวดล้อม |
+| Z-Wave | 868 MHz (EU), 908 MHz (US) | 9.6/40/100 Kbps | 30m | สูง (1-3 ปี) | - Mesh Network<br>- ใช้พลังงานต่ำ<br>- เชื่อถือได้ | - แบนด์วิธต่ำ<br>- จำนวนอุปกรณ์ต่อเครือข่ายจำกัด | - ระบบบ้านอัจฉริยะ<br>- ระบบรักษาความปลอดภัย |
+| 3G/4G/5G | 700-3500 MHz | 3G: 384Kbps-2Mbps<br>4G: 100Mbps-1Gbps<br>5G: 1-10Gbps | 1-10km | ต่ำ (ชั่วโมง-วัน) | - ความเร็วสูง<br>- ครอบคลุมพื้นที่กว้าง<br>- โครงสร้างพื้นฐานพร้อมใช้งาน | - ใช้พลังงานสูง<br>- ค่าบริการสูง<br>- Latency แปรผันตามเครือข่าย | - อุปกรณ์เคลื่อนที่<br>- Live Streaming<br>- โครงสร้างพื้นฐานสำรอง |
 
 ### การสื่อสารผ่านสาย (Wired)
 
@@ -21,6 +59,8 @@
 | Ethernet | 10Mbps-10Gbps | 100m/segment | Point-to-Point/Switch | - เสถียรสูง<br>- แบนด์วิธสูง<br>- Latency ต่ำ | - ติดตั้งยุ่งยาก<br>- ค่าใช้จ่ายสูง | - ระบบอุตสาหกรรม<br>- กล้อง IP<br>- Gateway |
 | RS-485 | 100Kbps-10Mbps | 1,200m | Multi-drop Bus | - ทนต่อการรบกวน<br>- เชื่อมต่อหลายจุด<br>- ราคาถูก | - ความเร็วจำกัด<br>- ต้องมีโปรโตคอลเพิ่ม | - PLC<br>- เครื่องจักร<br>- Modbus RTU |
 | CAN Bus | 1Mbps@40m<br>50Kbps@1km | 40m-1km | Multi-master Bus | - มาตรฐานอุตสาหกรรม<br>- Error Detection<br>- Real-time | - ความเร็วจำกัด<br>- จำนวนโหนดจำกัด | - ยานยนต์<br>- หุ่นยนต์<br>- เครื่องจักรกล |
+| Serial Communication | Up to 25Mbps | < 15m | Point-to-Point | - ต้นทุนต่ำ<br>- ใช้พลังงานต่ำ<br>- Simple | - ความเร็วและระยะทางจำกัด<br>- ไม่รองรับ Multi-drop | - การสื่อสารระหว่าง MCU และอุปกรณ์ต่อพ่วง |
+| I2C | 3.4 Mbps | < 1m | Multi-drop | - ใช้สายไฟน้อย<br>- ง่ายต่อการ Implement | - ระยะทางสั้น<br>- ความเร็วจำกัด | - การเชื่อมต่อเซ็นเซอร์และอุปกรณ์ต่อพ่วงขนาดเล็ก |
 
 ## Diagram สัดส่วนตลาดของโปรโตคอล IoT
 
@@ -106,7 +146,14 @@ pie title สัดส่วนตลาดโปรโตคอล IoT
    - มี libraries รองรับจำนวนมาก
    - Community support แข็งแกร่ง
 
----
+### มาตรฐานและข้อกำหนด
+- [MQTT Specification](https://mqtt.org/mqtt-specification/) - ข้อกำหนดอย่างเป็นทางการของ MQTT
+- [WebSocket Protocol Specification](https://tools.ietf.org/html/rfc6455) - RFC 6455: ข้อกำหนด WebSocket
+- [CoAP Specification](https://tools.ietf.org/html/rfc7252) - RFC 7252: ข้อกำหนด CoAP
+- [HTTP/1.1 Specification](https://tools.ietf.org/html/rfc2616) - RFC 2616: ข้อกำหนด HTTP/1.1
+- [HTTP/2 Specification](https://tools.ietf.org/html/rfc7540) - RFC 7540: ข้อกำหนด HTTP/2
+
+
 
 ## RACKSYNC CO., LTD.
 
