@@ -1,5 +1,14 @@
 # บทนำ: ภาพรวมของเทคโนโลยี IoT
 
+| รายละเอียด         | คำอธิบาย                                                      |
+|---------------------|------------------------------------------------------------------|
+| **ชื่อเนื้อหา**     | บทนำ: ภาพรวมของเทคโนโลยี IoT                                   |
+| **วัตถุประสงค์**    | เข้าใจความหมาย องค์ประกอบ และการประยุกต์ใช้งานเทคโนโลยี IoT      |
+| **ระดับความยาก**    | เริ่มต้น [⭑]                                                   |
+| **เวลา**           | 30 นาที                                                    |
+| **สิ่งที่ต้องเตรียม** | ไม่มี                                                           |
+| **ความรู้พื้นฐาน**  | ไม่จำเป็น                                                        |
+
 เทคโนโลยี Internet of Things (IoT) กำลังเปลี่ยนแปลงโลกของเรา โดยเชื่อมต่ออุปกรณ์ต่างๆ เข้าด้วยกันผ่านอินเทอร์เน็ต เปิดโอกาสใหม่ๆ สำหรับการพัฒนานวัตกรรมและการปรับปรุงคุณภาพชีวิต
 
 
@@ -447,6 +456,48 @@ xychart-beta
 3. อสังหาริมทรัพย์ (18%)
 4. การขนส่ง (12%)
 5. พลังงาน (10%)
+
+## แหล่งอ้างอิงและแหล่งข้อมูลที่น่าสนใจ
+
+### หนังสือแนะนำ
+1. **"Building the Web of Things"** - Dominique Guinard, Vlad Trifa
+2. **"Internet of Things: A Hands-on Approach"** - Bahga, Madisetti
+3. **"เริ่มต้น IoT สำหรับผู้เริ่มต้น"** - ดร. ณัฐพล บัวอุไร
+4. **"Designing IoT Solutions with the Raspberry Pi and Arduino"** - Manoel Ramon
+5. **"IoT และ Smart Farming เพื่อการเกษตรไทย"** - สวทช.
+
+
+### ช่อง YouTube
+- [Andreas Spiess](https://www.youtube.com/channel/UCu7_D0o48KbfhpEohoP7YSQ) - การทดลองและวิเคราะห์อุปกรณ์ IoT
+- [GreatScott!](https://www.youtube.com/user/greatscottlab) - DIY และโปรเจกต์อิเล็กทรอนิกส์
+- [DroneBot Workshop](https://www.youtube.com/channel/UCzml9bXoEM0itbcE96CB03w) - Arduino, ESP32, Raspberry Pi
+- [KBTech Official](https://www.youtube.com/c/KBTechOfficial) - สอนทำโปรเจกต์ IoT ภาษาไทย
+- [Microcontroller Tutorials](https://www.youtube.com/c/MicrocontrollersTutorials) - การใช้งานไมโครคอนโทรลเลอร์
+
+### เครื่องมือสำหรับการพัฒนา
+- [Arduino IDE](https://www.arduino.cc/en/software) - สภาพแวดล้อมการพัฒนาสำหรับ Arduino
+- [PlatformIO](https://platformio.org) - เครื่องมือพัฒนา IoT แบบมืออาชีพ
+- [Node-RED](https://nodered.org) - เครื่องมือโปรแกรมมิ่งแบบ Flow-based
+- [ESPHome](https://esphome.io) - ระบบควบคุมอุปกรณ์ ESP
+- [Home Assistant](https://www.home-assistant.io) - แพลตฟอร์มระบบบ้านอัจฉริยะแบบโอเพนซอร์ส
+- [Grafana](https://grafana.com) - แพลตฟอร์มสำหรับการแสดงผลข้อมูล
+- [InfluxDB](https://www.influxdata.com) - ฐานข้อมูลชนิด Time Series
+- [Mosquitto](https://mosquitto.org) - MQTT Broker โอเพนซอร์ส
+- [EMQ X](https://www.emqx.io) - MQTT Broker สำหรับองค์กร
+- [Thingsboard](https://thingsboard.io) - แพลตฟอร์มจัดการอุปกรณ์ IoT
+- [MQTT Explorer](http://mqtt-explorer.com) - เครื่องมือสำหรับตรวจสอบข้อมูล MQTT
+- [MQTTX](https://mqttx.app) - แอพพลิเคชันสำหรับตรวจสอบข้อมูล MQTT
+- [Postman](https://www.postman.com) - เครื่องมือสำหรับทดสอบ API
+
+### ชุมชน IoT
+- [Thailand IoT Consortium](https://www.facebook.com/ThailandIoTConsortium) - สมาคม IoT ประเทศไทย
+- [ESP8266 Thailand](https://www.facebook.com/groups/esp8266thailand) - กลุ่ม Facebook เกี่ยวกับ ESP8266
+- [Arduino Thailand](https://www.facebook.com/groups/arduino.thai) - กลุ่ม Facebook เกี่ยวกับ Arduino
+- [Raspberry Pi Thailand](https://www.facebook.com/groups/rpi.th) - กลุ่ม Facebook เกี่ยวกับ Raspberry Pi
+- [Chiang Mai Maker Club](https://www.facebook.com/groups/ChiangMaiMakerClub) - ชุมชนนักพัฒนา IoT ในไทย
+- [Home Automation Thailand](https://www.facebook.com/groups/hathailand) - กลุ่ม Facebook เกี่ยวกับบ้านอัจฉริยะ
+
+
 
 ## RACKSYNC CO., LTD.
 
