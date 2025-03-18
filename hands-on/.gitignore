@@ -1,0 +1,14 @@
+# Directory เก็บข้อมูลต่างๆ
+mosquitto/data/*
+!mosquitto/data/.gitkeep
+mosquitto/log/*
+!mosquitto/log/.gitkeep
+node-red/data/*
+!node-red/data/.gitkeep
+emqx/data/*
+!emqx/data/.gitkeep
+emqx/log/*
+!emqx/log/.gitkeep
+
+# ไฟล์ปรับแต่งค่าตัวแปร
+.env
