@@ -1,5 +1,13 @@
 # บทที่ 2: โปรโตคอลพื้นฐานสำหรับ IoT - รู้จักและเข้าใจ MQTT
 
+| รายละเอียด         | คำอธิบาย                                                     |
+|---------------------|----------------------------------------------------------------|
+| **ชื่อเนื้อหา**     | โปรโตคอลพื้นฐานสำหรับ IoT - รู้จักและเข้าใจ MQTT               |
+| **วัตถุประสงค์**    | เรียนรู้และเข้าใจโปรโตคอล MQTT สำหรับระบบ IoT                  |
+| **ระดับความยาก**    | ปานกลาง [⭑⭑⭑]                                                |
+| **เวลา**           | 45 นาที                                            |
+| **สิ่งที่ต้องเตรียม** | MQTT Broker (Mosquitto/EMQX), MQTTX, เครื่องคอมพิวเตอร์         |
+| **ความรู้พื้นฐาน**  | เครือข่ายคอมพิวเตอร์เบื้องต้น, IoT พื้นฐาน                      |
 
 
 ## วัตถุประสงค์การเรียนรู้
@@ -359,123 +367,56 @@ mosquitto_pub -h localhost -t test/topic -m "Hello MQTT"
 - Microsoft Azure IoT Hub: https://azure.microsoft.com/en-us/services/iot-hub
 - IBM Watson IoT Platform: https://www.ibm.com/cloud/watson-iot-platform
 
----
+## แหล่งอ้างอิงและแหล่งข้อมูลเกี่ยวกับ MQTT
 
-## เริ่มต้นใช้งาน MQTT: สร้างห้องทดลองของคุณเอง
+### เอกสารทางการและมาตรฐาน
+1. [MQTT 5.0 Specification](https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html) - ข้อกำหนดมาตรฐาน MQTT เวอร์ชัน 5.0 จาก OASIS
+2. [MQTT 3.1.1 Specification](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html) - ข้อกำหนดมาตรฐาน MQTT เวอร์ชัน 3.1.1
+3. [MQTT.org](https://mqtt.org/) - เว็บไซต์อย่างเป็นทางการสำหรับโปรโตคอล MQTT
+4. [ISO/IEC 20922:2016](https://www.iso.org/standard/69466.html) - มาตรฐาน ISO สำหรับ MQTT เวอร์ชัน 3.1.1
 
-การเริ่มต้นใช้งาน MQTT ไม่ยาก ในบทนี้เราจะใช้ **EMQX** ซึ่งเป็น MQTT Broker ประสิทธิภาพสูงและเป็นที่นิยมในโลก IoT
+### หนังสือและบทความวิชาการเกี่ยวกับ MQTT
+1. **"MQTT Essentials"** - Steve Cope
+2. **"Building Smart Homes with Raspberry Pi and MQTT"** - Dennis Schulte
+3. **"Programming the Internet of Things Using MQTT"** - Andy Stanford-Clark
+4. **"Hands-On MQTT Programming with Python"** - Keith Gavin
+5. **"MQTT for Sensor Networks (MQTT-SN)"** - Andy Stanford-Clark, Hong Linh Truong
 
-### การติดตั้งและเตรียมความพร้อม
 
-เราจะใช้ Docker Compose เพื่อติดตั้งทุกอย่างที่จำเป็นในครั้งเดียว:
 
-1. **ตรวจสอบว่าคุณมี Docker และ Docker Compose**
-   ```bash
-   docker --version
-   docker-compose --version
-   ```
+### เครื่องมือและไคลเอนต์ MQTT
+- [MQTT.fx](https://mqttfx.jensd.de/) - เครื่องมือทดสอบ MQTT แบบกราฟิก
+- [MQTT Explorer](http://mqtt-explorer.com/) - เครื่องมือสำรวจ MQTT topics แบบเรียลไทม์
+- [MQTT CLI](https://github.com/hivemq/mqtt-cli) - เครื่องมือคำสั่งสำหรับทดสอบ MQTT
+- [MQTT Lens](https://chrome.google.com/webstore/detail/mqttlens/hemojaaeigabkbcookmlgmdigohjobjm) - ส่วนเสริมของ Chrome สำหรับทดสอบ MQTT
+- [MQTT.js Tools](https://github.com/mqttjs/MQTT.js#tools) - เครื่องมือทดสอบ MQTT บนแพลตฟอร์ม Node.js
+- [MQTTX](https://mqttx.app/) - เครื่องมือทดสอบ MQTT แบบกราฟิก
+- [MyMQTT Android App](https://play.google.com/store/apps/details?id=at.tripwire.mqtt.client&hl=en) - แอพพลิเคชัน Android สำหรับทดสอบ MQTT
+- [iOS MQTT App](https://apps.apple.com/us/app/mqtt-client/id6443841176) - แอพพลิเคชัน iOS สำหรับทดสอบ MQTT
 
-2. **ใช้ไฟล์ docker-compose.yml ที่มีอยู่ในโฟลเดอร์นี้**
-   
-   ไฟล์ docker-compose.yml จะประกอบด้วยบริการหลัก 2 ส่วน:
-   - **EMQX** - MQTT Broker ทำหน้าที่เป็นตัวกลางในการรับส่งข้อความระหว่างอุปกรณ์ต่างๆ
-   - **MQTT Client** - เครื่องมือสำหรับทดสอบการเชื่อมต่อและส่งข้อความผ่าน MQTT
 
-   ไฟล์นี้จะกำหนดพอร์ตที่จำเป็นสำหรับการเชื่อมต่อ MQTT แบบมาตรฐาน (1883), WebSocket (8083), 
-   และหน้า Dashboard ของ EMQX (18083)
+### ไลบรารี MQTT ยอดนิยมตามภาษาโปรแกรมมิ่ง
+- **JavaScript**: [MQTT.js](https://github.com/mqttjs/MQTT.js) - ไลบรารี MQTT สำหรับ Node.js และเบราว์เซอร์
+- **Python**: [Paho MQTT](https://pypi.org/project/paho-mqtt/) - ไลบรารี MQTT สำหรับ Python
+- **Java**: [Eclipse Paho Java](https://github.com/eclipse/paho.mqtt.java) - ไลบรารี MQTT สำหรับ Java
+- **C/C++**: [Eclipse Paho C/C++](https://github.com/eclipse/paho.mqtt.c) - ไลบรารี MQTT สำหรับ C และ C++
+- **Go**: [Eclipse Paho Go](https://github.com/eclipse/paho.mqtt.golang) - ไลบรารี MQTT สำหรับภาษา Go
+- **Arduino**: [PubSubClient](https://github.com/knolleary/pubsubclient) - ไลบรารี MQTT สำหรับ Arduino
 
-3. **เริ่มต้นระบบด้วยคำสั่ง:**
-   ```bash
-   docker-compose up -d
-   ```
+### MQTT Brokers เปิดเผยรหัส
+- [Eclipse Mosquitto](https://mosquitto.org/) - MQTT Broker เบา ใช้ทรัพยากรน้อย
+- [EMQX](https://www.emqx.io/) - MQTT Broker ประสิทธิภาพสูงรองรับหลายโปรโตคอล
+- [VerneMQ](https://vernemq.com/) - MQTT Broker ที่เน้นความเสถียรและขยายขนาดได้
+- [HiveMQ Community Edition](https://github.com/hivemq/hivemq-community-edition) - รุ่นชุมชนของ HiveMQ
+- [Aedes](https://github.com/moscajs/aedes) - MQTT Broker บนแพลตฟอร์ม Node.js
 
-4. **เข้าสู่ระบบ EMQX Dashboard**
-   - เปิดเบราว์เซอร์ไปที่: http://localhost:18083
-   - ล็อกอินด้วย Username: admin, Password: public
 
-> **ข้อดีของ EMQX:** รองรับการเชื่อมต่อมากกว่า 100,000 อุปกรณ์พร้อมกัน มีความสามารถในการขยายตัว และมีเครื่องมือติดตามประสิทธิภาพแบบเรียลไทม์
-
-### ทดสอบการเชื่อมต่อ MQTT กับ MQTTX
-
-MQTTX เป็นเครื่องมือทดสอบที่ช่วยให้คุณเห็นภาพรวมของระบบ MQTT ทั้งหมด:
-
-1. **เปิด MQTTX** ที่ดาวน์โหลดจาก https://mqttx.app และติดตั้งในเครื่องของคุณ
-
-2. **เชื่อมต่อกับ MQTT Broker:**
-   - Host: localhost
-   - Port: 1883 (สำหรับการเชื่อมต่อแบบ MQTT ปกติ)
-   - ไม่ต้องใส่ Username/Password (หากไม่ได้ตั้งค่าการรักษาความปลอดภัย)
-
-3. **ทดลองสร้าง Topic และส่งข้อความ:**
-   - คลิกที่ปุ่ม "New Connection" เพื่อสร้างการเชื่อมต่อใหม่
-   - ตั้งชื่อการเชื่อมต่อและกด "Connect"
-   - ใส่ Topic เช่น `test/message`
-   - เขียนข้อความ JSON เช่น `{"temperature": 25.5, "humidity": 60}`
-   - กดปุ่ม "Send" เพื่อ Publish ข้อความ
-
-4. **ดูผลลัพธ์:**
-   - คลิก "New Subscription" เพื่อ subscribe ไปยัง topic ที่ต้องการ เช่น `test/#`
-   - ข้อความที่ส่งไปยัง topic จะปรากฏในรายการด้านขวา
-
-## วิธีการทดสอบและแก้ไขปัญหาเบื้องต้น
-
-### 1. ตรวจสอบสถานะของ EMQX
-
-```bash
-docker ps | grep emqx
-```
-
-คำสั่งนี้จะแสดงให้เห็นว่า container EMQX กำลังทำงานอยู่หรือไม่
-
-### 2. ดูบันทึกการทำงาน (logs) ของ EMQX
-
-```bash
-docker logs emqx
-```
-
-### 3. ปัญหาที่พบบ่อยและวิธีแก้ไข
-
-- **ไม่สามารถเชื่อมต่อกับ MQTT Broker ได้**:
-  - ตรวจสอบว่า container กำลังทำงาน
-  - ตรวจสอบว่าไม่มีการบล็อกพอร์ตโดย firewall
-  - ลองใช้ `localhost` แทนชื่อเครื่องหรือ IP address
-
-## สรุป
-
-ในบทนี้ เราได้เรียนรู้เกี่ยวกับ MQTT ซึ่งเป็นโปรโตคอลหลักในระบบ IoT ที่ช่วยให้อุปกรณ์สามารถสื่อสารกันได้อย่างมีประสิทธิภาพ แม้ในสภาพแวดล้อมที่มีข้อจำกัด เราได้ศึกษาหลักการทำงานแบบ Publish/Subscribe, ระบบ Topic และ Quality of Service ที่เป็นพื้นฐานสำคัญของ MQTT
-
-เราได้ทดลองการติดตั้งและกำหนดค่า MQTT Broker โดยใช้ EMQX ซึ่งเป็นตัวเลือกที่มีประสิทธิภาพสูงและใช้งานง่าย ทำให้สามารถสร้างระบบควบคุมและแสดงผลข้อมูลแบบเรียลไทม์ได้
-
-ทักษะและความรู้ที่ได้จากบทนี้จะเป็นพื้นฐานสำคัญในการพัฒนาโปรเจค IoT ต่างๆ ในอนาคต ไม่ว่าจะเป็นระบบบ้านอัจฉริยะ การเกษตรอัจฉริยะ หรือโซลูชันสำหรับภาคอุตสาหกรรม
-
-## เครื่องมือและเอกสารอ้างอิง
-
-- ซอฟต์แวร์ MQTT Broker:
-  - [Mosquitto](https://mosquitto.org/)
-  - [EMQX](https://www.emqx.io/) (เน้นใช้ในเวิร์คชอปนี้)
-  - [HiveMQ](https://www.hivemq.com/)
-- เครื่องมือสำหรับทดสอบ:
-  - [MQTTX](https://mqttx.app/)
-  - [MQTT Explorer](http://mqtt-explorer.com/)
-- ไลบรารีสำหรับนักพัฒนา:
-  - [Eclipse Paho](https://www.eclipse.org/paho/) (หลายภาษา)
-  - [MQTT.js](https://github.com/mqttjs/MQTT.js) (JavaScript)
-  - [Paho MQTT Python](https://pypi.org/project/paho-mqtt/) (Python)
-- เอกสารอ้างอิงและสเปค MQTT: [MQTT.org](https://mqtt.org/)
-
-## บริการคลาวด์ที่ได้รับความนิยม
-- EMQX Cloud: https://www.emqx.com/en/cloud
-  - มีแผนการใช้งานฟรีสำหรับการทดลอง
-  - มีฟีเจอร์ครบถ้วนสำหรับการใช้งานจริง
-  - รองรับทั้ง AWS, GCP และ Azure
-- HiveMQ Cloud: https://www.hivemq.com/cloud
-- AWS IoT Core: https://aws.amazon.com/iot-core
-- Google Cloud IoT Core: https://cloud.google.com/iot-core
-- Microsoft Azure IoT Hub: https://azure.microsoft.com/en-us/services/iot-hub
-- IBM Watson IoT Platform: https://www.ibm.com/cloud/watson-iot-platform
+### วีดีโอและการสอนแบบภาพเคลื่อนไหว
+- [MQTT Explained in 15 Minutes](https://www.youtube.com/watch?v=EIxdz-2rhLs) - คำอธิบายพื้นฐาน MQTT แบบสั้นๆ
+- [MQTT in Action](https://www.youtube.com/watch?v=WmKAWOVnwjE) - การสาธิตการใช้งาน MQTT
+- [MQTT 5.0 New Features](https://www.youtube.com/watch?v=RPf_rr1ZDvE&ab_channel=HiveM) - อธิบายฟีเจอร์ใหม่ใน MQTT 5.0
 
 ---
-
 ## RACKSYNC CO., LTD.
 
 [RACKSYNC](https://github.com/racksync) เป็นบริษัทที่มีความเชี่ยวชาญในการพัฒนาโซลูชั่นด้าน IoT และระบบอัตโนมัติ เรามุ่งมั่นในการสร้างเทคโนโลยีที่เชื่อมต่อโลกเข้าด้วยกันผ่านระบบ IoT ที่มีประสิทธิภาพและเสถียร
