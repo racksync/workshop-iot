@@ -1,0 +1,152 @@
+[
+  {
+    "id": "data-aggregation-flow",
+    "type": "tab",
+    "label": "Exercise 16: Data Aggregation and Analysis",
+    "disabled": false,
+    "info": "# Data Aggregation and Analysis\n\nThis flow demonstrates how to aggregate and analyze data in Node-RED. It receives data from multiple MQTT topics, aggregates it, performs a simple analysis, and stores the results in a database.\n\n## Components Used\n- MQTT In nodes: To receive data from multiple MQTT topics.\n- Join node: To aggregate data from multiple sources.\n- Function node: To perform data analysis.\n- Database Out node: To store the results in a database.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In nodes with the appropriate broker settings and topics.\n3. Configure the Join node to aggregate data from the desired sources.\n4. Modify the Function node to perform the desired data analysis.\n5. Configure the Database Out node with the appropriate database settings.\n6. Deploy the flow.\n7. Observe the aggregated and analyzed data being stored in the database.",
+    "env": []
+  },
+  {
+    "id": "mqtt-temp",
+    "type": "mqtt in",
+    "z": "data-aggregation-flow",
+    "name": "Temperature Data",
+    "topic": "sensor/temperature",
+    "qos": "0",
+    "datatype": "json",
+    "broker": "mqtt-broker",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "x": 150,
+    "y": 160,
+    "wires": [
+      [
+        "join-data"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-humidity",
+    "type": "mqtt in",
+    "z": "data-aggregation-flow",
+    "name": "Humidity Data",
+    "topic": "sensor/humidity",
+    "qos": "0",
+    "datatype": "json",
+    "broker": "mqtt-broker",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "x": 150,
+    "y": 220,
+    "wires": [
+      [
+        "join-data"
+      ]
+    ]
+  },
+  {
+    "id": "join-data",
+    "type": "join",
+    "z": "data-aggregation-flow",
+    "name": "Join Data",
+    "mode": "auto",
+    "build": "object",
+    "property": "payload",
+    "propertyType": "msg",
+    "key": "topic",
+    "joiner": "\\n",
+    "timeout": "",
+    "count": "2",
+    "override": "merged",
+    "cr": false,
+    "x": 350,
+    "y": 190,
+    "wires": [
+      [
+        "analyze-data"
+      ]
+    ]
+  },
+  {
+    "id": "analyze-data",
+    "type": "function",
+    "z": "data-aggregation-flow",
+    "name": "Analyze Data",
+    "func": "// Perform data analysis here\nlet temperature = msg.payload['sensor/temperature'].value;\nlet humidity = msg.payload['sensor/humidity'].value;\n\n// Example: Calculate a simple comfort index\nlet comfortIndex = (1.8 * temperature) - (0.55 * (1 - humidity/100) * (1.8 * temperature - 26)) + 32;\n\nmsg.payload = {\n    temperature: temperature,\n    humidity: humidity,\n    comfortIndex: comfortIndex\n};\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 550,
+    "y": 190,
+    "wires": [
+      [
+        "database-out"
+      ]
+    ]
+  },
+  {
+    "id": "database-out",
+    "type": "influxdb out",
+    "z": "data-aggregation-flow",
+    "influxdb": "influxdb-config",
+    "name": "Store in Database",
+    "measurement": "comfort_data",
+    "precision": "",
+    "retentionPolicy": "",
+    "database": "mydb",
+    "precisionV18FluxV20": "ms",
+    "retentionPolicyV18Flux": "",
+    "org": "myorg",
+    "bucket": "mybucket",
+    "x": 750,
+    "y": 190,
+    "wires": []
+  },
+  {
+    "id": "mqtt-broker",
+    "type": "mqtt-broker",
+    "name": "MQTT Broker",
+    "broker": "localhost",
+    "port": "1883",
+    "clientid": "",
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthPayload": "",
+    "closeTopic": "",
+    "closeQos": "0",
+    "closePayload": "",
+    "willTopic": "",
+    "willQos": "0",
+    "willPayload": ""
+  },
+  {
+    "id": "influxdb-config",
+    "type": "influxdb",
+    "hostname": "127.0.0.1",
+    "port": "8086",
+    "protocol": "http",
+    "database": "mydb",
+    "name": "InfluxDB",
+    "usetls": false,
+    "tls": "",
+    "influxdbVersion": "1.x",
+    "url": "http://localhost:8086",
+    "rejectUnauthorized": true
+  },
+  {
+    "id": "comment-instructions",
+    "type": "comment",
+    "z": "data-aggregation-flow",
+    "name": "Instructions",
+    "info": "This flow demonstrates data aggregation and analysis.\n\n1.  Configure the MQTT In nodes with the input topics.\n2.  Configure the Join node to aggregate data from the desired sources.\n3.  Modify the Function node to perform the desired data analysis.\n4.  Configure the Database Out node with the database settings.\n\nIn this example, the flow aggregates temperature and humidity data, calculates a comfort index, and stores the results in an InfluxDB database.",
+    "x": 140,
+    "y": 80,
+    "wires": []
+  }
+]

@@ -1,0 +1,141 @@
+[
+  {
+    "id": "predictive-maintenance-flow",
+    "type": "tab",
+    "label": "Exercise 20: Predictive Maintenance with Machine Learning",
+    "disabled": false,
+    "info": "# Predictive Maintenance with Machine Learning\n\nThis flow demonstrates how to use machine learning for predictive maintenance in Node-RED. It receives sensor data from a device, uses a pre-trained machine learning model to predict failures, and sends alerts when a failure is predicted.\n\n## Components Used\n- MQTT In node: To receive sensor data from the device.\n- Function node: To preprocess the data and make predictions using the machine learning model.\n- Database Out node: To store the predictions.\n- Alerting node: To send alerts when a failure is predicted.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In node with the appropriate broker settings and topic for receiving sensor data.\n3. Modify the Function node to preprocess the data and make predictions using the machine learning model.\n   - Replace the placeholder code with your actual machine learning model.\n4. Configure the Database Out node with the appropriate database settings for storing the predictions.\n5. Configure the Alerting node to send alerts when a failure is predicted.\n6. Deploy the flow.\n7. Send sensor data to the device's MQTT topic and observe the predictions and alerts.",
+    "env": []
+  },
+  {
+    "id": "mqtt-in",
+    "type": "mqtt in",
+    "z": "predictive-maintenance-flow",
+    "name": "Sensor Data",
+    "topic": "device/sensor",
+    "qos": "0",
+    "datatype": "json",
+    "broker": "mqtt-broker",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "x": 150,
+    "y": 160,
+    "wires": [
+      [
+        "predict-failure"
+      ]
+    ]
+  },
+  {
+    "id": "predict-failure",
+    "type": "function",
+    "z": "predictive-maintenance-flow",
+    "name": "Predict Failure",
+    "func": "// Preprocess the sensor data and make predictions using the machine learning model\n// This is a placeholder and needs to be replaced with actual machine learning model integration\n\nlet sensorData = msg.payload;\n\n// Example: Check if temperature exceeds a threshold\nlet isFailurePredicted = sensorData.temperature > 40;\n\nmsg.payload = {\n    timestamp: new Date().toISOString(),\n    sensorData: sensorData,\n    failurePredicted: isFailurePredicted\n};\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 350,
+    "y": 160,
+    "wires": [
+      [
+        "database-out",
+        "alerting"
+      ]
+    ]
+  },
+  {
+    "id": "database-out",
+    "type": "influxdb out",
+    "z": "predictive-maintenance-flow",
+    "influxdb": "influxdb-config",
+    "name": "Store Prediction",
+    "measurement": "failure_predictions",
+    "precision": "",
+    "retentionPolicy": "",
+    "database": "mydb",
+    "precisionV18FluxV20": "ms",
+    "retentionPolicyV18Flux": "",
+    "org": "myorg",
+    "bucket": "mybucket",
+    "x": 550,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "alerting",
+    "type": "function",
+    "z": "predictive-maintenance-flow",
+    "name": "Alerting",
+    "func": "// Send alerts when a failure is predicted\n\nif (msg.payload.failurePredicted) {\n    msg.payload = {\n        message: 'Failure predicted!',\n        timestamp: msg.payload.timestamp,\n        sensorData: msg.payload.sensorData\n    };\n    return msg;\n} else {\n    return null;\n}",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 530,
+    "y": 220,
+    "wires": [
+      [
+        "http-request"
+      ]
+    ]
+  },
+  {
+    "id": "http-request",
+    "type": "http request",
+    "z": "predictive-maintenance-flow",
+    "name": "Send Alert",
+    "url": "https://example.com/api/alerts",
+    "method": "POST",
+    "contentType": "json",
+    "dataType": "json",
+    "ret": "obj",
+    "encodeBody": "json",
+    "x": 730,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "mqtt-broker",
+    "type": "mqtt-broker",
+    "name": "MQTT Broker",
+    "broker": "localhost",
+    "port": "1883",
+    "clientid": "",
+    usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthPayload": "",
+    "closeTopic": "",
+    "closeQos": "0",
+    "closePayload": "",
+    "willTopic": "",
+    "willQos": "0",
+    "willPayload": ""
+  },
+  {
+    "id": "influxdb-config",
+    "type": "influxdb",
+    "hostname": "127.0.0.1",
+    "port": "8086",
+    "protocol": "http",
+    "database": "mydb",
+    "name": "InfluxDB",
+    "usetls": false,
+    "tls": "",
+    "influxdbVersion": "1.x",
+    "url": "http://localhost:8086",
+    "rejectUnauthorized": true
+  },
+  {
+    "id": "comment-instructions",
+    "type": "comment",
+    "z": "predictive-maintenance-flow",
+    "name": "Instructions",
+    "info": "This flow demonstrates predictive maintenance using machine learning.\n\n1.  Configure the MQTT In node with the topic for receiving sensor data.\n2.  Modify the Function node to preprocess the data and make predictions using the machine learning model.\n   - Replace the placeholder code with your actual machine learning model.\n3.  Configure the Database Out node with the database settings for storing the predictions.\n4.  Configure the HTTP Request node with the URL for sending alerts.\n\nExample sensor data:\n```json\n{\n    \"temperature\": 30,\n    \"pressure\": 1000,\n    \"vibration\": 0.5\n}\n```",
+    "x": 140,
+    "y": 80,
+    "wires": []
+  }
+]

@@ -1,0 +1,116 @@
+[
+  {
+    "id": "jwt-auth-flow",
+    "type": "tab",
+    "label": "Exercise 9: JWT Authentication for HTTP Requests",
+    "disabled": false,
+    "info": "# JWT Authentication for HTTP Requests\n\nThis flow demonstrates how to use JWT (JSON Web Tokens) for authenticating HTTP requests in Node-RED.\n\n## Prerequisites\n1.  A JWT signing key (secret).\n2.  An HTTP endpoint that requires authentication.\n\n## Configuration\n1.  Set the JWT secret in the `JWT Secret` node.\n2.  Configure the HTTP In node with the desired endpoint and method.\n3.  Ensure that the client sends the JWT in the `Authorization` header (Bearer token).\n\n## Instructions\n1.  Import this flow into Node-RED.\n2.  Set the JWT secret in the `JWT Secret` node.\n3.  Deploy the flow.\n4.  Test the authenticated endpoint by sending an HTTP request with a valid JWT in the `Authorization` header.",
+    "env": []
+  },
+  {
+    "id": "http-in-protected",
+    "type": "http in",
+    "z": "jwt-auth-flow",
+    "name": "GET /protected",
+    "url": "/protected",
+    "method": "get",
+    "swaggerDoc": "",
+    "x": 150,
+    "y": 160,
+    "wires": [
+      [
+        "jwt-verify",
+        "http-response-success"
+      ]
+    ]
+  },
+  {
+    "id": "jwt-verify",
+    "type": "function",
+    "z": "jwt-auth-flow",
+    "name": "Verify JWT",
+    "func": "const jwt = require('jsonwebtoken');\nconst jwtSecret = env.get('JWT_SECRET');\n\nconst authHeader = msg.req.headers['authorization'];\nconst token = authHeader && authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { message: 'No token provided' };\n    return [null, msg];\n}\n\ntry {\n    const decoded = jwt.verify(token, jwtSecret);\n    msg.payload = { message: 'Access granted', user: decoded };\n    return [msg, null];\n} catch (err) {\n    msg.statusCode = 403;\n    msg.payload = { message: 'Invalid token' };\n    return [null, msg];\n}",
+    "outputs": 2,
+    "noerr": 0,
+    "x": 350,
+    "y": 160,
+    "wires": [
+      [
+        "http-response-success"
+      ],
+      [
+        "http-response-error"
+      ]
+    ],
+    "outputLabels": [
+      "Success",
+      "Error"
+    ]
+  },
+  {
+    "id": "http-response-success",
+    "type": "http response",
+    "z": "jwt-auth-flow",
+    "name": "Send Success Response",
+    "statusCode": "200",
+    "headers": {},
+    "x": 580,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "http-response-error",
+    "type": "http response",
+    "z": "jwt-auth-flow",
+    "name": "Send Error Response",
+    "statusCode": "",
+    "headers": {},
+    "x": 570,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "comment-setup",
+    "type": "comment",
+    "z": "jwt-auth-flow",
+    "name": "Setup Instructions",
+    "info": "## Setup Instructions\n\n1.  Set the JWT secret in the `JWT Secret` node.\n2.  Configure the HTTP In node with the desired endpoint and method.\n3.  Ensure that the client sends the JWT in the `Authorization` header (Bearer token).\n\n## Example\n\nAuthorization: Bearer <your_jwt_token>",
+    "x": 140,
+    "y": 40,
+    "wires": []
+  },
+  {
+    "id": "jwt-secret",
+    "type": "inject",
+    "z": "jwt-auth-flow",
+    "name": "JWT Secret",
+    "props": [
+      {
+        "p": "JWT_SECRET",
+        "v": "your-secret-key",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": true,
+    "onceDelay": 0.1,
+    "topic": "",
+    "payloadType": "env",
+    "x": 140,
+    "y": 320,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "comment-jwt",
+    "type": "comment",
+    "z": "jwt-auth-flow",
+    "name": "JWT Secret",
+    "info": "Set the JWT secret key as an environment variable.  This is used to verify the JWT token.",
+    "x": 130,
+    "y": 280,
+    "wires": []
+  }
+]

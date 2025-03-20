@@ -1,0 +1,259 @@
+[
+    {
+        "id": "exercise3-flow",
+        "type": "tab",
+        "label": "Exercise 3: WebSocket Communication",
+        "info": "# WebSocket Communication\n\nThis flow demonstrates how to use WebSocket for real-time communication in Node-RED.\n\n## Components Used:\n- WebSocket In/Out nodes\n- Function nodes for message processing\n- Debug nodes for monitoring\n- UI Input/Button for sending messages\n\n## How to Use:\n1. Open the dashboard UI at http://localhost:1880/ui\n2. Send messages from the input box\n3. Connect to the WebSocket server using an external client at ws://localhost:1880/ws/chat\n4. Messages will be shared between all connected clients\n\n## Test with wscat:\n```\nwscat -c ws://localhost:1880/ws/chat\n```\nThen type messages to send them to all connected clients."
+    },
+    {
+        "id": "websocket-in",
+        "type": "websocket in",
+        "z": "exercise3-flow",
+        "name": "WebSocket Receive",
+        "server": "ws-server",
+        "client": "",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "process-incoming-msg",
+                "debug-incoming"
+            ]
+        ]
+    },
+    {
+        "id": "websocket-out",
+        "type": "websocket out",
+        "z": "exercise3-flow",
+        "name": "WebSocket Send",
+        "server": "ws-server",
+        "client": "",
+        "x": 720,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "process-incoming-msg",
+        "type": "function",
+        "z": "exercise3-flow",
+        "name": "Process Incoming Message",
+        "func": "// Handle different message formats (string or object)\nlet message;\n\ntry {\n    // Check if the payload is already a string\n    if (typeof msg.payload === 'string') {\n        message = msg.payload;\n    } else if (typeof msg.payload === 'object') {\n        // Try to convert object to string\n        message = JSON.stringify(msg.payload);\n    } else {\n        message = \"\" + msg.payload; // Convert to string\n    }\n\n    // Create a formatted message with timestamp\n    const timestamp = new Date().toLocaleTimeString();\n    const formattedMsg = {\n        payload: {\n            message: message,\n            timestamp: timestamp,\n            source: \"external\"\n        }\n    };\n    \n    // Send formatted message to UI\n    return formattedMsg;\n} catch (e) {\n    node.error(\"Error processing message: \" + e.toString(), msg);\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 380,
+        "y": 100,
+        "wires": [
+            [
+                "ui-received-msg",
+                "broadcast-message"
+            ]
+        ]
+    },
+    {
+        "id": "debug-incoming",
+        "type": "debug",
+        "z": "exercise3-flow",
+        "name": "Debug Incoming",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 360,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "debug-outgoing",
+        "type": "debug",
+        "z": "exercise3-flow",
+        "name": "Debug Outgoing",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 560,
+        "y": 270,
+        "wires": []
+    },
+    {
+        "id": "ui-send-msg",
+        "type": "ui_text_input",
+        "z": "exercise3-flow",
+        "name": "Message Input",
+        "label": "Send Message",
+        "tooltip": "",
+        "group": "websocket-ui",
+        "order": 1,
+        "width": "6",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": "1000",
+        "topic": "topic",
+        "sendOnBlur": false,
+        "className": "",
+        "topicType": "str",
+        "x": 150,
+        "y": 200,
+        "wires": [
+            [
+                "prepare-outgoing-msg"
+            ]
+        ]
+    },
+    {
+        "id": "prepare-outgoing-msg",
+        "type": "function",
+        "z": "exercise3-flow",
+        "name": "Prepare Outgoing Message",
+        "func": "// Create message object for broadcast\nconst message = msg.payload;\nconst timestamp = new Date().toLocaleTimeString();\n\n// Create a message object to be sent via WebSocket\nconst wsMessage = {\n    payload: {\n        message: message,\n        timestamp: timestamp,\n        source: \"ui\"\n    }\n};\n\n// Also create a formatted message for UI display\nconst uiMessage = {\n    payload: wsMessage.payload\n};\n\n// Return both messages: [0] for UI, [1] for WebSocket broadcast\nreturn [uiMessage, wsMessage];",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 380,
+        "y": 200,
+        "wires": [
+            [
+                "ui-received-msg"
+            ],
+            [
+                "debug-outgoing",
+                "broadcast-message"
+            ]
+        ]
+    },
+    {
+        "id": "ui-received-msg",
+        "type": "ui_template",
+        "z": "exercise3-flow",
+        "group": "websocket-ui",
+        "name": "Message Display",
+        "order": 2,
+        "width": "12",
+        "height": "8",
+        "format": "<div id=\"messages\" style=\"height: 250px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;\">\n</div>\n\n<script>\n(function(scope) {\n    // Function to add new message to the display\n    function addMessage(payload) {\n        if (!payload) return;\n        \n        const messagesDiv = document.getElementById('messages');\n        const msgDiv = document.createElement('div');\n        msgDiv.className = 'message ' + (payload.source || 'unknown');\n        msgDiv.style.marginBottom = '8px';\n        msgDiv.style.padding = '8px';\n        msgDiv.style.borderRadius = '4px';\n        \n        // Different background for different sources\n        if (payload.source === 'ui') {\n            msgDiv.style.backgroundColor = '#e1f5fe';\n            msgDiv.style.textAlign = 'right';\n        } else if (payload.source === 'external') {\n            msgDiv.style.backgroundColor = '#f0f4c3';\n            msgDiv.style.textAlign = 'left';\n        }\n        \n        const time = document.createElement('span');\n        time.style.fontSize = '0.8em';\n        time.style.color = '#666';\n        time.textContent = payload.timestamp;\n        \n        const content = document.createElement('div');\n        content.style.marginTop = '4px';\n        content.textContent = payload.message;\n        \n        msgDiv.appendChild(time);\n        msgDiv.appendChild(content);\n        messagesDiv.appendChild(msgDiv);\n        \n        // Auto-scroll to bottom\n        messagesDiv.scrollTop = messagesDiv.scrollHeight;\n    }\n    \n    // Listen for new messages\n    scope.$watch('msg', function(msg) {\n        if (msg && msg.payload) {\n            addMessage(msg.payload);\n        }\n    });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 630,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui-clear-btn",
+        "type": "ui_button",
+        "z": "exercise3-flow",
+        "name": "Clear Button",
+        "group": "websocket-ui",
+        "order": 3,
+        "width": "3",
+        "height": "1",
+        "passthru": false,
+        "label": "Clear Messages",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "clear",
+        "payload": "clear",
+        "payloadType": "str",
+        "topic": "clear",
+        "topicType": "str",
+        "x": 150,
+        "y": 260,
+        "wires": [
+            [
+                "clear-messages"
+            ]
+        ]
+    },
+    {
+        "id": "clear-messages",
+        "type": "function",
+        "z": "exercise3-flow",
+        "name": "Clear Messages",
+        "func": "// Send an empty message with a special command to clear the UI\nreturn {\n    payload: {\n        command: \"clear\"\n    },\n    topic: \"clear\"\n};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 340,
+        "y": 260,
+        "wires": [
+            [
+                "ui-received-msg"
+            ]
+        ]
+    },
+    {
+        "id": "broadcast-message",
+        "type": "function",
+        "z": "exercise3-flow",
+        "name": "Format for Broadcast",
+        "func": "// Convert message object back to string for WebSocket broadcast\nif (typeof msg.payload === 'object') {\n    try {\n        msg.payload = JSON.stringify(msg.payload);\n    } catch (e) {\n        msg.payload = \"Error serializing message\";\n        node.error(\"Error serializing message: \" + e.toString(), msg);\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 570,
+        "y": 200,
+        "wires": [
+            [
+                "websocket-out"
+            ]
+        ]
+    },
+    {
+        "id": "ui-info",
+        "type": "ui_template",
+        "z": "exercise3-flow",
+        "group": "websocket-ui",
+        "name": "Instructions",
+        "order": 0,
+        "width": "12",
+        "height": "1",
+        "format": "<div style=\"background-color: #ffecb3; padding: 10px; border-radius: 5px; margin-bottom: 10px;\">\n    <strong>WebSocket Communication Example</strong><br>\n    You can also connect to this WebSocket server with an external client at: <code>ws://localhost:1880/ws/chat</code>\n</div>",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 330,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ws-server",
+        "type": "websocket-listener",
+        "path": "/ws/chat",
+        "wholemsg": "false"
+    },
+    {
+        "id": "websocket-ui",
+        "type": "ui_group",
+        "name": "WebSocket Chat",
+        "tab": "ui-tab",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "ui-tab",
+        "type": "ui_tab",
+        "name": "WebSocket Demo",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    }
+]

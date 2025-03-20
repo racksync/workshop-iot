@@ -1,0 +1,370 @@
+[
+    {
+        "id": "data-logging-flow",
+        "type": "tab",
+        "label": "Exercise 6: Data Logging to InfluxDB",
+        "disabled": false,
+        "info": "# Data Logging to InfluxDB\n\nFlow นี้แสดงการรับข้อมูลจาก MQTT และบันทึกลงใน InfluxDB เพื่อเก็บเป็นประวัติข้อมูลและนำไปวิเคราะห์ต่อ\n\n## การทำงาน\n1. รับข้อมูลจาก MQTT topics หลายตัว (temperature, humidity, pressure)\n2. แปลงข้อมูลให้อยู่ในรูปแบบที่ InfluxDB ต้องการ\n3. บันทึกลงฐานข้อมูล InfluxDB\n4. แสดงข้อมูลบน Dashboard เพื่อตรวจสอบ",
+        "env": []
+    },
+    {
+        "id": "mqtt-temp",
+        "type": "mqtt in",
+        "z": "data-logging-flow",
+        "name": "Temperature Data",
+        "topic": "sensor/temperature",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "prepare-influx-data",
+                "debug-mqtt"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-humidity",
+        "type": "mqtt in",
+        "z": "data-logging-flow",
+        "name": "Humidity Data",
+        "topic": "sensor/humidity",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "x": 160,
+        "y": 180,
+        "wires": [
+            [
+                "prepare-influx-data",
+                "debug-mqtt"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-pressure",
+        "type": "mqtt in",
+        "z": "data-logging-flow",
+        "name": "Pressure Data",
+        "topic": "sensor/pressure",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "x": 160,
+        "y": 240,
+        "wires": [
+            [
+                "prepare-influx-data",
+                "debug-mqtt"
+            ]
+        ]
+    },
+    {
+        "id": "prepare-influx-data",
+        "type": "function",
+        "z": "data-logging-flow",
+        "name": "Transform for InfluxDB",
+        "func": "// แปลงข้อมูลจาก MQTT ให้อยู่ในรูปแบบที่ InfluxDB ต้องการ\n// InfluxDB ต้องการข้อมูลในรูปแบบที่มี measurement, tags, fields และ timestamp\n\n// ดึงข้อมูลจาก topic และ payload\nconst topic = msg.topic;\nlet value;\nlet sensorType;\nlet deviceId = \"unknown\";\n\n// พิจารณาจาก topic ว่าเป็นเซ็นเซอร์ประเภทไหน\nif (topic.includes('temperature')) {\n    sensorType = 'temperature';\n} else if (topic.includes('humidity')) {\n    sensorType = 'humidity';\n} else if (topic.includes('pressure')) {\n    sensorType = 'pressure';\n} else {\n    sensorType = 'unknown';\n}\n\n// แปลง payload ตามรูปแบบที่เข้ามา\nif (typeof msg.payload === 'object') {\n    // ถ้าข้อมูลเป็น object\n    value = msg.payload.value || msg.payload.data || msg.payload[sensorType];\n    deviceId = msg.payload.deviceId || msg.payload.device || \"device001\";\n} else if (!isNaN(msg.payload)) {\n    // ถ้าข้อมูลเป็นตัวเลข\n    value = Number(msg.payload);\n} else {\n    // พยายามแปลงเป็น JSON หากเป็น string\n    try {\n        const data = JSON.parse(msg.payload);\n        value = data.value || data.data || data[sensorType];\n        deviceId = data.deviceId || data.device || \"device001\";\n    } catch (e) {\n        // หากแปลงไม่ได้ ใช้ค่าเดิม\n        value = msg.payload;\n    }\n}\n\n// ตรวจสอบว่าได้ค่าที่เป็นตัวเลขหรือไม่\nif (isNaN(value)) {\n    node.warn(\"Invalid sensor data received: \" + value);\n    return null;\n}\n\n// สร้างข้อมูลสำหรับ InfluxDB\n// format: [measurement,tag1=value1,tag2=value2 field1=value1,field2=value2 timestamp]\nmsg.payload = [\n    {\n        measurement: \"sensor_data\", // ชื่อตารางใน InfluxDB\n        tags: {\n            sensor_type: sensorType, // ประเภทเซ็นเซอร์เป็น tag\n            device_id: deviceId     // ID อุปกรณ์เป็น tag\n        },\n        fields: {\n            value: Number(value)     // ค่าที่วัดได้เป็น field\n        },\n        timestamp: new Date().getTime() * 1000000 // เวลาปัจจุบันในหน่วย nanoseconds (InfluxDB ใช้ nanoseconds)\n    }\n];\n\n// ส่งค่าไปบันทึกใน InfluxDB และแสดงใน Dashboard\nreturn [msg, {payload: Number(value), topic: sensorType, deviceId: deviceId}];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 180,
+        "wires": [
+            [
+                "influxdb-out",
+                "debug-influx"
+            ],
+            [
+                "dashboard-output"
+            ]
+        ]
+    },
+    {
+        "id": "influxdb-out",
+        "type": "influxdb out",
+        "z": "data-logging-flow",
+        "influxdb": "influxdb-config",
+        "name": "Log to InfluxDB",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organization",
+        "bucket": "bucket",
+        "x": 620,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "debug-mqtt",
+        "type": "debug",
+        "z": "data-logging-flow",
+        "name": "MQTT Input Data",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "debug-influx",
+        "type": "debug",
+        "z": "data-logging-flow",
+        "name": "InfluxDB Format",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "dashboard-output",
+        "type": "function",
+        "z": "data-logging-flow",
+        "name": "Format for Dashboard",
+        "func": "// จัดรูปแบบข้อมูลสำหรับแสดงใน Dashboard\n\nconst value = msg.payload;\nconst sensorType = msg.topic;\nconst deviceId = msg.deviceId;\n\n// สร้าง status message\nconst status = {\n    topic: \"status\",\n    payload: `Logged ${sensorType} data: ${value} from ${deviceId}`\n};\n\n// ส่งข้อมูลไปแสดงบน Dashboard ตามประเภทของเซ็นเซอร์\nlet dashboardMsg = {payload: value};\n\nreturn [dashboardMsg, status];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 220,
+        "wires": [
+            [
+                "ui-chart"
+            ],
+            [
+                "ui-text"
+            ]
+        ]
+    },
+    {
+        "id": "ui-chart",
+        "type": "ui_chart",
+        "z": "data-logging-flow",
+        "name": "Sensor Data Chart",
+        "group": "dashboard-group",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Sensor Data",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Waiting for data...",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "10",
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 830,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui-text",
+        "type": "ui_text",
+        "z": "data-logging-flow",
+        "group": "dashboard-group",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "Status Text",
+        "label": "Latest Update",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 820,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "simulator",
+        "type": "inject",
+        "z": "data-logging-flow",
+        "name": "Simulate Sensor Data",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 320,
+        "wires": [
+            [
+                "generate-sensor-data"
+            ]
+        ]
+    },
+    {
+        "id": "generate-sensor-data",
+        "type": "function",
+        "z": "data-logging-flow",
+        "name": "Generate Random Sensor Data",
+        "func": "// สร้างข้อมูลเซ็นเซอร์จำลองเพื่อทดสอบ\n\n// สร้างค่าอุณหภูมิสุ่มระหว่าง 15-35°C\nconst temp = 15 + Math.random() * 20;\nconst temperature = {\n    topic: \"sensor/temperature\",\n    payload: {\n        value: Math.round(temp * 10) / 10,\n        deviceId: \"sim-device-001\",\n        timestamp: new Date().toISOString()\n    }\n};\n\n// สร้างค่าความชื้นสุ่มระหว่าง 30-90%\nconst hum = 30 + Math.random() * 60;\nconst humidity = {\n    topic: \"sensor/humidity\",\n    payload: {\n        value: Math.round(hum),\n        deviceId: \"sim-device-001\",\n        timestamp: new Date().toISOString()\n    }\n};\n\n// สร้างค่าความดันสุ่มระหว่าง 980-1020 hPa\nconst press = 980 + Math.random() * 40;\nconst pressure = {\n    topic: \"sensor/pressure\",\n    payload: {\n        value: Math.round(press * 10) / 10,\n        deviceId: \"sim-device-001\",\n        timestamp: new Date().toISOString()\n    }\n};\n\nreturn [temperature, humidity, pressure];",
+        "outputs": 3,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 320,
+        "wires": [
+            [
+                "mqtt-out-simulator"
+            ],
+            [
+                "mqtt-out-simulator"
+            ],
+            [
+                "mqtt-out-simulator"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-out-simulator",
+        "type": "mqtt out",
+        "z": "data-logging-flow",
+        "name": "Publish to MQTT",
+        "topic": "",
+        "qos": "1",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt-broker",
+        "x": 650,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "info-node",
+        "type": "comment",
+        "z": "data-logging-flow",
+        "name": "InfluxDB Data Logging Exercise",
+        "info": "# Data Logging to InfluxDB\n\n## วิธีใช้งาน\n1. ตั้งค่า MQTT broker ในโหนด MQTT In\n2. ตั้งค่าเชื่อมต่อ InfluxDB ในโหนด InfluxDB Configuration\n3. เริ่มจำลองข้อมูลเซ็นเซอร์โดยคลิกที่ \"Simulate Sensor Data\"\n4. ตรวจสอบข้อมูลที่ได้รับจาก MQTT ในโหนด Debug\n5. ตรวจสอบรูปแบบข้อมูลที่ส่งไป InfluxDB\n6. ดูกราฟที่แสดงข้อมูลใน Dashboard\n\n## สำหรับการใช้งานจริงกับ InfluxDB\nFlow นี้ได้จัดเตรียมข้อมูลในรูปแบบที่เหมาะสมสำหรับการบันทึกลงใน InfluxDB แล้ว\nโดยคุณจะต้องตั้งค่าการเชื่อมต่อไปยัง InfluxDB ของคุณ โดยคลิกขวาที่โหนด \"Log to InfluxDB\" และเพิ่มการเชื่อมต่อใหม่\n\nสำหรับ InfluxDB 1.8 คุณจะต้องระบุ:\n- URL (เช่น http://localhost:8086)\n- Database name\n- Username และ Password (ถ้ามี)\n\nสำหรับ InfluxDB 2.0 คุณจะต้องระบุ:\n- URL\n- Organization\n- Bucket\n- API Token",
+        "x": 180,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "mqtt-broker",
+        "type": "mqtt-broker",
+        "name": "Local MQTT Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "node-red-influx-logger",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "influxdb-config",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "sensordata",
+        "name": "Local InfluxDB",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.8",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "dashboard-group",
+        "type": "ui_group",
+        "name": "Sensor Logging",
+        "tab": "dashboard-tab",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "dashboard-tab",
+        "type": "ui_tab",
+        "name": "Data Logging",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]

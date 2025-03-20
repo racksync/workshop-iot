@@ -1,0 +1,98 @@
+[
+  {
+    "id": "rest-api-flow",
+    "type": "tab",
+    "label": "Exercise 13: Creating a REST API with Node-RED",
+    "disabled": false,
+    "info": "# Creating a REST API with Node-RED\n\nThis flow demonstrates how to create a simple REST API using Node-RED.\n\n## Endpoints:\n- `GET /api/hello`: Returns a simple greeting message.\n- `POST /api/data`: Accepts JSON data and returns it.\n\n## Instructions:\n1. Import this flow into Node-RED.\n2. Deploy the flow.\n3. Test the API endpoints using a tool like `curl` or Postman.\n\n## Example Usage:\n\n### GET /api/hello\n```bash\ncurl http://localhost:1880/api/hello\n```\n\n### POST /api/data\n```bash\ncurl -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"Node-RED\",\"message\":\"Hello\"}' http://localhost:1880/api/data\n```",
+    "env": []
+  },
+  {
+    "id": "http-in-hello",
+    "type": "http in",
+    "z": "rest-api-flow",
+    "name": "GET /api/hello",
+    "url": "/api/hello",
+    "method": "get",
+    "swaggerDoc": "",
+    "x": 150,
+    "y": 100,
+    "wires": [
+      [
+        "function-hello",
+        "http-response-hello"
+      ]
+    ]
+  },
+  {
+    "id": "function-hello",
+    "type": "function",
+    "z": "rest-api-flow",
+    "name": "Create Hello Message",
+    "func": "// Create a simple greeting message\nmsg.payload = \"Hello from Node-RED!\";\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 370,
+    "y": 100,
+    "wires": [
+      [
+        "http-response-hello"
+      ]
+    ]
+  },
+  {
+    "id": "http-response-hello",
+    "type": "http response",
+    "z": "rest-api-flow",
+    "name": "Send Hello Response",
+    "statusCode": "200",
+    "headers": {},
+    "x": 600,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "http-in-data",
+    "type": "http in",
+    "z": "rest-api-flow",
+    "name": "POST /api/data",
+    "url": "/api/data",
+    "method": "post",
+    "swaggerDoc": "",
+    "x": 150,
+    "y": 200,
+    "wires": [
+      [
+        "function-data",
+        "http-response-data"
+      ]
+    ]
+  },
+  {
+    "id": "function-data",
+    "type": "function",
+    "z": "rest-api-flow",
+    "name": "Process Data",
+    "func": "// Log the received payload\nnode.warn(msg.payload);\n\n// Return the received payload as the response\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 350,
+    "y": 200,
+    "wires": [
+      [
+        "http-response-data"
+      ]
+    ]
+  },
+  {
+    "id": "http-response-data",
+    "type": "http response",
+    "z": "rest-api-flow",
+    "name": "Send Data Response",
+    "statusCode": "200",
+    "headers": {},
+    "x": 580,
+    "y": 200,
+    "wires": []
+  }
+]

@@ -1,0 +1,211 @@
+[
+    {
+        "id": "mqtt-communication-flow",
+        "type": "tab",
+        "label": "Exercise 1: Basic MQTT Communication",
+        "disabled": false,
+        "info": "# Basic MQTT Communication Exercise\n\nThis flow demonstrates the fundamental MQTT communication pattern:\n- Publishing messages to an MQTT topic\n- Subscribing to receive messages from an MQTT topic\n- Using debug nodes to monitor the data flow\n\n## Instructions\n1. Configure the MQTT broker settings in both MQTT nodes\n2. Use the inject node to publish messages\n3. Watch the received messages in the debug panel",
+        "env": []
+    },
+    {
+        "id": "mqtt-config",
+        "type": "mqtt-broker",
+        "name": "Workshop MQTT Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "node-red-client",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60"
+    },
+    {
+        "id": "mqtt-publish",
+        "type": "mqtt out",
+        "z": "mqtt-communication-flow",
+        "name": "Publish to Topic",
+        "topic": "workshop/test",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt-config",
+        "x": 480,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "mqtt-subscribe",
+        "type": "mqtt in",
+        "z": "mqtt-communication-flow",
+        "name": "Subscribe to Topic",
+        "topic": "workshop/test",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "mqtt-config",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "mqtt-debug"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-inject",
+        "type": "inject",
+        "z": "mqtt-communication-flow",
+        "name": "Message Generator",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "workshop/test",
+        "payload": "{\"sensor\":\"temperature\",\"value\":25.5,\"unit\":\"C\",\"timestamp\":\"${{new Date().toISOString()}}\"}",
+        "payloadType": "json",
+        "x": 180,
+        "y": 140,
+        "wires": [
+            [
+                "mqtt-publish",
+                "inject-debug"
+            ]
+        ]
+    },
+    {
+        "id": "inject-debug",
+        "type": "debug",
+        "z": "mqtt-communication-flow",
+        "name": "Published Message",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "mqtt-debug",
+        "type": "debug",
+        "z": "mqtt-communication-flow",
+        "name": "Received Message",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "info-comment",
+        "type": "comment",
+        "z": "mqtt-communication-flow",
+        "name": "Exercise 1: Basic MQTT Communication",
+        "info": "## เกี่ยวกับ MQTT\n\nMQTT (Message Queuing Telemetry Transport) เป็นโปรโตคอลการสื่อสารแบบ publish-subscribe ที่เหมาะสำหรับ IoT\n\n### ส่วนประกอบหลัก\n- **Publisher**: ผู้ส่งข้อมูล\n- **Subscriber**: ผู้รับข้อมูล\n- **Broker**: ตัวกลางในการจัดการข้อมูล\n- **Topic**: หัวข้อที่ใช้ในการกำหนดเส้นทางข้อมูล\n\n### ระดับคุณภาพการให้บริการ (QoS)\n- QoS 0: ส่งครั้งเดียว ไม่มีการยืนยัน\n- QoS 1: ส่งอย่างน้อย 1 ครั้ง มีการยืนยัน\n- QoS 2: ส่งแค่ครั้งเดียวเท่านั้น มีการยืนยันซับซ้อน",
+        "x": 180,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "manual-publish",
+        "type": "inject",
+        "z": "mqtt-communication-flow",
+        "name": "Manual Input",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "workshop/test",
+        "payload": "",
+        "payloadType": "str",
+        "x": 160,
+        "y": 80,
+        "wires": [
+            [
+                "mqtt-publish",
+                "inject-debug"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-subscribe-all",
+        "type": "mqtt in",
+        "z": "mqtt-communication-flow",
+        "name": "Subscribe to All Workshop Topics",
+        "topic": "workshop/#",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "mqtt-config",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "x": 200,
+        "y": 280,
+        "wires": [
+            [
+                "all-topics-debug"
+            ]
+        ]
+    },
+    {
+        "id": "all-topics-debug",
+        "type": "debug",
+        "z": "mqtt-communication-flow",
+        "name": "All Topics Messages",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 490,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "wildcard-comment",
+        "type": "comment",
+        "z": "mqtt-communication-flow",
+        "name": "Using Wildcards in MQTT Topics",
+        "info": "## การใช้ Wildcards ใน MQTT\n\n- **Single-level wildcard (+)**: แทนที่เพียงหนึ่งระดับใน topic hierarchy\n  - ตัวอย่าง: `home/+/temperature` จะรับ `home/livingroom/temperature` แต่ไม่รับ `home/livingroom/kitchen/temperature`\n\n- **Multi-level wildcard (#)**: แทนที่ได้หลายระดับใน topic hierarchy\n  - ตัวอย่าง: `home/#` จะรับทุก topic ที่เริ่มต้นด้วย `home/`\n\nแนวปฏิบัติที่ดี: ใช้ topic hierarchy ที่มีความหมาย เช่น `location/device/measurement`",
+        "x": 180,
+        "y": 340,
+        "wires": []
+    }
+]

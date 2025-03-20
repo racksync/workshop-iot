@@ -1,0 +1,81 @@
+[
+  {
+    "id": "cloud-integration-flow",
+    "type": "tab",
+    "label": "Exercise 12: Integrating with Cloud Services",
+    "disabled": false,
+    "info": "# Integrating with Cloud Services in Node-RED\n\nThis flow demonstrates how to integrate Node-RED with a cloud service using the HTTP Request node. It sends data to a cloud service endpoint and handles the response.\n\n## Components Used\n- Inject node: To simulate data to be sent to the cloud service.\n- HTTP Request node: To send data to the cloud service endpoint.\n- Debug node: To display the response from the cloud service.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the HTTP Request node with the appropriate URL and headers for your cloud service.\n3. Deploy the flow.\n4. Observe the data being sent to the cloud service and the response being displayed in the Debug node.",
+    "env": []
+  },
+  {
+    "id": "inject-data",
+    "type": "inject",
+    "z": "cloud-integration-flow",
+    "name": "Inject Data",
+    "props": [
+      {
+        "p": "payload",
+        "v": "{\"sensor\":\"temperature\",\"value\":25.5}",
+        "vt": "json"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "x": 150,
+    "y": 160,
+    "wires": [
+      [
+        "http-request"
+      ]
+    ]
+  },
+  {
+    "id": "http-request",
+    "type": "http request",
+    "z": "cloud-integration-flow",
+    "name": "Send to Cloud",
+    "url": "https://example.com/api/data",
+    "method": "POST",
+    "contentType": "json",
+    "dataType": "json",
+    "ret": "obj",
+    "encodeBody": "json",
+    "x": 350,
+    "y": 160,
+    "wires": [
+      [
+        "debug-response"
+      ]
+    ]
+  },
+  {
+    "id": "debug-response",
+    "type": "debug",
+    "z": "cloud-integration-flow",
+    "name": "Debug Response",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 550,
+    "y": 160,
+    "wires": []
+  },
+  {
+    "id": "comment-instructions",
+    "type": "comment",
+    "z": "cloud-integration-flow",
+    "name": "Instructions",
+    "info": "This flow demonstrates integration with a cloud service.\n\n1.  Configure the HTTP Request node with the cloud service endpoint URL.\n2.  Set the HTTP method and headers as required by the cloud service.\n3.  Deploy the flow and observe the data being sent to the cloud service and the response being displayed in the Debug node.",
+    "x": 140,
+    "y": 80,
+    "wires": []
+  }
+]

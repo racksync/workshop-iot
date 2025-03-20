@@ -1,0 +1,92 @@
+[
+  {
+    "id": "geofencing-flow",
+    "type": "tab",
+    "label": "Exercise 19: Implementing Geofencing",
+    "disabled": false,
+    "info": "# Implementing Geofencing\n\nThis flow demonstrates how to implement geofencing in Node-RED to trigger actions based on the location of a device.\n\n## Components Used\n- MQTT In node: To receive GPS coordinates from a device.\n- Function node: To check if the device is within the geofence.\n- HTTP Request node: To send a notification when the device enters or exits the geofence.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In node with the appropriate broker settings and topic for receiving GPS coordinates.\n3. Modify the Function node to define the geofence and check if the device is within the geofence.\n4. Configure the HTTP Request node with the appropriate URL and headers for sending notifications.\n5. Deploy the flow.\n6. Simulate the device entering and exiting the geofence by publishing GPS coordinates to the MQTT topic.",
+    "env": []
+  },
+  {
+    "id": "mqtt-in",
+    "type": "mqtt in",
+    "z": "geofencing-flow",
+    "name": "GPS Coordinates",
+    "topic": "device/gps",
+    "qos": "0",
+    "datatype": "json",
+    "broker": "mqtt-broker",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "x": 150,
+    "y": 160,
+    "wires": [
+      [
+        "check-geofence"
+      ]
+    ]
+  },
+  {
+    "id": "check-geofence",
+    "type": "function",
+    "z": "geofencing-flow",
+    "name": "Check Geofence",
+    "func": "// Define the geofence (latitude, longitude, radius in meters)\nconst latitude = 37.7749;\nconst longitude = -122.4194;\nconst radius = 100;\n\n// Get the device's GPS coordinates from the message\nlet deviceLatitude = msg.payload.latitude;\nlet deviceLongitude = msg.payload.longitude;\n\n// Function to calculate the distance between two GPS coordinates\nfunction distance(lat1, lon1, lat2, lon2) {\n    const R = 6371e3; // Earth radius in meters\n    const φ1 = lat1 * Math.PI / 180; // φ, λ in radians\n    const φ2 = lat2 * Math.PI / 180;\n    const Δφ = (lat2 - lat1) * Math.PI / 180;\n    const Δλ = (lon2 - lon1) * Math.PI / 180;\n\n    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +\n        Math.cos(φ1) * Math.cos(φ2) *\n        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);\n    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));\n\n    const d = R * c; // Distance in meters\n    return d;\n}\n\n// Calculate the distance between the device and the geofence center\nlet dist = distance(latitude, longitude, deviceLatitude, deviceLongitude);\n\n// Check if the device is within the geofence\nlet isInGeofence = dist <= radius;\n\n// Get the previous state from flow context\nlet previousState = flow.get('isInGeofence') || false;\n\n// Check if the state has changed\nif (isInGeofence !== previousState) {\n    // Send a notification\n    msg.payload = {\n        message: `Device ${isInGeofence ? 'entered' : 'exited'} the geofence`,\n        latitude: deviceLatitude,\n        longitude: deviceLongitude\n    };\n    flow.set('isInGeofence', isInGeofence);\n    return msg;\n} else {\n    // No state change, do nothing\n    return null;\n}",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 350,
+    "y": 160,
+    "wires": [
+      [
+        "http-request"
+      ]
+    ]
+  },
+  {
+    "id": "http-request",
+    "type": "http request",
+    "z": "geofencing-flow",
+    "name": "Send Notification",
+    "url": "https://example.com/api/notification",
+    "method": "POST",
+    "contentType": "json",
+    "dataType": "json",
+    "ret": "obj",
+    "encodeBody": "json",
+    "x": 550,
+    "y": 160,
+    "wires": []
+  },
+  {
+    "id": "mqtt-broker",
+    "type": "mqtt-broker",
+    "name": "MQTT Broker",
+    "broker": "localhost",
+    "port": "1883",
+    "clientid": "",
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthPayload": "",
+    "closeTopic": "",
+    "closeQos": "0",
+    "closePayload": "",
+    "willTopic": "",
+    "willQos": "0",
+    "willPayload": ""
+  },
+  {
+    "id": "comment-instructions",
+    "type": "comment",
+    "z": "geofencing-flow",
+    "name": "Instructions",
+    "info": "This flow demonstrates how to implement geofencing in Node-RED.\n\n1.  Configure the MQTT In node with the topic for receiving GPS coordinates.\n2.  Modify the Function node to define the geofence and check if the device is within the geofence.\n   - Update the `latitude`, `longitude`, and `radius` variables to define the geofence.\n3.  Configure the HTTP Request node with the URL for sending notifications.\n\nExample GPS coordinates:\n```json\n{\n    \"latitude\": 37.7749,\n    \"longitude\": -122.4194\n}\n```",
+    "x": 140,
+    "y": 80,
+    "wires": []
+  }
+]

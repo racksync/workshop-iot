@@ -1,0 +1,84 @@
+[
+  {
+    "id": "rate-limiting-flow",
+    "type": "tab",
+    "label": "Exercise 10: Rate Limiting",
+    "disabled": false,
+    "info": "# Rate Limiting in Node-RED\n\nThis flow demonstrates how to implement rate limiting in Node-RED to control the rate at which messages are processed.\n\n## Components Used\n- Inject node: To simulate incoming messages.\n- Delay node: To limit the rate of message processing.\n- Debug node: To observe the message flow.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Adjust the settings in the Delay node to configure the desired rate limit.\n3. Deploy the flow.\n4. Observe the message flow and the effect of the rate limiting.",
+    "env": []
+  },
+  {
+    "id": "inject-message",
+    "type": "inject",
+    "z": "rate-limiting-flow",
+    "name": "Inject Message",
+    "props": [
+      {
+        "p": "payload",
+        "v": "Hello",
+        "vt": "str"
+      }
+    ],
+    "repeat": "1",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "x": 150,
+    "y": 160,
+    "wires": [
+      [
+        "delay-rate-limit"
+      ]
+    ]
+  },
+  {
+    "id": "delay-rate-limit",
+    "type": "delay",
+    "z": "rate-limiting-flow",
+    "name": "Rate Limit",
+    "pauseType": "rate",
+    "timeout": "1",
+    "timeoutUnits": "seconds",
+    "rate": "1",
+    "nbRateUnits": "1",
+    "rateUnits": "second",
+    "randomFirst": false,
+    "randomRange": "1",
+    "dataType": "string",
+    "x": 350,
+    "y": 160,
+    "wires": [
+      [
+        "debug-output"
+      ]
+    ]
+  },
+  {
+    "id": "debug-output",
+    "type": "debug",
+    "z": "rate-limiting-flow",
+    "name": "Debug Output",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "payload",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 550,
+    "y": 160,
+    "wires": []
+  },
+  {
+    "id": "comment-instructions",
+    "type": "comment",
+    "z": "rate-limiting-flow",
+    "name": "Instructions",
+    "info": "This flow demonstrates rate limiting using the Delay node.\n\nAdjust the settings in the Delay node to control the rate at which messages are processed.\n\n- `Rate`: The number of messages to allow.\n- `per`: The time unit for the rate (e.g., second, minute).\n\nIn this example, the rate is set to 1 message per second.",
+    "x": 140,
+    "y": 80,
+    "wires": []
+  }
+]

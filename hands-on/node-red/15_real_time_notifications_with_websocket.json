@@ -1,0 +1,78 @@
+[
+  {
+    "id": "websocket-notification-flow",
+    "type": "tab",
+    "label": "Exercise 15: Real-time Notifications with WebSocket",
+    "disabled": false,
+    "info": "# Real-time Notifications with WebSocket\n\nThis flow demonstrates how to send real-time notifications to a web client using WebSocket.\n\n## Components Used\n- Inject node: To simulate events that trigger notifications.\n- Function node: To create notification messages.\n- WebSocket Out node: To send notifications to connected clients.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the WebSocket Out node with the desired path.\n3. Deploy the flow.\n4. Create a web client that connects to the WebSocket endpoint.\n5. Trigger the inject node to send a notification.",
+    "env": []
+  },
+  {
+    "id": "inject-event",
+    "type": "inject",
+    "z": "websocket-notification-flow",
+    "name": "Simulate Event",
+    "props": [
+      {
+        "p": "payload",
+        "v": "New event occurred!",
+        "vt": "str"
+      }
+    ],
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "onceDelay": 0.1,
+    "topic": "",
+    "x": 150,
+    "y": 160,
+    "wires": [
+      [
+        "create-notification"
+      ]
+    ]
+  },
+  {
+    "id": "create-notification",
+    "type": "function",
+    "z": "websocket-notification-flow",
+    "name": "Create Notification",
+    "func": "// Create a notification message\nmsg.payload = {\n    type: 'notification',\n    message: msg.payload,\n    timestamp: new Date().toISOString()\n};\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 350,
+    "y": 160,
+    "wires": [
+      [
+        "websocket-out"
+      ]
+    ]
+  },
+  {
+    "id": "websocket-out",
+    "type": "websocket out",
+    "z": "websocket-notification-flow",
+    "name": "Send Notification",
+    "server": "ws-server",
+    "client": "",
+    "x": 550,
+    "y": 160,
+    "wires": []
+  },
+  {
+    "id": "ws-server",
+    "type": "websocket-listener",
+    "path": "/ws/notifications",
+    "wholemsg": "false"
+  },
+  {
+    "id": "comment-instructions",
+    "type": "comment",
+    "z": "websocket-notification-flow",
+    "name": "Instructions",
+    "info": "This flow demonstrates real-time notifications using WebSocket.\n\n1.  Configure the WebSocket Out node with the desired path.\n2.  Create a web client that connects to the WebSocket endpoint.\n3.  Trigger the inject node to send a notification.\n\nWeb client example:\n```javascript\nconst ws = new WebSocket('ws://localhost:1880/ws/notifications');\nws.onmessage = function(event) {\n    console.log(event.data);\n};\n```",
+    "x": 140,
+    "y": 80,
+    "wires": []
+  }
+]
