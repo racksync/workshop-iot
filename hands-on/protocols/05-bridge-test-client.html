@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT-WebSocket Bridge Test Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        #messageLog {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background: #ccc;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .mqtt { color: #0066cc; }
+        .system { color: #009900; }
+        .error { color: #cc0000; }
+    </style>
+</head>
+<body>
+    <h1>MQTT-WebSocket Bridge Test Client</h1>
+    <div id="status">สถานะ: กำลังเชื่อมต่อ...</div>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>ส่งข้อความไปยัง MQTT</h2>
+            <div class="form-group">
+                <label>Topic:</label>
+                <input type="text" id="publishTopic" value="test/topic">
+            </div>
+            <div class="form-group">
+                <label>Payload (JSON):</label>
+                <textarea id="publishPayload" rows="4">{"value": 123}</textarea>
+            </div>
+            <button id="publishBtn" disabled>ส่งข้อความ</button>
+        </div>
+        
+        <div class="panel">
+            <h2>ติดตาม Topics</h2>
+            <div class="form-group">
+                <div id="topicList"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2>ประวัติข้อความ</h2>
+        <div id="messageLog"></div>
+    </div>
+
+    <script>
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${wsProtocol}//${window.location.hostname}:8080`;
+        let ws = null;
+
+        // UI Elements
+        const statusDiv = document.getElementById('status');
+        const messageLog = document.getElementById('messageLog');
+        const publishBtn = document.getElementById('publishBtn');
+        const publishTopic = document.getElementById('publishTopic');
+        const publishPayload = document.getElementById('publishPayload');
+        const topicList = document.getElementById('topicList');
+
+        // เพิ่มข้อความลงในประวัติ
+        function addMessage(type, text) {
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.textContent = typeof text === 'string' ? text : JSON.stringify(text, null, 2);
+            messageLog.appendChild(div);
+            messageLog.scrollTop = messageLog.scrollHeight;
+        }
+
+        // เชื่อมต่อกับ WebSocket Server
+        function connect() {
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                statusDiv.textContent = 'สถานะ: เชื่อมต่อสำเร็จ';
+                publishBtn.disabled = false;
+                addMessage('system', 'เชื่อมต่อกับ MQTT-WebSocket Bridge สำเร็จ');
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    
+                    switch(data.type) {
+                        case 'welcome':
+                            addMessage('system', `ยินดีต้อนรับ! กำลังติดตาม topics: ${data.topics.join(', ')}`);
+                            updateTopicList(data.topics);
+                            break;
+                            
+                        case 'mqtt':
+                            addMessage('mqtt', `[${data.topic}] ${JSON.stringify(data.payload)}`);
+                            break;
+                            
+                        case 'history':
+                            data.messages.forEach(msg => {
+                                addMessage('mqtt', `[${msg.topic}] ${JSON.stringify(msg.payload)}`);
+                            });
+                            break;
+                            
+                        default:
+                            addMessage('system', JSON.stringify(data));
+                    }
+                } catch (e) {
+                    addMessage('error', `ข้อผิดพลาดในการแปลงข้อความ: ${e.message}`);
+                }
+            };
+
+            ws.onclose = () => {
+                statusDiv.textContent = 'สถานะ: ถูกตัดการเชื่อมต่อ';
+                publishBtn.disabled = true;
+                addMessage('error', 'การเชื่อมต่อถูกปิด - กำลังพยายามเชื่อมต่อใหม่ในอีก 5 วินาที...');
+                setTimeout(connect, 5000);
+            };
+
+            ws.onerror = (error) => {
+                statusDiv.textContent = 'สถานะ: เกิดข้อผิดพลาด';
+                addMessage('error', 'เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                console.error('WebSocket Error:', error);
+            };
+        }
+
+        // อัพเดทรายการ topics ที่กำลังติดตาม
+        function updateTopicList(topics) {
+            topicList.innerHTML = topics.map(topic => 
+                `<div class="topic-item">📡 ${topic}</div>`
+            ).join('');
+        }
+
+        // ส่งข้อความไปยัง MQTT
+        publishBtn.onclick = () => {
+            try {
+                const payload = JSON.parse(publishPayload.value);
+                const message = {
+                    action: 'publish',
+                    topic: publishTopic.value,
+                    payload: payload
+                };
+                
+                ws.send(JSON.stringify(message));
+                addMessage('system', `ส่งข้อความไปยัง ${publishTopic.value}`);
+            } catch (e) {
+                addMessage('error', `ข้อผิดพลาดในการแปลง JSON: ${e.message}`);
+            }
+        };
+
+        // เริ่มการเชื่อมต่อ
+        connect();
+    </script>
+</body>
+</html>
