@@ -140,12 +140,7 @@ gantt
     Advanced WebSocket Server   :        des3, 2023-10-08, 5d
 ```
 
-```mermaid
-pie
-    title Distribution ตัวอย่าง
-    "Example 1": 50
-    "Example 2": 50
-```
+
 
 ## สรุป
 WebSocket เป็นเครื่องมือสำคัญที่ทำให้การพัฒนาระบบ IoT ด้วย Node-RED เป็นไปอย่างราบรื่น โดยการสื่อสารแบบเรียลไทม์และประหยัดทรัพยากร  
