@@ -27,7 +27,9 @@ flowchart LR
     B --> C[Node WebSocket Out]
     C --> D[เว็บแอปพลิเคชัน]
     D -- รับข้อมูลแบบเรียลไทม์ --> C
-    note right of D: การแสดงผลข้อมูลแบบทันที
+    
+    %% Add note as separate statement
+    D --- E[การแสดงผลข้อมูลแบบทันที]
 ```
 
 ## เปรียบเทียบ WebSocket กับ HTTP Polling
