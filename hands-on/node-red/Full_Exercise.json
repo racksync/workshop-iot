@@ -1,0 +1,3175 @@
+[
+    {
+        "id": "mqtt-communication-flow",
+        "type": "tab",
+        "label": "Exercise 1: Basic MQTT Communication",
+        "disabled": false,
+        "info": "# การสื่อสารพื้นฐานด้วย MQTT\n\nFlow นี้แสดงรูปแบบการสื่อสารพื้นฐานด้วย MQTT:\n- การเผยแพร่ (Publish) ข้อความไปยัง MQTT topic\n- การสมัครรับ (Subscribe) ข้อความจาก MQTT topic\n- การใช้โหนด debug เพื่อติดตามการไหลของข้อมูล\n\n## คำแนะนำ\n1. ตั้งค่าการเชื่อมต่อ MQTT broker ในโหนด MQTT ทั้งสอง\n2. ใช้โหนด inject เพื่อเผยแพร่ข้อความ\n3. ดูข้อความที่ได้รับในพาเนล debug",
+        "env": []
+    },
+    {
+        "id": "exercise2-flow",
+        "type": "tab",
+        "label": "Exercise 2: Real-time Dashboard with MQTT",
+        "info": "# Real-time Dashboard with MQTT\n\nThis flow demonstrates how to create a real-time dashboard using MQTT data.\n\n## Components Used:\n- MQTT In node\n- JSON node\n- Dashboard gauge and chart nodes\n\n## How to Use:\n1. Configure the MQTT broker settings\n2. Publish sensor data to topic 'sensor/temperature' with payload like {\"value\": 25}\n3. Publish sensor data to topic 'sensor/humidity' with payload like {\"value\": 60}\n4. View the dashboard at http://localhost:1880/ui"
+    },
+    {
+        "id": "exercise3-flow",
+        "type": "tab",
+        "label": "Exercise 3: WebSocket Communication",
+        "info": "# WebSocket Communication\n\nThis flow demonstrates how to use WebSocket for real-time communication in Node-RED.\n\n## Components Used:\n- WebSocket In/Out nodes\n- Function nodes for message processing\n- Debug nodes for monitoring\n- UI Input/Button for sending messages\n\n## How to Use:\n1. Open the dashboard UI at http://localhost:1880/ui\n2. Send messages from the input box\n3. Connect to the WebSocket server using an external client at ws://localhost:1880/ws/chat\n4. Messages will be shared between all connected clients\n\n## Test with wscat:\n```\nwscat -c ws://localhost:1880/ws/chat\n```\nThen type messages to send them to all connected clients."
+    },
+    {
+        "id": "fda11d11b107d05e",
+        "type": "tab",
+        "label": "Exercise 4: MQTT to WebSocket Bridge",
+        "disabled": false,
+        "info": "# MQTT to WebSocket Bridge\n\nFlow นี้แสดงการรับข้อมูลจาก MQTT แล้วส่งต่อไปยัง WebSocket เพื่อให้ WebSocket clients สามารถรับข้อมูลได้แบบ real-time\n\n## การทำงาน\n1. รับข้อมูลจาก MQTT topic 'sensor/data'\n2. แปลงข้อมูลให้อยู่ในรูปแบบที่เหมาะสม\n3. ส่งต่อข้อมูลไปยัง WebSocket endpoint '/ws/sensor'\n4. แสดงข้อมูลใน Debug console",
+        "env": []
+    },
+    {
+        "id": "temp-monitoring-flow",
+        "type": "tab",
+        "label": "Exercise 5: Temperature Monitoring System",
+        "disabled": false,
+        "info": "# Temperature Monitoring System\n\nFlow นี้แสดงการตรวจสอบข้อมูลอุณหภูมิที่ได้รับผ่าน MQTT และแสดงผลบน Dashboard รวมทั้งส่งการแจ้งเตือนเมื่ออุณหภูมิสูงเกินกำหนด\n\n## การทำงาน\n1. รับข้อมูลอุณหภูมิจาก MQTT topic 'sensor/temperature'\n2. แสดงผลอุณหภูมิบน gauge และกราฟแบบ real-time\n3. ตรวจสอบค่าอุณหภูมิ หากสูงเกิน threshold จะส่งการแจ้งเตือน",
+        "env": []
+    },
+    {
+        "id": "41316e31f4cb9310",
+        "type": "tab",
+        "label": "Exercise 6: Data Logging to InfluxDB",
+        "disabled": false,
+        "info": "# Data Logging to InfluxDB\n\nFlow นี้แสดงการรับข้อมูลจาก MQTT และบันทึกลงใน InfluxDB เพื่อเก็บเป็นประวัติข้อมูลและนำไปวิเคราะห์ต่อ\n\n## การทำงาน\n1. รับข้อมูลจาก MQTT topics หลายตัว (temperature, humidity, pressure)\n2. แปลงข้อมูลให้อยู่ในรูปแบบที่ InfluxDB ต้องการ\n3. บันทึกลงฐานข้อมูล InfluxDB\n4. แสดงข้อมูลบน Dashboard เพื่อตรวจสอบ",
+        "env": []
+    },
+    {
+        "id": "rest-api-flow",
+        "type": "tab",
+        "label": "Exercise 7: Creating a REST API",
+        "disabled": false,
+        "info": "# การสร้าง REST API ด้วย Node-RED\n\nFlow นี้แสดงวิธีการสร้าง REST API อย่างง่ายโดยใช้ Node-RED\n\n## Endpoints:\n- `GET /api/hello`: ส่งคืนข้อความทักทายอย่างง่าย\n- `POST /api/data`: รับข้อมูล JSON และส่งคืนข้อมูลเดิม\n\n## คำแนะนำ:\n1. นำเข้า flow นี้ไปยัง Node-RED\n2. Deploy flow\n3. ทดสอบ API endpoints โดยใช้เครื่องมือเช่น `curl` หรือ Postman\n\n## ตัวอย่างการใช้งาน:\n\n### GET /api/hello\n```bash\ncurl http://localhost:1880/api/hello\n```\n\n### POST /api/data\n```bash\ncurl -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"Node-RED\",\"message\":\"Hello\"}' http://localhost:1880/api/data\n```",
+        "env": []
+    },
+    {
+        "id": "tls-mqtt-flow",
+        "type": "tab",
+        "label": "Exercise 8: Secure MQTT Communication with TLS",
+        "disabled": false,
+        "info": "# Secure MQTT Communication with TLS\n\nThis flow demonstrates how to establish a secure MQTT connection using TLS (Transport Layer Security).\n\n## Prerequisites\n1.  An MQTT broker configured for TLS (e.g., Mosquitto with TLS enabled).\n2.  Valid TLS certificates (CA certificate, client certificate, and client key).\n\n## Configuration\n1.  Configure the MQTT broker node with the correct TLS settings.\n2.  Specify the paths to your TLS certificates.\n3.  Ensure that the MQTT broker is running and accessible.\n\n## Instructions\n1.  Import this flow into Node-RED.\n2.  Configure the MQTT broker node with your TLS settings.\n3.  Deploy the flow.\n4.  Observe the secure MQTT communication.",
+        "env": []
+    },
+    {
+        "id": "709df3bcf634f771",
+        "type": "tab",
+        "label": "Exercise 9: JWT Authentication for HTTP Requests",
+        "disabled": false,
+        "info": "# JWT Authentication for HTTP Requests\n\nThis flow demonstrates how to use JWT (JSON Web Tokens) for authenticating HTTP requests in Node-RED.\n\n## Prerequisites\n1.  A JWT signing key (secret).\n2.  An HTTP endpoint that requires authentication.\n\n## Configuration\n1.  Set the JWT secret in the `JWT Secret` node.\n2.  Configure the HTTP In node with the desired endpoint and method.\n3.  Ensure that the client sends the JWT in the `Authorization` header (Bearer token).\n\n## Instructions\n1.  Import this flow into Node-RED.\n2.  Set the JWT secret in the `JWT Secret` node.\n3.  Deploy the flow.\n4.  Test the authenticated endpoint by sending an HTTP request with a valid JWT in the `Authorization` header.",
+        "env": []
+    },
+    {
+        "id": "c157c1c6c555a06a",
+        "type": "tab",
+        "label": "Exercise 10: Rate Limiting",
+        "disabled": false,
+        "info": "# Rate Limiting in Node-RED\n\nThis flow demonstrates how to implement rate limiting in Node-RED to control the rate at which messages are processed.\n\n## Components Used\n- Inject node: To simulate incoming messages.\n- Delay node: To limit the rate of message processing.\n- Debug node: To observe the message flow.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Adjust the settings in the Delay node to configure the desired rate limit.\n3. Deploy the flow.\n4. Observe the message flow and the effect of the rate limiting.",
+        "env": []
+    },
+    {
+        "id": "a3ad1c5533341ccb",
+        "type": "tab",
+        "label": "Exercise 11: Real-time Data Transformation",
+        "disabled": false,
+        "info": "# Real-time Data Transformation in Node-RED\n\nThis flow demonstrates how to transform data in real-time using Node-RED. It receives data from an MQTT topic, transforms it using a Function node, and publishes the transformed data to another MQTT topic.\n\n## Components Used\n- MQTT In node: To receive data from an MQTT topic.\n- Function node: To transform the data.\n- MQTT Out node: To publish the transformed data to another MQTT topic.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In and MQTT Out nodes with the appropriate broker settings and topics.\n3. Modify the Function node to perform the desired data transformation.\n4. Deploy the flow.\n5. Observe the transformed data being published to the output MQTT topic.",
+        "env": []
+    },
+    {
+        "id": "cloud-integration-flow",
+        "type": "tab",
+        "label": "Exercise 12: Integrating with Cloud Services",
+        "disabled": false,
+        "info": "# Integrating with Cloud Services in Node-RED\n\nThis flow demonstrates how to integrate Node-RED with a cloud service using the HTTP Request node. It sends data to a cloud service endpoint and handles the response.\n\n## Components Used\n- Inject node: To simulate data to be sent to the cloud service.\n- HTTP Request node: To send data to the cloud service endpoint.\n- Debug node: To display the response from the cloud service.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the HTTP Request node with the appropriate URL and headers for your cloud service.\n3. Deploy the flow.\n4. Observe the data being sent to the cloud service and the response being displayed in the Debug node.",
+        "env": []
+    },
+    {
+        "id": "9add7c852e4d2bf3",
+        "type": "tab",
+        "label": "Exercise 13: Creating a REST API with Node-RED",
+        "disabled": false,
+        "info": "# Creating a REST API with Node-RED\n\nThis flow demonstrates how to create a simple REST API using Node-RED.\n\n## Endpoints:\n- `GET /api/hello`: Returns a simple greeting message.\n- `POST /api/data`: Accepts JSON data and returns it.\n\n## Instructions:\n1. Import this flow into Node-RED.\n2. Deploy the flow.\n3. Test the API endpoints using a tool like `curl` or Postman.\n\n## Example Usage:\n\n### GET /api/hello\n```bash\ncurl http://localhost:1880/api/hello\n```\n\n### POST /api/data\n```bash\ncurl -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"Node-RED\",\"message\":\"Hello\"}' http://localhost:1880/api/data\n```",
+        "env": []
+    },
+    {
+        "id": "79e7e0f965806e91",
+        "type": "tab",
+        "label": "Exercise 14: Implementing OAuth2 Authentication",
+        "disabled": false,
+        "info": "# Implementing OAuth2 Authentication\n\nThis flow demonstrates how to use OAuth2 for authenticating API requests in Node-RED.\n\n## Prerequisites\n1.  An OAuth2 provider (e.g., Google, Facebook, GitHub).\n2.  Client ID and client secret from the OAuth2 provider.\n3.  Authorization and token endpoints from the OAuth2 provider.\n\n## Configuration\n1.  Set the client ID, client secret, authorization endpoint, and token endpoint in the `OAuth2 Configuration` node.\n2.  Configure the HTTP In node with the desired endpoint and method.\n3.  Ensure that the client obtains an access token from the OAuth2 provider and sends it in the `Authorization` header (Bearer token).\n\n## Instructions\n1.  Import this flow into Node-RED.\n2.  Set the OAuth2 configuration in the `OAuth2 Configuration` node.\n3.  Deploy the flow.\n4.  Test the authenticated endpoint by sending an HTTP request with a valid access token in the `Authorization` header.",
+        "env": []
+    },
+    {
+        "id": "7ece08927fb99b95",
+        "type": "tab",
+        "label": "Exercise 15: Real-time Notifications with WebSocket",
+        "disabled": false,
+        "info": "# Real-time Notifications with WebSocket\n\nThis flow demonstrates how to send real-time notifications to a web client using WebSocket.\n\n## Components Used\n- Inject node: To simulate events that trigger notifications.\n- Function node: To create notification messages.\n- WebSocket Out node: To send notifications to connected clients.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the WebSocket Out node with the desired path.\n3. Deploy the flow.\n4. Create a web client that connects to the WebSocket endpoint.\n5. Trigger the inject node to send a notification.",
+        "env": []
+    },
+    {
+        "id": "9b2055f0707ea5c2",
+        "type": "tab",
+        "label": "Exercise 16: Data Aggregation and Analysis",
+        "disabled": false,
+        "info": "# Data Aggregation and Analysis\n\nThis flow demonstrates how to aggregate and analyze data in Node-RED. It receives data from multiple MQTT topics, aggregates it, performs a simple analysis, and stores the results in a database.\n\n## Components Used\n- MQTT In nodes: To receive data from multiple MQTT topics.\n- Join node: To aggregate data from multiple sources.\n- Function node: To perform data analysis.\n- Database Out node: To store the results in a database.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In nodes with the appropriate broker settings and topics.\n3. Configure the Join node to aggregate data from the desired sources.\n4. Modify the Function node to perform the desired data analysis.\n5. Configure the Database Out node with the appropriate database settings.\n6. Deploy the flow.\n7. Observe the aggregated and analyzed data being stored in the database.",
+        "env": []
+    },
+    {
+        "id": "6564a4b8279da7b1",
+        "type": "tab",
+        "label": "Exercise 17: Implementing a Digital Twin",
+        "disabled": false,
+        "info": "# Implementing a Digital Twin\n\nThis flow demonstrates how to create a digital twin of a physical device in Node-RED. It receives data from an MQTT topic, updates the digital twin's state, and visualizes the state on a dashboard.\n\n## Components Used\n- MQTT In node: To receive data from the physical device.\n- Function node: To update the digital twin's state.\n- Dashboard nodes: To visualize the digital twin's state.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In node with the appropriate broker settings and topic.\n3. Modify the Function node to update the digital twin's state based on the incoming data.\n4. Deploy the flow.\n5. Observe the digital twin's state being updated on the dashboard.",
+        "env": []
+    },
+    {
+        "id": "5b3d548bf5423cd6",
+        "type": "tab",
+        "label": "Exercise 18: Automated Device Management",
+        "disabled": false,
+        "info": "# Automated Device Management\n\nThis flow demonstrates how to automate device management tasks in Node-RED, such as firmware updates and configuration changes.\n\n## Components Used\n- MQTT In node: To receive commands from a management system.\n- Function node: To process the commands and generate responses.\n- MQTT Out node: To send commands to the devices.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In node with the appropriate broker settings and topic for receiving commands.\n3. Modify the Function node to process the commands and generate the appropriate responses.\n4. Configure the MQTT Out node with the appropriate broker settings and topic for sending commands to the devices.\n5. Deploy the flow.\n6. Send commands to the devices through the management system.",
+        "env": []
+    },
+    {
+        "id": "dd395fb1524023e4",
+        "type": "tab",
+        "label": "Exercise 19: Implementing Geofencing",
+        "disabled": false,
+        "info": "# Implementing Geofencing\n\nThis flow demonstrates how to implement geofencing in Node-RED to trigger actions based on the location of a device.\n\n## Components Used\n- MQTT In node: To receive GPS coordinates from a device.\n- Function node: To check if the device is within the geofence.\n- HTTP Request node: To send a notification when the device enters or exits the geofence.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In node with the appropriate broker settings and topic for receiving GPS coordinates.\n3. Modify the Function node to define the geofence and check if the device is within the geofence.\n4. Configure the HTTP Request node with the appropriate URL and headers for sending notifications.\n5. Deploy the flow.\n6. Simulate the device entering and exiting the geofence by publishing GPS coordinates to the MQTT topic.",
+        "env": []
+    },
+    {
+        "id": "d44e7fd934e25d61",
+        "type": "tab",
+        "label": "Exercise 20: Predictive Maintenance with Machine Learning",
+        "disabled": false,
+        "info": "# Predictive Maintenance with Machine Learning\n\nThis flow demonstrates how to use machine learning for predictive maintenance in Node-RED. It receives sensor data from a device, uses a pre-trained machine learning model to predict failures, and sends alerts when a failure is predicted.\n\n## Components Used\n- MQTT In node: To receive sensor data from the device.\n- Function node: To preprocess the data and make predictions using the machine learning model.\n- Database Out node: To store the predictions.\n- Alerting node: To send alerts when a failure is predicted.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In node with the appropriate broker settings and topic for receiving sensor data.\n3. Modify the Function node to preprocess the data and make predictions using the machine learning model.\n   - Replace the placeholder code with your actual machine learning model.\n4. Configure the Database Out node with the appropriate database settings for storing the predictions.\n5. Configure the Alerting node to send alerts when a failure is predicted.\n6. Deploy the flow.\n7. Send sensor data to the device's MQTT topic and observe the predictions and alerts.",
+        "env": []
+    },
+    {
+        "id": "mqtt-config",
+        "type": "mqtt-broker",
+        "name": "Workshop MQTT Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "node-red-client",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60"
+    },
+    {
+        "id": "mqtt-broker",
+        "type": "mqtt-broker",
+        "name": "Local MQTT Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "ws-server",
+        "type": "websocket-listener",
+        "path": "/ws/chat",
+        "wholemsg": "false"
+    },
+    {
+        "id": "067eaf4504443523",
+        "type": "mqtt-broker",
+        "name": "Local MQTT Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "3796efefee87493c",
+        "type": "websocket-listener",
+        "path": "/ws/sensor",
+        "wholemsg": "false"
+    },
+    {
+        "id": "broker-config",
+        "type": "mqtt-broker",
+        "name": "Local MQTT Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "tls-config",
+        "type": "tls-config",
+        "name": "TLS Configuration",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "",
+        "verifyservercert": true
+    },
+    {
+        "id": "mqtt-broker-tls",
+        "type": "mqtt-broker",
+        "name": "MQTT Broker with TLS",
+        "broker": "localhost",
+        "port": "8883",
+        "tls": "tls-config",
+        "clientid": "",
+        "usetls": true,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "4078fd34187d24c0",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "sensordata",
+        "name": "Local InfluxDB",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.8",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "4614d888fe7451e1",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "mydb",
+        "name": "InfluxDB",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "eb86a009306470d2",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "mydb",
+        "name": "InfluxDB",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "dashboard-tab",
+        "type": "ui_tab",
+        "name": "IoT Dashboard",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "ui-tab",
+        "type": "ui_tab",
+        "name": "WebSocket Demo",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "dashboard_tab",
+        "type": "ui_tab",
+        "name": "IoT Workshop",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "048501750b7f5d83",
+        "type": "ui_tab",
+        "name": "Data Logging",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "2ec0e8aa4ed9aae8",
+        "type": "ui_tab",
+        "name": "Digital Twin",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "dashboard-group",
+        "type": "ui_group",
+        "name": "Sensor Dashboard",
+        "tab": "dashboard-tab",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "websocket-ui",
+        "type": "ui_group",
+        "name": "WebSocket Chat",
+        "tab": "ui-tab",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "dashboard_group",
+        "type": "ui_group",
+        "name": "Temperature Monitoring",
+        "tab": "dashboard_tab",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "f3da34785f87fb65",
+        "type": "ui_group",
+        "name": "Sensor Logging",
+        "tab": "dashboard-tab",
+        "order": 1,
+        "disp": true,
+        "width": "12",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "180ee6d2d2b8686a",
+        "type": "ui_group",
+        "name": "Digital Twin",
+        "tab": "dashboard-tab",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "8f2c490fde6cfbb0",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-light",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#097479",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#0094CE",
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#0094CE",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#fafafa",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#1bbfff",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#0094ce",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Node-RED Dashboard",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "DD/MM/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "mqtt-publish",
+        "type": "mqtt out",
+        "z": "mqtt-communication-flow",
+        "name": "Publish to Topic",
+        "topic": "workshop/test",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt-config",
+        "x": 510,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "mqtt-subscribe",
+        "type": "mqtt in",
+        "z": "mqtt-communication-flow",
+        "name": "Subscribe to Topic",
+        "topic": "workshop/test",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "mqtt-config",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 200,
+        "y": 320,
+        "wires": [
+            [
+                "mqtt-debug"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-inject",
+        "type": "inject",
+        "z": "mqtt-communication-flow",
+        "name": "Message Generator",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "workshop/test",
+        "payload": "{\"sensor\":\"temperature\",\"value\":25.5,\"unit\":\"C\",\"timestamp\":\"${{new Date().toISOString()}}\"}",
+        "payloadType": "json",
+        "x": 210,
+        "y": 240,
+        "wires": [
+            [
+                "mqtt-publish",
+                "inject-debug"
+            ]
+        ]
+    },
+    {
+        "id": "inject-debug",
+        "type": "debug",
+        "z": "mqtt-communication-flow",
+        "name": "Published Message",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "mqtt-debug",
+        "type": "debug",
+        "z": "mqtt-communication-flow",
+        "name": "Received Message",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 510,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "info-comment",
+        "type": "comment",
+        "z": "mqtt-communication-flow",
+        "name": "Exercise 1: Basic MQTT Communication",
+        "info": "## เกี่ยวกับ MQTT\n\nMQTT (Message Queuing Telemetry Transport) เป็นโปรโตคอลการสื่อสารแบบ publish-subscribe ที่เหมาะสำหรับ IoT\n\n### ส่วนประกอบหลัก\n- **Publisher**: ผู้ส่งข้อมูล\n- **Subscriber**: ผู้รับข้อมูล\n- **Broker**: ตัวกลางในการจัดการข้อมูล\n- **Topic**: หัวข้อที่ใช้ในการกำหนดเส้นทางข้อมูล\n\n### ระดับคุณภาพการให้บริการ (QoS)\n- QoS 0: ส่งครั้งเดียว ไม่มีการยืนยัน\n- QoS 1: ส่งอย่างน้อย 1 ครั้ง มีการยืนยัน\n- QoS 2: ส่งแค่ครั้งเดียวเท่านั้น มีการยืนยันซับซ้อน",
+        "x": 270,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "manual-publish",
+        "type": "inject",
+        "z": "mqtt-communication-flow",
+        "name": "Manual Input",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "workshop/test",
+        "payload": "",
+        "payloadType": "str",
+        "x": 190,
+        "y": 180,
+        "wires": [
+            [
+                "mqtt-publish",
+                "inject-debug"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-subscribe-all",
+        "type": "mqtt in",
+        "z": "mqtt-communication-flow",
+        "name": "Subscribe to All Workshop Topics",
+        "topic": "workshop/#",
+        "qos": "0",
+        "datatype": "auto",
+        "broker": "mqtt-config",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 380,
+        "wires": [
+            [
+                "all-topics-debug"
+            ]
+        ]
+    },
+    {
+        "id": "all-topics-debug",
+        "type": "debug",
+        "z": "mqtt-communication-flow",
+        "name": "All Topics Messages",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 520,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "wildcard-comment",
+        "type": "comment",
+        "z": "mqtt-communication-flow",
+        "name": "Using Wildcards in MQTT Topics",
+        "info": "## การใช้ Wildcards ใน MQTT\n\n- **Single-level wildcard (+)**: แทนที่เพียงหนึ่งระดับใน topic hierarchy\n  - ตัวอย่าง: `home/+/temperature` จะรับ `home/livingroom/temperature` แต่ไม่รับ `home/livingroom/kitchen/temperature`\n\n- **Multi-level wildcard (#)**: แทนที่ได้หลายระดับใน topic hierarchy\n  - ตัวอย่าง: `home/#` จะรับทุก topic ที่เริ่มต้นด้วย `home/`\n\nแนวปฏิบัติที่ดี: ใช้ topic hierarchy ที่มีความหมาย เช่น `location/device/measurement`",
+        "x": 230,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "mqtt-temperature",
+        "type": "mqtt in",
+        "z": "exercise2-flow",
+        "name": "Temperature Sensor",
+        "topic": "sensor/temperature",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "inputs": 0,
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "process-temp",
+                "debug-temp"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-humidity",
+        "type": "mqtt in",
+        "z": "exercise2-flow",
+        "name": "Humidity Sensor",
+        "topic": "sensor/humidity",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "inputs": 0,
+        "x": 150,
+        "y": 200,
+        "wires": [
+            [
+                "process-humidity",
+                "debug-humidity"
+            ]
+        ]
+    },
+    {
+        "id": "process-temp",
+        "type": "function",
+        "z": "exercise2-flow",
+        "name": "Process Temperature",
+        "func": "// Extract temperature value from MQTT message\n// Expecting format: {\"value\": 25}\nlet temperature = msg.payload.value;\n\n// Add timestamp for chart\nmsg.payload = temperature;\nmsg.topic = \"temperature\";\n\n// Add timestamp for charts\nmsg.timestamp = new Date().getTime();\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 390,
+        "y": 110,
+        "wires": [
+            [
+                "temperature-gauge",
+                "temperature-chart"
+            ]
+        ]
+    },
+    {
+        "id": "process-humidity",
+        "type": "function",
+        "z": "exercise2-flow",
+        "name": "Process Humidity",
+        "func": "// Extract humidity value from MQTT message\n// Expecting format: {\"value\": 60}\nlet humidity = msg.payload.value;\n\n// Format for dashboard\nmsg.payload = humidity;\nmsg.topic = \"humidity\";\n\n// Add timestamp for charts\nmsg.timestamp = new Date().getTime();\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 390,
+        "y": 210,
+        "wires": [
+            [
+                "humidity-gauge",
+                "humidity-chart"
+            ]
+        ]
+    },
+    {
+        "id": "debug-temp",
+        "type": "debug",
+        "z": "exercise2-flow",
+        "name": "Debug Temperature",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 50,
+        "wires": []
+    },
+    {
+        "id": "debug-humidity",
+        "type": "debug",
+        "z": "exercise2-flow",
+        "name": "Debug Humidity",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 270,
+        "wires": []
+    },
+    {
+        "id": "mqtt-simulator",
+        "type": "inject",
+        "z": "exercise2-flow",
+        "name": "Simulator",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 340,
+        "wires": [
+            [
+                "generate-sensor-data"
+            ]
+        ]
+    },
+    {
+        "id": "generate-sensor-data",
+        "type": "function",
+        "z": "exercise2-flow",
+        "name": "Generate Random Data",
+        "func": "// Generate random temperature between 20-35°C\nconst temp = 20 + Math.random() * 15;\nconst tempMsg = {\n    topic: \"sensor/temperature\",\n    payload: { value: Math.round(temp * 10) / 10 }\n};\n\n// Generate random humidity between 40-80%\nconst humidity = 40 + Math.random() * 40;\nconst humidityMsg = {\n    topic: \"sensor/humidity\",\n    payload: { value: Math.round(humidity) }\n};\n\n// Send both messages\nreturn [tempMsg, humidityMsg];",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 370,
+        "y": 350,
+        "wires": [
+            [
+                "mqtt-out-temp"
+            ],
+            [
+                "mqtt-out-humidity"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-out-temp",
+        "type": "mqtt out",
+        "z": "exercise2-flow",
+        "name": "Publish Temperature",
+        "topic": "sensor/temperature",
+        "qos": "",
+        "retain": "",
+        "broker": "mqtt-broker",
+        "x": 630,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "mqtt-out-humidity",
+        "type": "mqtt out",
+        "z": "exercise2-flow",
+        "name": "Publish Humidity",
+        "topic": "sensor/humidity",
+        "qos": "",
+        "retain": "",
+        "broker": "mqtt-broker",
+        "x": 630,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "temperature-gauge",
+        "type": "ui_gauge",
+        "z": "exercise2-flow",
+        "name": "Temperature Gauge",
+        "group": "dashboard-group",
+        "order": 1,
+        "width": "6",
+        "height": "6",
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "50",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "25",
+        "seg2": "35",
+        "x": 620,
+        "y": 90,
+        "wires": []
+    },
+    {
+        "id": "humidity-gauge",
+        "type": "ui_gauge",
+        "z": "exercise2-flow",
+        "name": "Humidity Gauge",
+        "group": "dashboard-group",
+        "order": 3,
+        "width": "6",
+        "height": "6",
+        "gtype": "gage",
+        "title": "Humidity",
+        "label": "%",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#ca3838",
+            "#e6e600",
+            "#00b500"
+        ],
+        "seg1": "30",
+        "seg2": "50",
+        "x": 620,
+        "y": 190,
+        "wires": []
+    },
+    {
+        "id": "temperature-chart",
+        "type": "ui_chart",
+        "z": "exercise2-flow",
+        "name": "Temperature Chart",
+        "group": "dashboard-group",
+        "order": 2,
+        "width": "12",
+        "height": "6",
+        "label": "Temperature History",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Waiting for data...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "50",
+        "removeOlder": "10",
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "x": 620,
+        "y": 130,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "humidity-chart",
+        "type": "ui_chart",
+        "z": "exercise2-flow",
+        "name": "Humidity Chart",
+        "group": "dashboard-group",
+        "order": 4,
+        "width": "12",
+        "height": "6",
+        "label": "Humidity History",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Waiting for data...",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": "10",
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "x": 620,
+        "y": 230,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "websocket-in",
+        "type": "websocket in",
+        "z": "exercise3-flow",
+        "name": "WebSocket Receive",
+        "server": "ws-server",
+        "client": "",
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "process-incoming-msg",
+                "debug-incoming"
+            ]
+        ]
+    },
+    {
+        "id": "websocket-out",
+        "type": "websocket out",
+        "z": "exercise3-flow",
+        "name": "WebSocket Send",
+        "server": "ws-server",
+        "client": "",
+        "x": 1110,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "process-incoming-msg",
+        "type": "function",
+        "z": "exercise3-flow",
+        "name": "Process Incoming Message",
+        "func": "// Handle different message formats (string or object)\nlet message;\n\ntry {\n    // Check if the payload is already a string\n    if (typeof msg.payload === 'string') {\n        message = msg.payload;\n    } else if (typeof msg.payload === 'object') {\n        // Try to convert object to string\n        message = JSON.stringify(msg.payload);\n    } else {\n        message = \"\" + msg.payload; // Convert to string\n    }\n\n    // Create a formatted message with timestamp\n    const timestamp = new Date().toLocaleTimeString();\n    const formattedMsg = {\n        payload: {\n            message: message,\n            timestamp: timestamp,\n            source: \"external\"\n        }\n    };\n    \n    // Send formatted message to UI\n    return formattedMsg;\n} catch (e) {\n    node.error(\"Error processing message: \" + e.toString(), msg);\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 230,
+        "wires": [
+            [
+                "ui-received-msg",
+                "broadcast-message"
+            ]
+        ]
+    },
+    {
+        "id": "debug-incoming",
+        "type": "debug",
+        "z": "exercise3-flow",
+        "name": "Debug Incoming",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 170,
+        "wires": []
+    },
+    {
+        "id": "debug-outgoing",
+        "type": "debug",
+        "z": "exercise3-flow",
+        "name": "Debug Outgoing",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 410,
+        "wires": []
+    },
+    {
+        "id": "prepare-outgoing-msg",
+        "type": "function",
+        "z": "exercise3-flow",
+        "name": "Prepare Outgoing Message",
+        "func": "// Create message object for broadcast\nconst message = msg.payload;\nconst timestamp = new Date().toLocaleTimeString();\n\n// Create a message object to be sent via WebSocket\nconst wsMessage = {\n    payload: {\n        message: message,\n        timestamp: timestamp,\n        source: \"ui\"\n    }\n};\n\n// Also create a formatted message for UI display\nconst uiMessage = {\n    payload: wsMessage.payload\n};\n\n// Return both messages: [0] for UI, [1] for WebSocket broadcast\nreturn [uiMessage, wsMessage];",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 500,
+        "y": 300,
+        "wires": [
+            [
+                "ui-received-msg"
+            ],
+            [
+                "debug-outgoing",
+                "broadcast-message"
+            ]
+        ]
+    },
+    {
+        "id": "clear-messages",
+        "type": "function",
+        "z": "exercise3-flow",
+        "name": "Clear Messages",
+        "func": "// Send an empty message with a special command to clear the UI\nreturn {\n    payload: {\n        command: \"clear\"\n    },\n    topic: \"clear\"\n};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 540,
+        "y": 380,
+        "wires": [
+            [
+                "ui-received-msg"
+            ]
+        ]
+    },
+    {
+        "id": "broadcast-message",
+        "type": "function",
+        "z": "exercise3-flow",
+        "name": "Format for Broadcast",
+        "func": "// Convert message object back to string for WebSocket broadcast\nif (typeof msg.payload === 'object') {\n    try {\n        msg.payload = JSON.stringify(msg.payload);\n    } catch (e) {\n        msg.payload = \"Error serializing message\";\n        node.error(\"Error serializing message: \" + e.toString(), msg);\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 840,
+        "y": 340,
+        "wires": [
+            [
+                "websocket-out"
+            ]
+        ]
+    },
+    {
+        "id": "ui-clear-btn",
+        "type": "ui_button",
+        "z": "exercise3-flow",
+        "name": "Clear Button",
+        "group": "websocket-ui",
+        "order": 3,
+        "width": "3",
+        "height": "1",
+        "passthru": false,
+        "label": "Clear Messages",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "clear",
+        "payload": "clear",
+        "payloadType": "str",
+        "topic": "clear",
+        "topicType": "str",
+        "x": 170,
+        "y": 380,
+        "wires": [
+            [
+                "clear-messages"
+            ]
+        ]
+    },
+    {
+        "id": "ui-send-msg",
+        "type": "ui_text_input",
+        "z": "exercise3-flow",
+        "name": "Message Input",
+        "label": "Send Message",
+        "tooltip": "",
+        "group": "websocket-ui",
+        "order": 1,
+        "width": "6",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": "1000",
+        "topic": "topic",
+        "sendOnBlur": false,
+        "className": "",
+        "topicType": "str",
+        "x": 180,
+        "y": 300,
+        "wires": [
+            [
+                "prepare-outgoing-msg"
+            ]
+        ]
+    },
+    {
+        "id": "ui-received-msg",
+        "type": "ui_template",
+        "z": "exercise3-flow",
+        "group": "websocket-ui",
+        "name": "Message Display",
+        "order": 2,
+        "width": "12",
+        "height": "8",
+        "format": "<div id=\"messages\" style=\"height: 250px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;\">\n</div>\n\n<script>\n(function(scope) {\n    // Function to add new message to the display\n    function addMessage(payload) {\n        if (!payload) return;\n        \n        const messagesDiv = document.getElementById('messages');\n        const msgDiv = document.createElement('div');\n        msgDiv.className = 'message ' + (payload.source || 'unknown');\n        msgDiv.style.marginBottom = '8px';\n        msgDiv.style.padding = '8px';\n        msgDiv.style.borderRadius = '4px';\n        \n        // Different background for different sources\n        if (payload.source === 'ui') {\n            msgDiv.style.backgroundColor = '#e1f5fe';\n            msgDiv.style.textAlign = 'right';\n        } else if (payload.source === 'external') {\n            msgDiv.style.backgroundColor = '#f0f4c3';\n            msgDiv.style.textAlign = 'left';\n        }\n        \n        const time = document.createElement('span');\n        time.style.fontSize = '0.8em';\n        time.style.color = '#666';\n        time.textContent = payload.timestamp;\n        \n        const content = document.createElement('div');\n        content.style.marginTop = '4px';\n        content.textContent = payload.message;\n        \n        msgDiv.appendChild(time);\n        msgDiv.appendChild(content);\n        messagesDiv.appendChild(msgDiv);\n        \n        // Auto-scroll to bottom\n        messagesDiv.scrollTop = messagesDiv.scrollHeight;\n    }\n    \n    // Listen for new messages\n    scope.$watch('msg', function(msg) {\n        if (msg && msg.payload) {\n            addMessage(msg.payload);\n        }\n    });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 900,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ui-info",
+        "type": "ui_template",
+        "z": "exercise3-flow",
+        "group": "websocket-ui",
+        "name": "Instructions",
+        "order": 0,
+        "width": "12",
+        "height": "1",
+        "format": "<div style=\"background-color: #ffecb3; padding: 10px; border-radius: 5px; margin-bottom: 10px;\">\n    <strong>WebSocket Communication Example</strong><br>\n    You can also connect to this WebSocket server with an external client at: <code>ws://localhost:1880/ws/chat</code>\n</div>",
+        "storeOutMessages": false,
+        "fwdInMessages": false,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 180,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "41352ddf78268ea7",
+        "type": "mqtt in",
+        "z": "fda11d11b107d05e",
+        "name": "Subscribe to MQTT Topic",
+        "topic": "sensor/data",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "067eaf4504443523",
+        "nl": false,
+        "inputs": 0,
+        "x": 180,
+        "y": 120,
+        "wires": [
+            [
+                "0a3f5d457cf76783",
+                "4b6c4a68d6180204"
+            ]
+        ]
+    },
+    {
+        "id": "0a3f5d457cf76783",
+        "type": "function",
+        "z": "fda11d11b107d05e",
+        "name": "Transform Data",
+        "func": "// แปลงรูปแบบข้อมูลจาก MQTT สู่รูปแบบที่ WebSocket ต้องการ\n// เพิ่ม timestamp และฟอร์แมตข้อมูลให้เหมาะสม\n\nlet data = msg.payload;\n\n// เพิ่ม timestamp ปัจจุบัน\ndata.timestamp = new Date().toISOString();\n\n// สร้าง message ใหม่เพื่อส่งไปยัง WebSocket\nmsg.payload = {\n    source: \"mqtt\",\n    topic: msg.topic,\n    data: data\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 120,
+        "wires": [
+            [
+                "e5dff1100b976783",
+                "d06d64746097cb99"
+            ]
+        ]
+    },
+    {
+        "id": "e5dff1100b976783",
+        "type": "websocket out",
+        "z": "fda11d11b107d05e",
+        "name": "Send to WebSocket",
+        "server": "3796efefee87493c",
+        "client": "",
+        "x": 600,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "4b6c4a68d6180204",
+        "type": "debug",
+        "z": "fda11d11b107d05e",
+        "name": "MQTT Input",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 380,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "d06d64746097cb99",
+        "type": "debug",
+        "z": "fda11d11b107d05e",
+        "name": "WebSocket Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "98dab6cdfd7688dd",
+        "type": "inject",
+        "z": "fda11d11b107d05e",
+        "name": "Test Data",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "sensor/data",
+        "payload": "{\"temperature\":25.5,\"humidity\":60,\"deviceId\":\"device001\"}",
+        "payloadType": "json",
+        "x": 150,
+        "y": 180,
+        "wires": [
+            [
+                "0a3f5d457cf76783"
+            ]
+        ]
+    },
+    {
+        "id": "7c6947c25cfe5c0b",
+        "type": "comment",
+        "z": "fda11d11b107d05e",
+        "name": "MQTT to WebSocket Bridge Exercise",
+        "info": "# MQTT to WebSocket Bridge\n\nFlow นี้แสดงการรับข้อมูลจาก MQTT topic และส่งต่อไปยัง WebSocket endpoint\n\n## วิธีใช้งาน\n1. ตั้งค่า MQTT Broker ในโหนด 'Subscribe to MQTT Topic'\n2. ตั้งค่า WebSocket Server ในโหนด 'Send to WebSocket'\n3. ปรับแต่ง transformation function ตามความต้องการ\n4. ทดสอบโดยใช้ปุ่ม 'Test Data' หรือส่งข้อมูลจริงผ่าน MQTT Broker\n\nหมายเหตุ: WebSocket client สามารถเชื่อมต่อที่ ws://[server-ip]:[port]/ws/sensor",
+        "x": 230,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "mqtt-temp-in",
+        "type": "mqtt in",
+        "z": "temp-monitoring-flow",
+        "name": "Temperature Data",
+        "topic": "sensor/temperature",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "broker-config",
+        "nl": false,
+        "inputs": 0,
+        "x": 180,
+        "y": 260,
+        "wires": [
+            [
+                "extract-temp",
+                "debug1"
+            ]
+        ]
+    },
+    {
+        "id": "extract-temp",
+        "type": "function",
+        "z": "temp-monitoring-flow",
+        "name": "Extract Temperature",
+        "func": "// ดึงค่าอุณหภูมิจากข้อความ MQTT\n// สมมติว่าข้อความอยู่ในรูปแบบ {\"temperature\": 25.5, \"deviceId\": \"device001\"}\n\nlet temperature;\n\nif (typeof msg.payload === 'object') {\n    // ถ้าเป็น object ให้ดึงค่า temperature\n    temperature = msg.payload.temperature;\n} else {\n    // พยายามแปลง string เป็น object\n    try {\n        const data = JSON.parse(msg.payload);\n        temperature = data.temperature;\n    } catch(e) {\n        // ถ้าแปลงไม่ได้ ให้ใช้ค่าที่ได้โดยตรง\n        temperature = Number(msg.payload);\n    }\n}\n\n// ตรวจสอบว่าค่าอุณหภูมิถูกต้องหรือไม่\nif (isNaN(temperature)) {\n    node.warn(\"Invalid temperature data\");\n    return null;\n}\n\n// สร้าง message ใหม่ที่มีแค่ค่า temperature\nmsg.payload = temperature;\n\n// เก็บข้อมูลทั้งหมดไว้ในตัวแปรอื่นเผื่อต้องใช้\nmsg.fullData = msg.payload;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 260,
+        "wires": [
+            [
+                "gauge",
+                "chart",
+                "temp-check"
+            ]
+        ]
+    },
+    {
+        "id": "temp-check",
+        "type": "switch",
+        "z": "temp-monitoring-flow",
+        "name": "Check Temperature",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "30",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 730,
+        "y": 280,
+        "wires": [
+            [
+                "create-alert"
+            ]
+        ]
+    },
+    {
+        "id": "create-alert",
+        "type": "function",
+        "z": "temp-monitoring-flow",
+        "name": "Create Alert",
+        "func": "// สร้างข้อความแจ้งเตือนเมื่ออุณหภูมิสูงเกินกำหนด\n\nconst temperature = msg.payload;\nconst threshold = 30;\n\n// สร้างข้อความแจ้งเตือน\nmsg.payload = {\n    title: \"Temperature Alert\",\n    message: `Temperature (${temperature}°C) has exceeded threshold (${threshold}°C)!`,\n    severity: temperature >= 35 ? \"danger\" : \"warning\"\n};\n\n// บันทึกเวลาที่เกิดการแจ้งเตือน\nmsg.alertTime = new Date().toISOString();\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 320,
+        "wires": [
+            [
+                "notification",
+                "debug2"
+            ]
+        ]
+    },
+    {
+        "id": "debug1",
+        "type": "debug",
+        "z": "temp-monitoring-flow",
+        "name": "Raw Temperature Data",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "debug2",
+        "type": "debug",
+        "z": "temp-monitoring-flow",
+        "name": "Alert Data",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "inject-random",
+        "type": "inject",
+        "z": "temp-monitoring-flow",
+        "name": "Simulate Temperature",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "sensor/temperature",
+        "payload": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 480,
+        "wires": [
+            [
+                "generate-random-temp"
+            ]
+        ]
+    },
+    {
+        "id": "generate-random-temp",
+        "type": "function",
+        "z": "temp-monitoring-flow",
+        "name": "Generate Random Temperature",
+        "func": "// สร้างค่าอุณหภูมิสุ่มเพื่อจำลองข้อมูลจากเซนเซอร์\n\n// ค่าเริ่มต้นถ้ายังไม่มีค่าก่อนหน้า\nif (!context.lastTemp) {\n    context.lastTemp = 25;\n}\n\n// สุ่มค่าอุณหภูมิใหม่โดยให้ค่าไม่เปลี่ยนแปลงเกิน +/- 2 องศา\nconst min = context.lastTemp - 2;\nconst max = context.lastTemp + 2;\nconst randomTemp = Math.random() * (max - min) + min;\n\n// ป้องกันไม่ให้ค่าต่ำเกินไปหรือสูงเกินไป\nconst temperature = Math.max(10, Math.min(45, randomTemp));\n\n// เก็บค่าปัจจุบันเพื่อใช้ในครั้งถัดไป\ncontext.lastTemp = temperature;\n\n// สร้างข้อมูลจำลองในรูปแบบที่เหมือนข้อมูลจริง\nmsg.payload = {\n    temperature: Number(temperature.toFixed(1)),\n    humidity: Math.floor(Math.random() * 30) + 50,\n    deviceId: \"simulator-001\",\n    timestamp: new Date().toISOString()\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 470,
+        "y": 480,
+        "wires": [
+            [
+                "mqtt-out",
+                "extract-temp"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-out",
+        "type": "mqtt out",
+        "z": "temp-monitoring-flow",
+        "name": "Publish Temperature",
+        "topic": "sensor/temperature",
+        "qos": "1",
+        "retain": "false",
+        "broker": "broker-config",
+        "x": 800,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "info-node",
+        "type": "comment",
+        "z": "temp-monitoring-flow",
+        "name": "Temperature Monitoring System",
+        "info": "# Temperature Monitoring System\n\n## วิธีใช้งาน\n1. Flow นี้รับข้อมูลอุณหภูมิผ่าน MQTT topic 'sensor/temperature'\n2. แสดงผลข้อมูลบน Dashboard ในรูปแบบ gauge และกราฟเส้น\n3. ตั้งค่า threshold ที่ 30°C สำหรับการแจ้งเตือน\n4. มีการจำลองข้อมูลอุณหภูมิทุก 5 วินาที\n\n## การปรับแต่ง\n- เปลี่ยนค่า threshold ในโหนด 'Check Temperature' และ 'Create Alert'\n- ปรับการแสดงผลของ Dashboard ใน UI group\n- เปลี่ยนช่วงเวลาในการจำลองข้อมูลที่โหนด 'Simulate Temperature'\n\n## การเชื่อมต่อกับเซ็นเซอร์จริง\nในการใช้งานจริง สามารถเชื่อมต่อกับเซ็นเซอร์วัดอุณหภูมิที่ส่งข้อมูลผ่าน MQTT ได้โดยตรง โดยอาจจะไม่จำเป็นต้องใช้ส่วนจำลองข้อมูล",
+        "x": 230,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "gauge",
+        "type": "ui_gauge",
+        "z": "temp-monitoring-flow",
+        "name": "Temperature Gauge",
+        "group": "dashboard_group",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Current Temperature",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "50",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "25",
+        "seg2": "35",
+        "className": "",
+        "x": 750,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "chart",
+        "type": "ui_chart",
+        "z": "temp-monitoring-flow",
+        "name": "Temperature Chart",
+        "group": "dashboard_group",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Temperature History",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "50",
+        "removeOlder": "10",
+        "removeOlderPoints": "",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 750,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "notification",
+        "type": "ui_toast",
+        "z": "temp-monitoring-flow",
+        "position": "top right",
+        "displayTime": "5",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "Alert Notification",
+        "x": 950,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "abba0bd981319375",
+        "type": "mqtt in",
+        "z": "41316e31f4cb9310",
+        "name": "Temperature Data",
+        "topic": "sensor/temperature",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "inputs": 0,
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "ef0662a73593a091",
+                "add1d781e701aa7e"
+            ]
+        ]
+    },
+    {
+        "id": "be9fdbc6c333a2c7",
+        "type": "mqtt in",
+        "z": "41316e31f4cb9310",
+        "name": "Humidity Data",
+        "topic": "sensor/humidity",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "inputs": 0,
+        "x": 160,
+        "y": 180,
+        "wires": [
+            [
+                "ef0662a73593a091",
+                "add1d781e701aa7e"
+            ]
+        ]
+    },
+    {
+        "id": "0c54f98fa6a36ee2",
+        "type": "mqtt in",
+        "z": "41316e31f4cb9310",
+        "name": "Pressure Data",
+        "topic": "sensor/pressure",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "inputs": 0,
+        "x": 160,
+        "y": 240,
+        "wires": [
+            [
+                "ef0662a73593a091",
+                "add1d781e701aa7e"
+            ]
+        ]
+    },
+    {
+        "id": "ef0662a73593a091",
+        "type": "function",
+        "z": "41316e31f4cb9310",
+        "name": "Transform for InfluxDB",
+        "func": "// แปลงข้อมูลจาก MQTT ให้อยู่ในรูปแบบที่ InfluxDB ต้องการ\n// InfluxDB ต้องการข้อมูลในรูปแบบที่มี measurement, tags, fields และ timestamp\n\n// ดึงข้อมูลจาก topic และ payload\nconst topic = msg.topic;\nlet value;\nlet sensorType;\nlet deviceId = \"unknown\";\n\n// พิจารณาจาก topic ว่าเป็นเซ็นเซอร์ประเภทไหน\nif (topic.includes('temperature')) {\n    sensorType = 'temperature';\n} else if (topic.includes('humidity')) {\n    sensorType = 'humidity';\n} else if (topic.includes('pressure')) {\n    sensorType = 'pressure';\n} else {\n    sensorType = 'unknown';\n}\n\n// แปลง payload ตามรูปแบบที่เข้ามา\nif (typeof msg.payload === 'object') {\n    // ถ้าข้อมูลเป็น object\n    value = msg.payload.value || msg.payload.data || msg.payload[sensorType];\n    deviceId = msg.payload.deviceId || msg.payload.device || \"device001\";\n} else if (!isNaN(msg.payload)) {\n    // ถ้าข้อมูลเป็นตัวเลข\n    value = Number(msg.payload);\n} else {\n    // พยายามแปลงเป็น JSON หากเป็น string\n    try {\n        const data = JSON.parse(msg.payload);\n        value = data.value || data.data || data[sensorType];\n        deviceId = data.deviceId || data.device || \"device001\";\n    } catch (e) {\n        // หากแปลงไม่ได้ ใช้ค่าเดิม\n        value = msg.payload;\n    }\n}\n\n// ตรวจสอบว่าได้ค่าที่เป็นตัวเลขหรือไม่\nif (isNaN(value)) {\n    node.warn(\"Invalid sensor data received: \" + value);\n    return null;\n}\n\n// สร้างข้อมูลสำหรับ InfluxDB\n// format: [measurement,tag1=value1,tag2=value2 field1=value1,field2=value2 timestamp]\nmsg.payload = [\n    {\n        measurement: \"sensor_data\", // ชื่อตารางใน InfluxDB\n        tags: {\n            sensor_type: sensorType, // ประเภทเซ็นเซอร์เป็น tag\n            device_id: deviceId     // ID อุปกรณ์เป็น tag\n        },\n        fields: {\n            value: Number(value)     // ค่าที่วัดได้เป็น field\n        },\n        timestamp: new Date().getTime() * 1000000 // เวลาปัจจุบันในหน่วย nanoseconds (InfluxDB ใช้ nanoseconds)\n    }\n];\n\n// ส่งค่าไปบันทึกใน InfluxDB และแสดงใน Dashboard\nreturn [msg, {payload: Number(value), topic: sensorType, deviceId: deviceId}];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 400,
+        "y": 180,
+        "wires": [
+            [
+                "8e86dccea7bc41cc",
+                "ca0a5400aa1f4127"
+            ],
+            [
+                "2a80abb7584816a3"
+            ]
+        ]
+    },
+    {
+        "id": "add1d781e701aa7e",
+        "type": "debug",
+        "z": "41316e31f4cb9310",
+        "name": "MQTT Input Data",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "ca0a5400aa1f4127",
+        "type": "debug",
+        "z": "41316e31f4cb9310",
+        "name": "InfluxDB Format",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 640,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "2a80abb7584816a3",
+        "type": "function",
+        "z": "41316e31f4cb9310",
+        "name": "Format for Dashboard",
+        "func": "// จัดรูปแบบข้อมูลสำหรับแสดงใน Dashboard\n\nconst value = msg.payload;\nconst sensorType = msg.topic;\nconst deviceId = msg.deviceId;\n\n// สร้าง status message\nconst status = {\n    topic: \"status\",\n    payload: `Logged ${sensorType} data: ${value} from ${deviceId}`\n};\n\n// ส่งข้อมูลไปแสดงบน Dashboard ตามประเภทของเซ็นเซอร์\nlet dashboardMsg = {payload: value};\n\nreturn [dashboardMsg, status];",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 220,
+        "wires": [
+            [],
+            [
+                "0d027b2c7e89e8d6"
+            ]
+        ]
+    },
+    {
+        "id": "a6dcb53c66a3f6af",
+        "type": "inject",
+        "z": "41316e31f4cb9310",
+        "name": "Simulate Sensor Data",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 320,
+        "wires": [
+            [
+                "84c13687d38139bb"
+            ]
+        ]
+    },
+    {
+        "id": "84c13687d38139bb",
+        "type": "function",
+        "z": "41316e31f4cb9310",
+        "name": "Generate Random Sensor Data",
+        "func": "// สร้างข้อมูลเซ็นเซอร์จำลองเพื่อทดสอบ\n\n// สร้างค่าอุณหภูมิสุ่มระหว่าง 15-35°C\nconst temp = 15 + Math.random() * 20;\nconst temperature = {\n    topic: \"sensor/temperature\",\n    payload: {\n        value: Math.round(temp * 10) / 10,\n        deviceId: \"sim-device-001\",\n        timestamp: new Date().toISOString()\n    }\n};\n\n// สร้างค่าความชื้นสุ่มระหว่าง 30-90%\nconst hum = 30 + Math.random() * 60;\nconst humidity = {\n    topic: \"sensor/humidity\",\n    payload: {\n        value: Math.round(hum),\n        deviceId: \"sim-device-001\",\n        timestamp: new Date().toISOString()\n    }\n};\n\n// สร้างค่าความดันสุ่มระหว่าง 980-1020 hPa\nconst press = 980 + Math.random() * 40;\nconst pressure = {\n    topic: \"sensor/pressure\",\n    payload: {\n        value: Math.round(press * 10) / 10,\n        deviceId: \"sim-device-001\",\n        timestamp: new Date().toISOString()\n    }\n};\n\nreturn [temperature, humidity, pressure];",
+        "outputs": 3,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 320,
+        "wires": [
+            [
+                "9d860f1a3074bffd"
+            ],
+            [
+                "9d860f1a3074bffd"
+            ],
+            [
+                "9d860f1a3074bffd"
+            ]
+        ]
+    },
+    {
+        "id": "9d860f1a3074bffd",
+        "type": "mqtt out",
+        "z": "41316e31f4cb9310",
+        "name": "Publish to MQTT",
+        "topic": "",
+        "qos": "1",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt-broker",
+        "x": 650,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "a9d692641382a928",
+        "type": "comment",
+        "z": "41316e31f4cb9310",
+        "name": "InfluxDB Data Logging Exercise",
+        "info": "# Data Logging to InfluxDB\n\n## วิธีใช้งาน\n1. ตั้งค่า MQTT broker ในโหนด MQTT In\n2. ตั้งค่าเชื่อมต่อ InfluxDB ในโหนด InfluxDB Configuration\n3. เริ่มจำลองข้อมูลเซ็นเซอร์โดยคลิกที่ \"Simulate Sensor Data\"\n4. ตรวจสอบข้อมูลที่ได้รับจาก MQTT ในโหนด Debug\n5. ตรวจสอบรูปแบบข้อมูลที่ส่งไป InfluxDB\n6. ดูกราฟที่แสดงข้อมูลใน Dashboard\n\n## สำหรับการใช้งานจริงกับ InfluxDB\nFlow นี้ได้จัดเตรียมข้อมูลในรูปแบบที่เหมาะสมสำหรับการบันทึกลงใน InfluxDB แล้ว\nโดยคุณจะต้องตั้งค่าการเชื่อมต่อไปยัง InfluxDB ของคุณ โดยคลิกขวาที่โหนด \"Log to InfluxDB\" และเพิ่มการเชื่อมต่อใหม่\n\nสำหรับ InfluxDB 1.8 คุณจะต้องระบุ:\n- URL (เช่น http://localhost:8086)\n- Database name\n- Username และ Password (ถ้ามี)\n\nสำหรับ InfluxDB 2.0 คุณจะต้องระบุ:\n- URL\n- Organization\n- Bucket\n- API Token",
+        "x": 180,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "8e86dccea7bc41cc",
+        "type": "influxdb out",
+        "z": "41316e31f4cb9310",
+        "influxdb": "influxdb-config",
+        "name": "Log to InfluxDB",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organization",
+        "bucket": "bucket",
+        "x": 660,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "0d027b2c7e89e8d6",
+        "type": "ui_text",
+        "z": "41316e31f4cb9310",
+        "group": "dashboard-group",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "Status Text",
+        "label": "Latest Update",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 860,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "265a487653538f8f",
+        "type": "ui_chart",
+        "z": "41316e31f4cb9310",
+        "name": "Sensor Data Chart",
+        "group": "dashboard-group",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "label": "Sensor Data",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Waiting for data...",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": "10",
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 870,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "http-in-hello",
+        "type": "http in",
+        "z": "rest-api-flow",
+        "name": "GET /api/hello",
+        "url": "/api/hello",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "function-hello",
+                "http-response-hello"
+            ]
+        ]
+    },
+    {
+        "id": "function-hello",
+        "type": "function",
+        "z": "rest-api-flow",
+        "name": "Create Hello Message",
+        "func": "// Create a simple greeting message\nmsg.payload = \"Hello from Node-RED!\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 370,
+        "y": 100,
+        "wires": [
+            [
+                "http-response-hello"
+            ]
+        ]
+    },
+    {
+        "id": "http-response-hello",
+        "type": "http response",
+        "z": "rest-api-flow",
+        "name": "Send Hello Response",
+        "statusCode": "200",
+        "headers": {},
+        "x": 620,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "http-in-data",
+        "type": "http in",
+        "z": "rest-api-flow",
+        "name": "POST /api/data",
+        "url": "/api/data",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 200,
+        "wires": [
+            [
+                "function-data",
+                "http-response-data"
+            ]
+        ]
+    },
+    {
+        "id": "function-data",
+        "type": "function",
+        "z": "rest-api-flow",
+        "name": "Process Data",
+        "func": "// Log the received payload\nnode.warn(msg.payload);\n\n// Return the received payload as the response\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 200,
+        "wires": [
+            [
+                "http-response-data"
+            ]
+        ]
+    },
+    {
+        "id": "http-response-data",
+        "type": "http response",
+        "z": "rest-api-flow",
+        "name": "Send Data Response",
+        "statusCode": "200",
+        "headers": {},
+        "x": 620,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "mqtt-in-tls",
+        "type": "mqtt in",
+        "z": "tls-mqtt-flow",
+        "name": "MQTT In (TLS)",
+        "topic": "workshop/tls/test",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "mqtt-broker-tls",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 260,
+        "wires": [
+            [
+                "debug-in"
+            ]
+        ]
+    },
+    {
+        "id": "mqtt-out-tls",
+        "type": "mqtt out",
+        "z": "tls-mqtt-flow",
+        "name": "MQTT Out (TLS)",
+        "topic": "workshop/tls/test",
+        "qos": "0",
+        "retain": false,
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt-broker-tls",
+        "x": 420,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "inject-message",
+        "type": "inject",
+        "z": "tls-mqtt-flow",
+        "name": "Inject Message",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "workshop/tls/test",
+        "payload": "Hello from Node-RED with TLS!",
+        "payloadType": "str",
+        "x": 160,
+        "y": 180,
+        "wires": [
+            [
+                "mqtt-out-tls"
+            ]
+        ]
+    },
+    {
+        "id": "debug-in",
+        "type": "debug",
+        "z": "tls-mqtt-flow",
+        "name": "Debug In",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "comment-setup",
+        "type": "comment",
+        "z": "tls-mqtt-flow",
+        "name": "Setup Instructions",
+        "info": "## Setup Instructions\n\n1.  Configure an MQTT broker with TLS support (e.g., Mosquitto).\n2.  Generate the necessary TLS certificates (CA certificate, client certificate, and client key).\n3.  Update the `tls-config` node with the paths to your certificates.\n4.  Update the `mqtt-broker-tls` node with the correct broker address and TLS configuration.\n5.  Deploy the flow and observe the secure MQTT communication.",
+        "x": 150,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "30ae4cbd84025eb3",
+        "type": "http in",
+        "z": "709df3bcf634f771",
+        "name": "GET /protected",
+        "url": "/protected",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "f8246343e5c47328",
+                "6f9aae39b83a107d"
+            ]
+        ]
+    },
+    {
+        "id": "f8246343e5c47328",
+        "type": "function",
+        "z": "709df3bcf634f771",
+        "name": "Verify JWT",
+        "func": "const jwt = require('jsonwebtoken');\nconst jwtSecret = env.get('JWT_SECRET');\n\nconst authHeader = msg.req.headers['authorization'];\nconst token = authHeader && authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { message: 'No token provided' };\n    return [null, msg];\n}\n\ntry {\n    const decoded = jwt.verify(token, jwtSecret);\n    msg.payload = { message: 'Access granted', user: decoded };\n    return [msg, null];\n} catch (err) {\n    msg.statusCode = 403;\n    msg.payload = { message: 'Invalid token' };\n    return [null, msg];\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 350,
+        "y": 160,
+        "wires": [
+            [
+                "6f9aae39b83a107d"
+            ],
+            [
+                "3e268a173f4c6d7a"
+            ]
+        ],
+        "outputLabels": [
+            "Success",
+            "Error"
+        ]
+    },
+    {
+        "id": "6f9aae39b83a107d",
+        "type": "http response",
+        "z": "709df3bcf634f771",
+        "name": "Send Success Response",
+        "statusCode": "200",
+        "headers": {},
+        "x": 390,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "3e268a173f4c6d7a",
+        "type": "http response",
+        "z": "709df3bcf634f771",
+        "name": "Send Error Response",
+        "statusCode": "",
+        "headers": {},
+        "x": 580,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "26d38a0894966312",
+        "type": "comment",
+        "z": "709df3bcf634f771",
+        "name": "Setup Instructions",
+        "info": "## Setup Instructions\n\n1.  Set the JWT secret in the `JWT Secret` node.\n2.  Configure the HTTP In node with the desired endpoint and method.\n3.  Ensure that the client sends the JWT in the `Authorization` header (Bearer token).\n\n## Example\n\nAuthorization: Bearer <your_jwt_token>",
+        "x": 140,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "23e921bb774eb805",
+        "type": "inject",
+        "z": "709df3bcf634f771",
+        "name": "JWT Secret",
+        "props": [
+            {
+                "p": "JWT_SECRET",
+                "v": "your-secret-key",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "env",
+        "x": 140,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "86daa1cfba3b0a3e",
+        "type": "comment",
+        "z": "709df3bcf634f771",
+        "name": "JWT Secret",
+        "info": "Set the JWT secret key as an environment variable.  This is used to verify the JWT token.",
+        "x": 130,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "3127740a9af26705",
+        "type": "inject",
+        "z": "c157c1c6c555a06a",
+        "name": "Inject Message",
+        "props": [
+            {
+                "p": "payload",
+                "v": "Hello",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "f48c5fa6d80e539f"
+            ]
+        ]
+    },
+    {
+        "id": "f48c5fa6d80e539f",
+        "type": "delay",
+        "z": "c157c1c6c555a06a",
+        "name": "Rate Limit",
+        "pauseType": "rate",
+        "timeout": "1",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "false",
+        "randomLast": "",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 350,
+        "y": 160,
+        "wires": [
+            [
+                "df17bfaa2a7e8e8c"
+            ]
+        ]
+    },
+    {
+        "id": "df17bfaa2a7e8e8c",
+        "type": "debug",
+        "z": "c157c1c6c555a06a",
+        "name": "Debug Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 550,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "c774f443c407fe27",
+        "type": "comment",
+        "z": "c157c1c6c555a06a",
+        "name": "Instructions",
+        "info": "# การจำกัดอัตรา (Rate Limiting) ใน Node-RED\n\nFlow นี้แสดงการใช้การจำกัดอัตราโดยใช้โหนด Delay\n\nปรับการตั้งค่าในโหนด Delay เพื่อควบคุมอัตราที่ข้อความถูกประมวลผล\n\n- `Rate`: จำนวนข้อความที่อนุญาต\n- `per`: หน่วยเวลาสำหรับอัตรา (เช่น วินาที, นาที)\n\nในตัวอย่างนี้ อัตราถูกตั้งค่าเป็น 1 ข้อความต่อวินาที",
+        "x": 140,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "1121130263ca3ca3",
+        "type": "mqtt in",
+        "z": "a3ad1c5533341ccb",
+        "name": "MQTT In",
+        "topic": "workshop/input",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "069a18b1538d50b9"
+            ]
+        ]
+    },
+    {
+        "id": "069a18b1538d50b9",
+        "type": "function",
+        "z": "a3ad1c5533341ccb",
+        "name": "Transform Data",
+        "func": "// Example: Convert temperature from Celsius to Fahrenheit\nlet celsius = parseFloat(msg.payload);\nlet fahrenheit = (celsius * 9/5) + 32;\nmsg.payload = fahrenheit.toFixed(2);\n\n// Example: Add a unit to the payload\nmsg.payload = msg.payload + \" °F\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 160,
+        "wires": [
+            [
+                "495fc60697e4415a"
+            ]
+        ]
+    },
+    {
+        "id": "495fc60697e4415a",
+        "type": "mqtt out",
+        "z": "a3ad1c5533341ccb",
+        "name": "MQTT Out",
+        "topic": "workshop/output",
+        "qos": "0",
+        "retain": false,
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt-broker",
+        "x": 550,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "155f8a1bcb0e6c63",
+        "type": "comment",
+        "z": "a3ad1c5533341ccb",
+        "name": "Instructions",
+        "info": "# การแปลงข้อมูลแบบเรียลไทม์ใน Node-RED\n\n1.  ตั้งค่าโหนด MQTT In ด้วย topic ขาเข้า\n2.  แก้ไขโหนด Function เพื่อทำการแปลงข้อมูลตามที่ต้องการ\n3.  ตั้งค่าโหนด MQTT Out ด้วย topic ขาออก\n\nในตัวอย่างนี้ โหนด Function แปลงอุณหภูมิจาก Celsius เป็น Fahrenheit",
+        "x": 150,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "inject-data",
+        "type": "inject",
+        "z": "cloud-integration-flow",
+        "name": "Inject Data",
+        "props": [
+            {
+                "p": "payload",
+                "v": "{\"sensor\":\"temperature\",\"value\":25.5}",
+                "vt": "json"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "http-request"
+            ]
+        ]
+    },
+    {
+        "id": "http-request",
+        "type": "http request",
+        "z": "cloud-integration-flow",
+        "name": "Send to Cloud",
+        "method": "POST",
+        "ret": "obj",
+        "url": "https://example.com/api/data",
+        "x": 350,
+        "y": 160,
+        "wires": [
+            [
+                "debug-response"
+            ]
+        ]
+    },
+    {
+        "id": "debug-response",
+        "type": "debug",
+        "z": "cloud-integration-flow",
+        "name": "Debug Response",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "comment-instructions",
+        "type": "comment",
+        "z": "cloud-integration-flow",
+        "name": "Instructions",
+        "info": "# การเชื่อมต่อกับบริการคลาวด์\n\nFlow นี้แสดงการเชื่อมต่อ Node-RED กับบริการคลาวด์\n\n1.  ตั้งค่าโหนด HTTP Request ด้วย URL ปลายทางของบริการคลาวด์\n2.  กำหนด HTTP method และ headers ตามที่บริการคลาวด์ต้องการ\n3.  Deploy flow และสังเกตข้อมูลที่ถูกส่งไปยังบริการคลาวด์และการตอบกลับที่แสดงในโหนด Debug",
+        "x": 140,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "3f3ed711dd341065",
+        "type": "http in",
+        "z": "9add7c852e4d2bf3",
+        "name": "GET /api/hello",
+        "url": "/api/hello",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 100,
+        "wires": [
+            [
+                "e8fb53d6b081031e",
+                "569e77a6b96aef83"
+            ]
+        ]
+    },
+    {
+        "id": "e8fb53d6b081031e",
+        "type": "function",
+        "z": "9add7c852e4d2bf3",
+        "name": "Create Hello Message",
+        "func": "// Create a simple greeting message\nmsg.payload = \"Hello from Node-RED!\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 380,
+        "y": 100,
+        "wires": [
+            [
+                "569e77a6b96aef83"
+            ]
+        ]
+    },
+    {
+        "id": "569e77a6b96aef83",
+        "type": "http response",
+        "z": "9add7c852e4d2bf3",
+        "name": "Send Hello Response",
+        "statusCode": "200",
+        "headers": {},
+        "x": 640,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "0e30efbcfb968350",
+        "type": "http in",
+        "z": "9add7c852e4d2bf3",
+        "name": "POST /api/data",
+        "url": "/api/data",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "e40b2844ed120962",
+                "982c7467779e91d8"
+            ]
+        ]
+    },
+    {
+        "id": "e40b2844ed120962",
+        "type": "function",
+        "z": "9add7c852e4d2bf3",
+        "name": "Process Data",
+        "func": "// Log the received payload\nnode.warn(msg.payload);\n\n// Return the received payload as the response\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 200,
+        "wires": [
+            [
+                "982c7467779e91d8"
+            ]
+        ]
+    },
+    {
+        "id": "982c7467779e91d8",
+        "type": "http response",
+        "z": "9add7c852e4d2bf3",
+        "name": "Send Data Response",
+        "statusCode": "200",
+        "headers": {},
+        "x": 640,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "f10de5234ff0cb44",
+        "type": "http in",
+        "z": "79e7e0f965806e91",
+        "name": "GET /protected",
+        "url": "/protected",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "d1248e99e0bf0b3b",
+                "471286dc4244aa4f"
+            ]
+        ]
+    },
+    {
+        "id": "d1248e99e0bf0b3b",
+        "type": "function",
+        "z": "79e7e0f965806e91",
+        "name": "Verify OAuth2 Token",
+        "func": "// Implement OAuth2 token verification logic here\n// This is a placeholder and needs to be replaced with actual verification\n\nconst authHeader = msg.req.headers['authorization'];\nconst token = authHeader && authHeader.split(' ')[1];\n\nif (!token) {\n    msg.statusCode = 401;\n    msg.payload = { message: 'No token provided' };\n    return [null, msg];\n}\n\n// Replace this with actual OAuth2 token verification\nif (token === 'valid-token') {\n    msg.payload = { message: 'Access granted', user: { id: 1, name: 'Test User' } };\n    return [msg, null];\n} else {\n    msg.statusCode = 403;\n    msg.payload = { message: 'Invalid token' };\n    return [null, msg];\n}",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 440,
+        "y": 160,
+        "wires": [
+            [
+                "471286dc4244aa4f"
+            ],
+            [
+                "92b2a0e4ee7344d2"
+            ]
+        ],
+        "outputLabels": [
+            "Success",
+            "Error"
+        ]
+    },
+    {
+        "id": "471286dc4244aa4f",
+        "type": "http response",
+        "z": "79e7e0f965806e91",
+        "name": "Send Success Response",
+        "statusCode": "200",
+        "headers": {},
+        "x": 460,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "92b2a0e4ee7344d2",
+        "type": "http response",
+        "z": "79e7e0f965806e91",
+        "name": "Send Error Response",
+        "statusCode": "",
+        "headers": {},
+        "x": 660,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "7cdfab1d1e9dc9a5",
+        "type": "comment",
+        "z": "79e7e0f965806e91",
+        "name": "Setup Instructions",
+        "info": "## Setup Instructions\n\n1.  Configure the HTTP In node with the desired endpoint and method.\n2.  Implement the OAuth2 token verification logic in the `Verify OAuth2 Token` node.\n3.  Ensure that the client obtains an access token from the OAuth2 provider and sends it in the `Authorization` header (Bearer token).\n\n## Example\n\nAuthorization: Bearer <your_access_token>",
+        "x": 150,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "448bde6247759852",
+        "type": "inject",
+        "z": "79e7e0f965806e91",
+        "name": "OAuth2 Configuration",
+        "props": [
+            {
+                "p": "clientId",
+                "v": "your-client-id",
+                "vt": "str"
+            },
+            {
+                "p": "clientSecret",
+                "v": "your-client-secret",
+                "vt": "str"
+            },
+            {
+                "p": "authorizationEndpoint",
+                "v": "https://example.com/oauth2/authorize",
+                "vt": "str"
+            },
+            {
+                "p": "tokenEndpoint",
+                "v": "https://example.com/oauth2/token",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "env",
+        "x": 140,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "53536f4d11ac8268",
+        "type": "comment",
+        "z": "79e7e0f965806e91",
+        "name": "OAuth2 Configuration",
+        "info": "Set the OAuth2 configuration parameters as environment variables.  These are used to verify the OAuth2 token.",
+        "x": 140,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "8a7d9089aff72561",
+        "type": "inject",
+        "z": "7ece08927fb99b95",
+        "name": "Simulate Event",
+        "props": [
+            {
+                "p": "payload",
+                "v": "New event occurred!",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 160,
+        "wires": [
+            [
+                "42aef38f64b4ea61"
+            ]
+        ]
+    },
+    {
+        "id": "42aef38f64b4ea61",
+        "type": "function",
+        "z": "7ece08927fb99b95",
+        "name": "Create Notification",
+        "func": "// Create a notification message\nmsg.payload = {\n    type: 'notification',\n    message: msg.payload,\n    timestamp: new Date().toISOString()\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 390,
+        "y": 160,
+        "wires": [
+            [
+                "e31876a7d3ccba21"
+            ]
+        ]
+    },
+    {
+        "id": "e31876a7d3ccba21",
+        "type": "websocket out",
+        "z": "7ece08927fb99b95",
+        "name": "Send Notification",
+        "server": "ws-server",
+        "client": "",
+        "x": 650,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "0531c08656558b5a",
+        "type": "comment",
+        "z": "7ece08927fb99b95",
+        "name": "Instructions",
+        "info": "This flow demonstrates real-time notifications using WebSocket.\n\n1.  Configure the WebSocket Out node with the desired path.\n2.  Create a web client that connects to the WebSocket endpoint.\n3.  Trigger the inject node to send a notification.\n\nWeb client example:\n```javascript\nconst ws = new WebSocket('ws://localhost:1880/ws/notifications');\nws.onmessage = function(event) {\n    console.log(event.data);\n};\n```",
+        "x": 140,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "178c33978f6d7517",
+        "type": "mqtt in",
+        "z": "9b2055f0707ea5c2",
+        "name": "Temperature Data",
+        "topic": "sensor/temperature",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "00d7f98d7f709bf6"
+            ]
+        ]
+    },
+    {
+        "id": "274404828f37eed6",
+        "type": "mqtt in",
+        "z": "9b2055f0707ea5c2",
+        "name": "Humidity Data",
+        "topic": "sensor/humidity",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 220,
+        "wires": [
+            [
+                "00d7f98d7f709bf6"
+            ]
+        ]
+    },
+    {
+        "id": "00d7f98d7f709bf6",
+        "type": "join",
+        "z": "9b2055f0707ea5c2",
+        "name": "Join Data",
+        "mode": "auto",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "timeout": "",
+        "count": "2",
+        "x": 350,
+        "y": 190,
+        "wires": [
+            [
+                "e101afb4bc0bfd58"
+            ]
+        ]
+    },
+    {
+        "id": "e101afb4bc0bfd58",
+        "type": "function",
+        "z": "9b2055f0707ea5c2",
+        "name": "Analyze Data",
+        "func": "// Perform data analysis here\nlet temperature = msg.payload['sensor/temperature'].value;\nlet humidity = msg.payload['sensor/humidity'].value;\n\n// Example: Calculate a simple comfort index\nlet comfortIndex = (1.8 * temperature) - (0.55 * (1 - humidity/100) * (1.8 * temperature - 26)) + 32;\n\nmsg.payload = {\n    temperature: temperature,\n    humidity: humidity,\n    comfortIndex: comfortIndex\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 550,
+        "y": 190,
+        "wires": [
+            [
+                "95c3d53f6b832c24"
+            ]
+        ]
+    },
+    {
+        "id": "7e8ebe609e3d7afc",
+        "type": "comment",
+        "z": "9b2055f0707ea5c2",
+        "name": "Instructions",
+        "info": "This flow demonstrates data aggregation and analysis.\n\n1.  Configure the MQTT In nodes with the input topics.\n2.  Configure the Join node to aggregate data from the desired sources.\n3.  Modify the Function node to perform the desired data analysis.\n4.  Configure the Database Out node with the database settings.\n\nIn this example, the flow aggregates temperature and humidity data, calculates a comfort index, and stores the results in an InfluxDB database.",
+        "x": 140,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "95c3d53f6b832c24",
+        "type": "influxdb out",
+        "z": "9b2055f0707ea5c2",
+        "influxdb": "influxdb-config",
+        "name": "Store in Database",
+        "measurement": "comfort_data",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "mydb",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "myorg",
+        "bucket": "mybucket",
+        "x": 750,
+        "y": 190,
+        "wires": []
+    },
+    {
+        "id": "93906131bcb5284d",
+        "type": "mqtt in",
+        "z": "6564a4b8279da7b1",
+        "name": "Device Data",
+        "topic": "device/sensor",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "88e9658126abd230"
+            ]
+        ]
+    },
+    {
+        "id": "88e9658126abd230",
+        "type": "function",
+        "z": "6564a4b8279da7b1",
+        "name": "Update Digital Twin",
+        "func": "// Update the digital twin's state based on the incoming data\n// The digital twin's state is stored in flow context\n\nlet twin = flow.get('twin') || {\n    temperature: 0,\n    humidity: 0,\n    status: 'idle'\n};\n\n// Update the twin's state with the new data\nif (msg.payload.temperature) {\n    twin.temperature = msg.payload.temperature;\n}\nif (msg.payload.humidity) {\n    twin.humidity = msg.payload.humidity;\n}\nif (msg.payload.status) {\n    twin.status = msg.payload.status;\n}\n\n// Store the updated twin in flow context\nflow.set('twin', twin);\n\n// Send the updated twin to the dashboard\nmsg.payload = twin;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 160,
+        "wires": [
+            [
+                "a18e6c976b3eb7b9",
+                "dbd385e057e51102",
+                "946feccc56ac6bd0"
+            ]
+        ]
+    },
+    {
+        "id": "6eeac25b0ba5b335",
+        "type": "comment",
+        "z": "6564a4b8279da7b1",
+        "name": "Instructions",
+        "info": "This flow demonstrates how to create a digital twin in Node-RED.\n\n1.  Configure the MQTT In node with the topic that the physical device publishes to.\n2.  Modify the Function node to update the digital twin's state based on the incoming data.\n3.  Observe the digital twin's state being updated on the dashboard.",
+        "x": 140,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "946feccc56ac6bd0",
+        "type": "ui_text",
+        "z": "6564a4b8279da7b1",
+        "group": "dashboard-group",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "Status",
+        "label": "Status",
+        "format": "{{value.status}}",
+        "layout": "row-spread",
+        "className": "",
+        "x": 580,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "a18e6c976b3eb7b9",
+        "type": "ui_gauge",
+        "z": "6564a4b8279da7b1",
+        "name": "Temperature",
+        "group": "dashboard-group",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "°C",
+        "format": "{{value.temperature}}",
+        "min": 0,
+        "max": "50",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "25",
+        "seg2": "35",
+        "className": "",
+        "x": 590,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "dbd385e057e51102",
+        "type": "ui_gauge",
+        "z": "6564a4b8279da7b1",
+        "name": "Humidity",
+        "group": "dashboard-group",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Humidity",
+        "label": "%",
+        "format": "{{value.humidity}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "30",
+        "seg2": "60",
+        "className": "",
+        "x": 590,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "fa0e0d6d2142411e",
+        "type": "mqtt in",
+        "z": "5b3d548bf5423cd6",
+        "name": "Management Commands",
+        "topic": "management/commands",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "99a4cc5038f1ea73"
+            ]
+        ]
+    },
+    {
+        "id": "99a4cc5038f1ea73",
+        "type": "function",
+        "z": "5b3d548bf5423cd6",
+        "name": "Process Command",
+        "func": "// Process the incoming management commands and generate responses\n\nlet command = msg.payload.command;\nlet deviceId = msg.payload.deviceId;\n\nlet response = {\n    deviceId: deviceId,\n    status: 'unknown',\n    message: ''\n};\n\nswitch (command) {\n    case 'firmware_update':\n        // Simulate firmware update process\n        response.status = 'updating';\n        response.message = 'Firmware update initiated';\n        break;\n    case 'reboot':\n        // Simulate reboot process\n        response.status = 'rebooting';\n        response.message = 'Device rebooting';\n        break;\n    case 'get_status':\n        // Simulate getting device status\n        response.status = 'online';\n        response.message = 'Device is online';\n        break;\n    default:\n        response.status = 'error';\n        response.message = 'Unknown command';\n}\n\nmsg.payload = response;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 160,
+        "wires": [
+            [
+                "6985d8a27c99aa9a"
+            ]
+        ]
+    },
+    {
+        "id": "6985d8a27c99aa9a",
+        "type": "mqtt out",
+        "z": "5b3d548bf5423cd6",
+        "name": "Device Response",
+        "topic": "device/response",
+        "qos": "0",
+        "retain": false,
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "mqtt-broker",
+        "x": 670,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "70f64463f7c57738",
+        "type": "comment",
+        "z": "5b3d548bf5423cd6",
+        "name": "Instructions",
+        "info": "This flow demonstrates automated device management.\n\n1.  Configure the MQTT In node with the topic for receiving management commands.\n2.  Modify the Function node to process the commands and generate responses.\n3.  Configure the MQTT Out node with the topic for sending commands to the devices.\n\nExample command:\n```json\n{\n    \"deviceId\": \"device001\",\n    \"command\": \"firmware_update\"\n}\n```",
+        "x": 110,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "0207e2e106d29d87",
+        "type": "mqtt in",
+        "z": "dd395fb1524023e4",
+        "name": "GPS Coordinates",
+        "topic": "device/gps",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 160,
+        "wires": [
+            [
+                "b2d0709c3b372b12"
+            ]
+        ]
+    },
+    {
+        "id": "b2d0709c3b372b12",
+        "type": "function",
+        "z": "dd395fb1524023e4",
+        "name": "Check Geofence",
+        "func": "// Define the geofence (latitude, longitude, radius in meters)\nconst latitude = 37.7749;\nconst longitude = -122.4194;\nconst radius = 100;\n\n// Get the device's GPS coordinates from the message\nlet deviceLatitude = msg.payload.latitude;\nlet deviceLongitude = msg.payload.longitude;\n\n// Function to calculate the distance between two GPS coordinates\nfunction distance(lat1, lon1, lat2, lon2) {\n    const R = 6371e3; // Earth radius in meters\n    const φ1 = lat1 * Math.PI / 180; // φ, λ in radians\n    const φ2 = lat2 * Math.PI / 180;\n    const Δφ = (lat2 - lat1) * Math.PI / 180;\n    const Δλ = (lon2 - lon1) * Math.PI / 180;\n\n    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +\n        Math.cos(φ1) * Math.cos(φ2) *\n        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);\n    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));\n\n    const d = R * c; // Distance in meters\n    return d;\n}\n\n// Calculate the distance between the device and the geofence center\nlet dist = distance(latitude, longitude, deviceLatitude, deviceLongitude);\n\n// Check if the device is within the geofence\nlet isInGeofence = dist <= radius;\n\n// Get the previous state from flow context\nlet previousState = flow.get('isInGeofence') || false;\n\n// Check if the state has changed\nif (isInGeofence !== previousState) {\n    // Send a notification\n    msg.payload = {\n        message: `Device ${isInGeofence ? 'entered' : 'exited'} the geofence`,\n        latitude: deviceLatitude,\n        longitude: deviceLongitude\n    };\n    flow.set('isInGeofence', isInGeofence);\n    return msg;\n} else {\n    // No state change, do nothing\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 160,
+        "wires": [
+            [
+                "96b2150d0806b738"
+            ]
+        ]
+    },
+    {
+        "id": "96b2150d0806b738",
+        "type": "http request",
+        "z": "dd395fb1524023e4",
+        "name": "Send Notification",
+        "method": "POST",
+        "ret": "obj",
+        "url": "https://example.com/api/notification",
+        "x": 600,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "381a33fc373eedfe",
+        "type": "comment",
+        "z": "dd395fb1524023e4",
+        "name": "Instructions",
+        "info": "This flow demonstrates how to implement geofencing in Node-RED.\n\n1.  Configure the MQTT In node with the topic for receiving GPS coordinates.\n2.  Modify the Function node to define the geofence and check if the device is within the geofence.\n   - Update the `latitude`, `longitude`, and `radius` variables to define the geofence.\n3.  Configure the HTTP Request node with the URL for sending notifications.\n\nExample GPS coordinates:\n```json\n{\n    \"latitude\": 37.7749,\n    \"longitude\": -122.4194\n}\n```",
+        "x": 150,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "5634df9f4275046e",
+        "type": "mqtt in",
+        "z": "d44e7fd934e25d61",
+        "name": "Sensor Data",
+        "topic": "device/sensor",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "mqtt-broker",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "fd24c41599b85093"
+            ]
+        ]
+    },
+    {
+        "id": "fd24c41599b85093",
+        "type": "function",
+        "z": "d44e7fd934e25d61",
+        "name": "Predict Failure",
+        "func": "// Preprocess the sensor data and make predictions using the machine learning model\n// This is a placeholder and needs to be replaced with actual machine learning model integration\n\nlet sensorData = msg.payload;\n\n// Example: Check if temperature exceeds a threshold\nlet isFailurePredicted = sensorData.temperature > 40;\n\nmsg.payload = {\n    timestamp: new Date().toISOString(),\n    sensorData: sensorData,\n    failurePredicted: isFailurePredicted\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 160,
+        "wires": [
+            [
+                "99c6113340e345c2",
+                "9295037d26d54d73"
+            ]
+        ]
+    },
+    {
+        "id": "9295037d26d54d73",
+        "type": "function",
+        "z": "d44e7fd934e25d61",
+        "name": "Alerting",
+        "func": "// Send alerts when a failure is predicted\n\nif (msg.payload.failurePredicted) {\n    msg.payload = {\n        message: 'Failure predicted!',\n        timestamp: msg.payload.timestamp,\n        sensorData: msg.payload.sensorData\n    };\n    return msg;\n} else {\n    return null;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 540,
+        "y": 220,
+        "wires": [
+            [
+                "ce04790addf86f0c"
+            ]
+        ]
+    },
+    {
+        "id": "ce04790addf86f0c",
+        "type": "http request",
+        "z": "d44e7fd934e25d61",
+        "name": "Send Alert",
+        "method": "POST",
+        "ret": "obj",
+        "url": "https://example.com/api/alerts",
+        "x": 730,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b49c7a106ba868ba",
+        "type": "comment",
+        "z": "d44e7fd934e25d61",
+        "name": "Instructions",
+        "info": "This flow demonstrates predictive maintenance using machine learning.\n\n1.  Configure the MQTT In node with the topic for receiving sensor data.\n2.  Modify the Function node to preprocess the data and make predictions using the machine learning model.\n   - Replace the placeholder code with your actual machine learning model.\n3.  Configure the Database Out node with the database settings for storing the predictions.\n4.  Configure the HTTP Request node with the URL for sending alerts.\n\nExample sensor data:\n```json\n{\n    \"temperature\": 30,\n    \"pressure\": 1000,\n    \"vibration\": 0.5\n}\n```",
+        "x": 150,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "99c6113340e345c2",
+        "type": "influxdb out",
+        "z": "d44e7fd934e25d61",
+        "influxdb": "influxdb-config",
+        "name": "Store Prediction",
+        "measurement": "failure_predictions",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "mydb",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "myorg",
+        "bucket": "mybucket",
+        "x": 580,
+        "y": 120,
+        "wires": []
+    }
+]

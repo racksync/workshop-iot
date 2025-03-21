@@ -100,7 +100,7 @@
     "broker": "localhost",
     "port": "1883",
     "clientid": "",
-    usetls": false,
+    "usetls": false,
     "protocolVersion": "4",
     "keepalive": "60",
     "cleansession": true,
