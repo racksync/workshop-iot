@@ -1,4 +1,6 @@
 # Local Resources
+.DS_Store
+Thumbs.db
 resources
 emqx-data/
 node-red-data/
