@@ -1,5 +1,6 @@
 # Local Resources
 resources
+emqx-data/
 
 # Node.js
 node_modules/
