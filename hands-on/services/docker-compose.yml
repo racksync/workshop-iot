@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     user: "1000:1000"
     ports:
-      - "1880:1880"
+      - 0.0.0.0:1880:1880
     volumes:
       - ./node-red-data/data:/data
     environment:
