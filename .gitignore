@@ -1,6 +1,9 @@
 # Local Resources
 resources
 emqx-data/
+node-red-data/
+mosquitto-data/
+mosquitto-config/
 
 # Node.js
 node_modules/
