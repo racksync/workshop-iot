@@ -1,7 +1,8 @@
 # Local Resources
 .DS_Store
 Thumbs.db
-resources
+resources/
+slides/
 emqx-data/
 node-red-data/
 mosquitto-data/
