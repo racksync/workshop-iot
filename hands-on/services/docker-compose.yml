@@ -35,7 +35,7 @@ services:
     container_name: workshop-emqx
     restart: unless-stopped
     ports:
-      - 0.0.0.0:1884:1883      # MQTT Port (แยกพอร์ตกับ Mosquitto)
+      - 0.0.0.0:1883:1883      # MQTT Port (แยกพอร์ตกับ Mosquitto)
       - 0.0.0.0:8083:8083      # MQTT/WebSocket
       - 0.0.0.0:8084:8084      # MQTT/WSS
       - 0.0.0.0:8883:8883      # MQTT/SSL
