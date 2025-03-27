@@ -23,7 +23,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 3000;
 
 // ---------- Secret key สำหรับ JWT (ควรเก็บเป็นความลับ) ----------
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
@@ -125,15 +125,24 @@ app.listen(port, () => {
 /**
  * คำแนะนำเพิ่มเติม:
  *
- * 1. ติดตั้ง MQTT Broker ที่รองรับการ Authentication (เช่น Mosquitto)
- *    และตั้งค่าให้ตรวจสอบ JWT token ก่อนอนุญาตให้ client เชื่อมต่อ
+ * 1. ติดตั้ง MQTT Broker ที่รองรับการ Authentication:
+ *    - EMQX: เป็น MQTT broker ขั้นสูงที่รองรับหลายวิธีการ authentication:
+ *      * JWT Authentication: ตั้งค่า EMQX ให้ตรวจสอบ JWT token โดยกำหนด secret key
+ *        ที่ตรงกับ Authentication Server ของเรา
+ *      * Username/Password: สามารถเชื่อมต่อกับ HTTP API เพื่อตรวจสอบความถูกต้อง
+ *      * OAuth 2.0: รองรับการเชื่อมต่อกับ OAuth providers
+ *      * การตั้งค่า ACL (Access Control List): กำหนดสิทธิ์การเข้าถึง topics ตาม username, 
+ *        clientid หรือข้อมูลใน JWT claims
+ *      * EMQX Dashboard: มีหน้า UI สำหรับจัดการ authentication และ authorization rules
  *
- * 2. แก้ไข WebSocket server (03-websocket-server.js)
+ * 2. แก้ไข WebSocket server 
  *    ให้ตรวจสอบ JWT token จาก HTTP Header ตอน handshake
  *    และปฏิเสธการเชื่อมต่อถ้า token ไม่ถูกต้อง
  *
  * 3. สร้าง MQTT Client และ WebSocket Client
  *    ให้ส่ง JWT token ใน header ตอนเชื่อมต่อ
+ *    - สำหรับ EMQX: กำหนด username เป็น JWT token และเว้น password ว่าง 
+ *      หรือส่ง token ใน password field ขึ้นอยู่กับการตั้งค่า
  *
  * 4. ทดลองปรับแต่งโปรแกรม:
  *    - เพิ่มระบบ Refresh Token

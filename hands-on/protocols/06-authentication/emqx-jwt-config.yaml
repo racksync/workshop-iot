@@ -1,0 +1,24 @@
+## Authentication using JWT
+auth.jwt {
+  enable = true
+  secret = ${JWT_SECRET}
+  from = password
+  verify_claims {
+    username = %u
+  }
+  acl_claim_name = permissions
+}
+
+## WebSocket configuration
+listener.ws.external {
+  bind = 0.0.0.0:8083
+  max_connections = 1024000
+  mqtt.allow_anonymous = false
+}
+
+## Basic listeners
+listener.tcp.external {
+  bind = 0.0.0.0:1883
+  max_connections = 1024000
+  mqtt.allow_anonymous = false
+}
