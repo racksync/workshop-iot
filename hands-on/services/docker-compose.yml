@@ -52,7 +52,7 @@ services:
     environment:
       - EMQX_NAME=emqx
       - EMQX_DASHBOARD__DEFAULT_PASSWORD=${EMQX_DEFAULT_PASSWORD:-public}
-      - EMQX_HOST=racksync.local
+      - EMQX_HOST=localhost
     networks:
       - iot-network
 
