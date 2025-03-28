@@ -12,21 +12,21 @@
         "type": "tab",
         "label": "Exercise 2: Real-time Dashboard with MQTT",
         "disabled": false,
-        "info": "# Real-time Dashboard with MQTT\n\nThis flow demonstrates how to create a real-time dashboard using MQTT data.\n\n## Components Used:\n- MQTT In node\n- JSON node\n- Dashboard gauge and chart nodes\n\n## How to Use:\n1. Configure the MQTT broker settings\n2. Publish sensor data to topic 'sensor/temperature' with payload like {\"value\": 25}\n3. Publish sensor data to topic 'sensor/humidity' with payload like {\"value\": 60}\n4. View the dashboard at http://localhost:1880/ui"
+        "info": "# Dashboard แบบเรียลไทม์ด้วย MQTT\n\nFlow นี้แสดงวิธีการสร้าง dashboard แบบเรียลไทม์โดยใช้ข้อมูลจาก MQTT\n\n## ส่วนประกอบที่ใช้:\n- โหนด MQTT In\n- โหนด JSON\n- โหนด gauge และ chart บน Dashboard\n\n## วิธีใช้งาน:\n1. ตั้งค่า MQTT broker\n2. ส่งข้อมูลเซ็นเซอร์ไปยัง topic 'sensor/temperature' โดยมี payload เช่น {\"value\": 25}\n3. ส่งข้อมูลเซ็นเซอร์ไปยัง topic 'sensor/humidity' โดยมี payload เช่น {\"value\": 60}\n4. ดู dashboard ที่ http://localhost:1880/ui"
     },
     {
         "id": "exercise3-flow",
         "type": "tab",
         "label": "Exercise 3: WebSocket Communication",
         "disabled": false,
-        "info": "# WebSocket Communication\n\nThis flow demonstrates how to use WebSocket for real-time communication in Node-RED.\n\n## Components Used:\n- WebSocket In/Out nodes\n- Function nodes for message processing\n- Debug nodes for monitoring\n- UI Input/Button for sending messages\n\n## How to Use:\n1. Open the dashboard UI at http://localhost:1880/ui\n2. Send messages from the input box\n3. Connect to the WebSocket server using an external client at ws://localhost:1880/ws/chat\n4. Messages will be shared between all connected clients\n\n## Test with wscat:\n```\nwscat -c ws://localhost:1880/ws/chat\n```\nThen type messages to send them to all connected clients."
+        "info": "# การสื่อสารด้วย WebSocket\n\nFlow นี้แสดงวิธีการใช้ WebSocket สำหรับการสื่อสารแบบเรียลไทม์ใน Node-RED\n\n## ส่วนประกอบที่ใช้:\n- โหนด WebSocket In/Out\n- โหนด Function สำหรับการประมวลผลข้อความ\n- โหนด Debug สำหรับการตรวจสอบ\n- UI Input/Button สำหรับการส่งข้อความ\n\n## วิธีใช้งาน:\n1. เปิด UI dashboard ที่ http://localhost:1880/ui\n2. ส่งข้อความจากช่อง input\n3. เชื่อมต่อกับ WebSocket server โดยใช้ client ภายนอกที่ ws://localhost:1880/ws/chat\n4. ข้อความจะถูกแชร์ระหว่าง clients ที่เชื่อมต่อทั้งหมด\n\n## ทดสอบด้วย wscat:\n```\nwscat -c ws://localhost:1880/ws/chat\n```\nจากนั้นพิมพ์ข้อความเพื่อส่งไปยัง clients ที่เชื่อมต่อทั้งหมด"
     },
     {
         "id": "fda11d11b107d05e",
         "type": "tab",
         "label": "Exercise 4: MQTT to WebSocket Bridge",
         "disabled": false,
-        "info": "# MQTT to WebSocket Bridge\n\nFlow นี้แสดงการรับข้อมูลจาก MQTT แล้วส่งต่อไปยัง WebSocket เพื่อให้ WebSocket clients สามารถรับข้อมูลได้แบบ real-time\n\n## การทำงาน\n1. รับข้อมูลจาก MQTT topic 'sensor/data'\n2. แปลงข้อมูลให้อยู่ในรูปแบบที่เหมาะสม\n3. ส่งต่อข้อมูลไปยัง WebSocket endpoint '/ws/sensor'\n4. แสดงข้อมูลใน Debug console",
+        "info": "# MQTT ไปยัง WebSocket Bridge\n\nFlow นี้แสดงการรับข้อมูลจาก MQTT แล้วส่งต่อไปยัง WebSocket เพื่อให้ WebSocket clients สามารถรับข้อมูลได้แบบเรียลไทม์\n\n## การทำงาน\n1. รับข้อมูลจาก MQTT topic 'sensor/data'\n2. แปลงข้อมูลให้อยู่ในรูปแบบที่เหมาะสม\n3. ส่งต่อข้อมูลไปยัง WebSocket endpoint '/ws/sensor'\n4. แสดงข้อมูลใน Debug console",
         "env": []
     },
     {
@@ -34,7 +34,7 @@
         "type": "tab",
         "label": "Exercise 5: Temperature Monitoring System",
         "disabled": false,
-        "info": "# Temperature Monitoring System\n\nFlow นี้แสดงการตรวจสอบข้อมูลอุณหภูมิที่ได้รับผ่าน MQTT และแสดงผลบน Dashboard รวมทั้งส่งการแจ้งเตือนเมื่ออุณหภูมิสูงเกินกำหนด\n\n## การทำงาน\n1. รับข้อมูลอุณหภูมิจาก MQTT topic 'sensor/temperature'\n2. แสดงผลอุณหภูมิบน gauge และกราฟแบบ real-time\n3. ตรวจสอบค่าอุณหภูมิ หากสูงเกิน threshold จะส่งการแจ้งเตือน",
+        "info": "# ระบบตรวจสอบอุณหภูมิ\n\nFlow นี้แสดงการตรวจสอบข้อมูลอุณหภูมิที่ได้รับผ่าน MQTT และแสดงผลบน Dashboard รวมทั้งส่งการแจ้งเตือนเมื่ออุณหภูมิสูงเกินกำหนด\n\n## การทำงาน\n1. รับข้อมูลอุณหภูมิจาก MQTT topic 'sensor/temperature'\n2. แสดงผลอุณหภูมิบน gauge และกราฟแบบเรียลไทม์\n3. ตรวจสอบค่าอุณหภูมิ หากสูงเกิน threshold จะส่งการแจ้งเตือน",
         "env": []
     },
     {
@@ -58,7 +58,7 @@
         "type": "tab",
         "label": "Exercise 8: Secure MQTT Communication with TLS",
         "disabled": false,
-        "info": "# Secure MQTT Communication with TLS\n\nThis flow demonstrates how to establish a secure MQTT connection using TLS (Transport Layer Security).\n\n## Prerequisites\n1.  An MQTT broker configured for TLS (e.g., Mosquitto with TLS enabled).\n2.  Valid TLS certificates (CA certificate, client certificate, and client key).\n\n## Configuration\n1.  Configure the MQTT broker node with the correct TLS settings.\n2.  Specify the paths to your TLS certificates.\n3.  Ensure that the MQTT broker is running and accessible.\n\n## Instructions\n1.  Import this flow into Node-RED.\n2.  Configure the MQTT broker node with your TLS settings.\n3.  Deploy the flow.\n4.  Observe the secure MQTT communication.",
+        "info": "# การสื่อสาร MQTT แบบปลอดภัยด้วย TLS\n\nFlow นี้แสดงวิธีการตั้งค่าการเชื่อมต่อ MQTT แบบปลอดภัยโดยใช้ TLS (Transport Layer Security)\n\n## สิ่งที่ต้องเตรียม\n1.  MQTT broker ที่ตั้งค่าให้รองรับ TLS (เช่น Mosquitto ที่เปิดใช้งาน TLS)\n2.  ใบรับรอง TLS ที่ถูกต้อง (CA certificate, client certificate, และ client key)\n\n## การตั้งค่า\n1.  ตั้งค่าโหนด MQTT broker ด้วยการตั้งค่า TLS ที่ถูกต้อง\n2.  ระบุเส้นทางไปยังใบรับรอง TLS ของคุณ\n3.  ตรวจสอบว่า MQTT broker กำลังทำงานและสามารถเข้าถึงได้\n\n## คำแนะนำ\n1.  นำเข้า flow นี้ไปยัง Node-RED\n2.  ตั้งค่าโหนด MQTT broker ด้วยการตั้งค่า TLS ของคุณ\n3.  Deploy flow\n4.  สังเกตการสื่อสาร MQTT แบบปลอดภัย",
         "env": []
     },
     {
@@ -66,7 +66,7 @@
         "type": "tab",
         "label": "Exercise 9: Data Logging to InfluxDB",
         "disabled": false,
-        "info": "# Data Logging to InfluxDB\n\nFlow นี้แสดงการรับข้อมูลจาก MQTT และบันทึกลงใน InfluxDB เพื่อเก็บเป็นประวัติข้อมูลและนำไปวิเคราะห์ต่อ\n\n## การทำงาน\n1. รับข้อมูลจาก MQTT topics หลายตัว (temperature, humidity, pressure)\n2. แปลงข้อมูลให้อยู่ในรูปแบบที่ InfluxDB ต้องการ\n3. บันทึกลงฐานข้อมูล InfluxDB\n4. แสดงข้อมูลบน Dashboard เพื่อตรวจสอบ",
+        "info": "# การบันทึกข้อมูลลง InfluxDB\n\nFlow นี้แสดงการรับข้อมูลจาก MQTT และบันทึกลงใน InfluxDB เพื่อเก็บเป็นประวัติข้อมูลและนำไปวิเคราะห์ต่อ\n\n## การทำงาน\n1. รับข้อมูลจาก MQTT topics หลายตัว (temperature, humidity, pressure)\n2. แปลงข้อมูลให้อยู่ในรูปแบบที่ InfluxDB ต้องการ\n3. บันทึกลงฐานข้อมูล InfluxDB\n4. แสดงข้อมูลบน Dashboard เพื่อตรวจสอบ",
         "env": []
     },
     {
@@ -74,7 +74,7 @@
         "type": "tab",
         "label": "Exercise 10: Rate Limiting",
         "disabled": false,
-        "info": "# Rate Limiting in Node-RED\n\nThis flow demonstrates how to implement rate limiting in Node-RED to control the rate at which messages are processed.\n\n## Components Used\n- Inject node: To simulate incoming messages.\n- Delay node: To limit the rate of message processing.\n- Debug node: To observe the message flow.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Adjust the settings in the Delay node to configure the desired rate limit.\n3. Deploy the flow.\n4. Observe the message flow and the effect of the rate limiting.",
+        "info": "# การจำกัดอัตราใน Node-RED\n\nFlow นี้แสดงวิธีการใช้การจำกัดอัตราใน Node-RED เพื่อควบคุมอัตราการประมวลผลข้อความ\n\n## ส่วนประกอบที่ใช้\n- โหนด Inject: เพื่อจำลองข้อความที่เข้ามา\n- โหนด Delay: เพื่อจำกัดอัตราการประมวลผลข้อความ\n- โหนด Debug: เพื่อสังเกตการไหลของข้อความ\n\n## คำแนะนำ\n1. นำเข้า flow นี้ไปยัง Node-RED\n2. ปรับการตั้งค่าในโหนด Delay เพื่อกำหนดอัตราการจำกัดที่ต้องการ\n3. Deploy flow\n4. สังเกตการไหลของข้อความและผลของการจำกัดอัตรา",
         "env": []
     },
     {
@@ -82,7 +82,7 @@
         "type": "tab",
         "label": "Exercise 11: Real-time Data Transformation",
         "disabled": false,
-        "info": "# Real-time Data Transformation in Node-RED\n\nThis flow demonstrates how to transform data in real-time using Node-RED. It receives data from an MQTT topic, transforms it using a Function node, and publishes the transformed data to another MQTT topic.\n\n## Components Used\n- MQTT In node: To receive data from an MQTT topic.\n- Function node: To transform the data.\n- MQTT Out node: To publish the transformed data to another MQTT topic.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In and MQTT Out nodes with the appropriate broker settings and topics.\n3. Modify the Function node to perform the desired data transformation.\n4. Deploy the flow.\n5. Observe the transformed data being published to the output MQTT topic.",
+        "info": "# การแปลงข้อมูลแบบเรียลไทม์ใน Node-RED\n\nFlow นี้แสดงวิธีการแปลงข้อมูลแบบเรียลไทม์โดยใช้ Node-RED โดยรับข้อมูลจาก MQTT topic แปลงข้อมูลโดยใช้โหนด Function และเผยแพร่ข้อมูลที่แปลงแล้วไปยัง MQTT topic อื่น\n\n## ส่วนประกอบที่ใช้\n- โหนด MQTT In: เพื่อรับข้อมูลจาก MQTT topic\n- โหนด Function: เพื่อแปลงข้อมูล\n- โหนด MQTT Out: เพื่อเผยแพร่ข้อมูลที่แปลงแล้วไปยัง MQTT topic อื่น\n\n## คำแนะนำ\n1. นำเข้า flow นี้ไปยัง Node-RED\n2. ตั้งค่าโหนด MQTT In และ MQTT Out ด้วยการตั้งค่า broker และ topics ที่เหมาะสม\n3. แก้ไขโหนด Function เพื่อทำการแปลงข้อมูลตามที่ต้องการ\n4. Deploy flow\n5. สังเกตข้อมูลที่แปลงแล้วถูกเผยแพร่ไปยัง MQTT topic ขาออก",
         "env": []
     },
     {
@@ -90,7 +90,7 @@
         "type": "tab",
         "label": "Exercise 12: Integrating with Cloud Services",
         "disabled": false,
-        "info": "# Integrating with Cloud Services in Node-RED\n\nThis flow demonstrates how to integrate Node-RED with a cloud service using the HTTP Request node. It sends data to a cloud service endpoint and handles the response.\n\n## Components Used\n- Inject node: To simulate data to be sent to the cloud service.\n- HTTP Request node: To send data to the cloud service endpoint.\n- Debug node: To display the response from the cloud service.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the HTTP Request node with the appropriate URL and headers for your cloud service.\n3. Deploy the flow.\n4. Observe the data being sent to the cloud service and the response being displayed in the Debug node.",
+        "info": "# การเชื่อมต่อกับบริการคลาวด์ใน Node-RED\n\nFlow นี้แสดงวิธีการเชื่อมต่อ Node-RED กับบริการคลาวด์โดยใช้โหนด HTTP Request โดยส่งข้อมูลไปยัง endpoint ของบริการคลาวด์และจัดการการตอบกลับ\n\n## ส่วนประกอบที่ใช้\n- โหนด Inject: เพื่อจำลองข้อมูลที่จะส่งไปยังบริการคลาวด์\n- โหนด HTTP Request: เพื่อส่งข้อมูลไปยัง endpoint ของบริการคลาวด์\n- โหนด Debug: เพื่อแสดงการตอบกลับจากบริการคลาวด์\n\n## คำแนะนำ\n1. นำเข้า flow นี้ไปยัง Node-RED\n2. ตั้งค่าโหนด HTTP Request ด้วย URL และ headers ที่เหมาะสมสำหรับบริการคลาวด์ของคุณ\n3. Deploy flow\n4. สังเกตข้อมูลที่ถูกส่งไปยังบริการคลาวด์และการตอบกลับที่แสดงในโหนด Debug",
         "env": []
     },
     {
@@ -137,7 +137,7 @@
         "type": "tab",
         "label": "Exercise 18: Automated Device Management",
         "disabled": false,
-        "info": "# Automated Device Management\n\nThis flow demonstrates how to automate device management tasks in Node-RED, such as firmware updates and configuration changes.\n\n## Components Used\n- MQTT In node: To receive commands from a management system.\n- Function node: To process the commands and generate responses.\n- MQTT Out node: To send commands to the devices.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In node with the appropriate broker settings and topic for receiving commands.\n3. Modify the Function node to process the commands and generate the appropriate responses.\n4. Configure the MQTT Out node with the appropriate broker settings and topic for sending commands to the devices.\n5. Deploy the flow.\n6. Send commands to the devices through the management system.",
+        "info": "# การจัดการอุปกรณ์อัตโนมัติ\n\nFlow นี้แสดงวิธีการจัดการอุปกรณ์อัตโนมัติใน Node-RED เช่น การอัปเดต firmware และการเปลี่ยนแปลงการตั้งค่า\n\n## ส่วนประกอบที่ใช้\n- โหนด MQTT In: เพื่อรับคำสั่งจากระบบจัดการ\n- โหนด Function: เพื่อประมวลผลคำสั่งและสร้างการตอบกลับ\n- โหนด MQTT Out: เพื่อส่งคำสั่งไปยังอุปกรณ์\n\n## คำแนะนำ\n1. นำเข้า flow นี้ไปยัง Node-RED\n2. ตั้งค่าโหนด MQTT In ด้วยการตั้งค่า broker และ topic ที่เหมาะสมสำหรับการรับคำสั่ง\n3. แก้ไขโหนด Function เพื่อประมวลผลคำสั่งและสร้างการตอบกลับที่เหมาะสม\n4. ตั้งค่าโหนด MQTT Out ด้วยการตั้งค่า broker และ topic ที่เหมาะสมสำหรับการส่งคำสั่งไปยังอุปกรณ์\n5. Deploy flow\n6. ส่งคำสั่งไปยังอุปกรณ์ผ่านระบบจัดการ",
         "env": []
     },
     {
@@ -145,7 +145,7 @@
         "type": "tab",
         "label": "Exercise 19: Predictive Maintenance with Machine Learning",
         "disabled": false,
-        "info": "# Predictive Maintenance with Machine Learning\n\nThis flow demonstrates how to use machine learning for predictive maintenance in Node-RED. It receives sensor data from a device, uses a pre-trained machine learning model to predict failures, and sends alerts when a failure is predicted.\n\n## Components Used\n- MQTT In node: To receive sensor data from the device.\n- Function node: To preprocess the data and make predictions using the machine learning model.\n- Database Out node: To store the predictions.\n- Alerting node: To send alerts when a failure is predicted.\n\n## Instructions\n1. Import this flow into Node-RED.\n2. Configure the MQTT In node with the appropriate broker settings and topic for receiving sensor data.\n3. Modify the Function node to preprocess the data and make predictions using the machine learning model.\n   - Replace the placeholder code with your actual machine learning model.\n4. Configure the Database Out node with the appropriate database settings for storing the predictions.\n5. Configure the Alerting node to send alerts when a failure is predicted.\n6. Deploy the flow.\n7. Send sensor data to the device's MQTT topic and observe the predictions and alerts.",
+        "info": "# การบำรุงรักษาเชิงคาดการณ์ด้วย Machine Learning\n\nFlow นี้แสดงวิธีการใช้ machine learning สำหรับการบำรุงรักษาเชิงคาดการณ์ใน Node-RED โดยรับข้อมูลเซ็นเซอร์จากอุปกรณ์ ใช้โมเดล machine learning ที่ผ่านการฝึกอบรมเพื่อคาดการณ์ความล้มเหลว และส่งการแจ้งเตือนเมื่อคาดการณ์ว่ามีความล้มเหลว\n\n## ส่วนประกอบที่ใช้\n- โหนด MQTT In: เพื่อรับข้อมูลเซ็นเซอร์จากอุปกรณ์\n- โหนด Function: เพื่อเตรียมข้อมูลและทำการคาดการณ์โดยใช้โมเดล machine learning\n- โหนด Database Out: เพื่อเก็บการคาดการณ์\n- โหนด Alerting: เพื่อส่งการแจ้งเตือนเมื่อคาดการณ์ว่ามีความล้มเหลว\n\n## คำแนะนำ\n1. นำเข้า flow นี้ไปยัง Node-RED\n2. ตั้งค่าโหนด MQTT In ด้วยการตั้งค่า broker และ topic ที่เหมาะสมสำหรับการรับข้อมูลเซ็นเซอร์\n3. แก้ไขโหนด Function เพื่อเตรียมข้อมูลและทำการคาดการณ์โดยใช้โมเดล machine learning\n   - แทนที่โค้ด placeholder ด้วยโมเดล machine learning ของคุณ\n4. ตั้งค่าโหนด Database Out ด้วยการตั้งค่าฐานข้อมูลที่เหมาะสมสำหรับการเก็บการคาดการณ์\n5. ตั้งค่าโหนด Alerting เพื่อส่งการแจ้งเตือนเมื่อคาดการณ์ว่ามีความล้มเหลว\n6. Deploy flow\n7. ส่งข้อมูลเซ็นเซอร์ไปยัง MQTT topic ของอุปกรณ์และสังเกตการคาดการณ์และการแจ้งเตือน",
         "env": []
     },
     {
@@ -1617,7 +1617,7 @@
         "type": "comment",
         "z": "temp-monitoring-flow",
         "name": "Instructions",
-        "info": "# Temperature Monitoring System\n\n## วิธีใช้งาน\n1. Flow นี้รับข้อมูลอุณหภูมิผ่าน MQTT topic 'sensor/temperature'\n2. แสดงผลข้อมูลบน Dashboard ในรูปแบบ gauge และกราฟเส้น\n3. ตั้งค่า threshold ที่ 30°C สำหรับการแจ้งเตือน\n4. มีการจำลองข้อมูลอุณหภูมิทุก 5 วินาที\n\n## การปรับแต่ง\n- เปลี่ยนค่า threshold ในโหนด 'Check Temperature' และ 'Create Alert'\n- ปรับการแสดงผลของ Dashboard ใน UI group\n- เปลี่ยนช่วงเวลาในการจำลองข้อมูลที่โหนด 'Simulate Temperature'\n\n## การเชื่อมต่อกับเซ็นเซอร์จริง\nในการใช้งานจริง สามารถเชื่อมต่อกับเซ็นเซอร์วัดอุณหภูมิที่ส่งข้อมูลผ่าน MQTT ได้โดยตรง โดยอาจจะไม่จำเป็นต้องใช้ส่วนจำลองข้อมูล",
+        "info": "# ระบบตรวจสอบอุณหภูมิ\n\n## วิธีใช้งาน\n1. Flow นี้รับข้อมูลอุณหภูมิผ่าน MQTT topic 'sensor/temperature'\n2. แสดงผลข้อมูลบน Dashboard ในรูปแบบ gauge และกราฟเส้น\n3. ตั้งค่า threshold ที่ 30°C สำหรับการแจ้งเตือน\n4. มีการจำลองข้อมูลอุณหภูมิทุก 5 วินาที\n\n## การปรับแต่ง\n- เปลี่ยนค่า threshold ในโหนด 'Check Temperature' และ 'Create Alert'\n- ปรับการแสดงผลของ Dashboard ใน UI group\n- เปลี่ยนช่วงเวลาในการจำลองข้อมูลที่โหนด 'Simulate Temperature'\n\n## การเชื่อมต่อกับเซ็นเซอร์จริง\nในการใช้งานจริง สามารถเชื่อมต่อกับเซ็นเซอร์วัดอุณหภูมิที่ส่งข้อมูลผ่าน MQTT ได้โดยตรง โดยอาจจะไม่จำเป็นต้องใช้ส่วนจำลองข้อมูล",
         "x": 140,
         "y": 120,
         "wires": []
@@ -2239,7 +2239,7 @@
         "type": "comment",
         "z": "41316e31f4cb9310",
         "name": "InfluxDB Data Logging Exercise",
-        "info": "# Data Logging to InfluxDB\n\n## วิธีใช้งาน\n1. ตั้งค่า MQTT broker ในโหนด MQTT In\n2. ตั้งค่าเชื่อมต่อ InfluxDB ในโหนด InfluxDB Configuration\n3. เริ่มจำลองข้อมูลเซ็นเซอร์โดยคลิกที่ \"Simulate Sensor Data\"\n4. ตรวจสอบข้อมูลที่ได้รับจาก MQTT ในโหนด Debug\n5. ตรวจสอบรูปแบบข้อมูลที่ส่งไป InfluxDB\n6. ดูกราฟที่แสดงข้อมูลใน Dashboard\n\n## สำหรับการใช้งานจริงกับ InfluxDB\nFlow นี้ได้จัดเตรียมข้อมูลในรูปแบบที่เหมาะสมสำหรับการบันทึกลงใน InfluxDB แล้ว\nโดยคุณจะต้องตั้งค่าการเชื่อมต่อไปยัง InfluxDB ของคุณ โดยคลิกขวาที่โหนด \"Log to InfluxDB\" และเพิ่มการเชื่อมต่อใหม่\n\nสำหรับ InfluxDB 1.8 คุณจะต้องระบุ:\n- URL (เช่น http://localhost:8086)\n- Database name\n- Username และ Password (ถ้ามี)\n\nสำหรับ InfluxDB 2.0 คุณจะต้องระบุ:\n- URL\n- Organization\n- Bucket\n- API Token",
+        "info": "# การบันทึกข้อมูลลง InfluxDB\n\n## วิธีใช้งาน\n1. ตั้งค่า MQTT broker ในโหนด MQTT In\n2. ตั้งค่าเชื่อมต่อ InfluxDB ในโหนด InfluxDB Configuration\n3. เริ่มจำลองข้อมูลเซ็นเซอร์โดยคลิกที่ \"Simulate Sensor Data\"\n4. ตรวจสอบข้อมูลที่ได้รับจาก MQTT ในโหนด Debug\n5. ตรวจสอบรูปแบบข้อมูลที่ส่งไป InfluxDB\n6. ดูกราฟที่แสดงข้อมูลใน Dashboard\n\n## สำหรับการใช้งานจริงกับ InfluxDB\nFlow นี้ได้จัดเตรียมข้อมูลในรูปแบบที่เหมาะสมสำหรับการบันทึกลงใน InfluxDB แล้ว\nโดยคุณจะต้องตั้งค่าการเชื่อมต่อไปยัง InfluxDB ของคุณ โดยคลิกขวาที่โหนด \"Log to InfluxDB\" และเพิ่มการเชื่อมต่อใหม่\n\nสำหรับ InfluxDB 1.8 คุณจะต้องระบุ:\n- URL (เช่น http://localhost:8086)\n- Database name\n- Username และ Password (ถ้ามี)\n\nสำหรับ InfluxDB 2.0 คุณจะต้องระบุ:\n- URL\n- Organization\n- Bucket\n- API Token",
         "x": 230,
         "y": 120,
         "wires": []
